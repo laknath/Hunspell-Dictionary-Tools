@@ -141,6 +141,30 @@ public class SinhalaDictionaryToolsView extends FrameView {
         jButton18 = new javax.swing.JButton();
         jButton19 = new javax.swing.JButton();
         jButton20 = new javax.swing.JButton();
+        jTextField14 = new javax.swing.JTextField();
+        jLabel13 = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        jTable2 = new javax.swing.JTable();
+        jButton21 = new javax.swing.JButton();
+        jButton22 = new javax.swing.JButton();
+        jButton24 = new javax.swing.JButton();
+        jLabel16 = new javax.swing.JLabel();
+        jComboBox1 = new javax.swing.JComboBox();
+        jButton25 = new javax.swing.JButton();
+        jButton26 = new javax.swing.JButton();
+        jButton27 = new javax.swing.JButton();
+        jButton28 = new javax.swing.JButton();
+        jComboBox2 = new javax.swing.JComboBox();
+        jLabel17 = new javax.swing.JLabel();
+        jButton29 = new javax.swing.JButton();
+        jButton30 = new javax.swing.JButton();
+        jButton31 = new javax.swing.JButton();
+        jButton32 = new javax.swing.JButton();
+        jButton47 = new javax.swing.JButton();
+        jButton48 = new javax.swing.JButton();
+        jButton49 = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jPanel8 = new javax.swing.JPanel();
         jLabel9 = new javax.swing.JLabel();
@@ -156,6 +180,13 @@ public class SinhalaDictionaryToolsView extends FrameView {
         jLabel12 = new javax.swing.JLabel();
         jTextField13 = new javax.swing.JTextField();
         jButton14 = new javax.swing.JButton();
+        jPanel12 = new javax.swing.JPanel();
+        jLabel14 = new javax.swing.JLabel();
+        jTextField15 = new javax.swing.JTextField();
+        jButton17 = new javax.swing.JButton();
+        jLabel15 = new javax.swing.JLabel();
+        jTextField16 = new javax.swing.JTextField();
+        jButton23 = new javax.swing.JButton();
         menuBar = new javax.swing.JMenuBar();
         javax.swing.JMenu fileMenu = new javax.swing.JMenu();
         javax.swing.JMenuItem exitMenuItem = new javax.swing.JMenuItem();
@@ -179,17 +210,22 @@ public class SinhalaDictionaryToolsView extends FrameView {
         jPanel4.setName("jPanel4"); // NOI18N
 
         jLabel1.setText(resourceMap.getString("jLabel1.text")); // NOI18N
+        jLabel1.setToolTipText(resourceMap.getString("jLabel1.toolTipText")); // NOI18N
         jLabel1.setName("jLabel1"); // NOI18N
 
         jTextField1.setText(resourceMap.getString("jTextField1.text")); // NOI18N
+        jTextField1.setToolTipText(resourceMap.getString("jTextField1.toolTipText")); // NOI18N
         jTextField1.setName("jTextField1"); // NOI18N
 
+        jTextField2.setToolTipText(resourceMap.getString("jTextField2.toolTipText")); // NOI18N
         jTextField2.setName("jTextField2"); // NOI18N
 
         jLabel2.setText(resourceMap.getString("jLabel2.text")); // NOI18N
+        jLabel2.setToolTipText(resourceMap.getString("jLabel2.toolTipText")); // NOI18N
         jLabel2.setName("jLabel2"); // NOI18N
 
         jButton2.setText(resourceMap.getString("jButton2.text")); // NOI18N
+        jButton2.setToolTipText(resourceMap.getString("jButton2.toolTipText")); // NOI18N
         jButton2.setName("jButton2"); // NOI18N
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
@@ -225,17 +261,22 @@ public class SinhalaDictionaryToolsView extends FrameView {
         jPanel5.setName("jPanel5"); // NOI18N
 
         jLabel3.setText(resourceMap.getString("jLabel3.text")); // NOI18N
+        jLabel3.setToolTipText(resourceMap.getString("jLabel3.toolTipText")); // NOI18N
         jLabel3.setName("jLabel3"); // NOI18N
 
         jLabel4.setText(resourceMap.getString("jLabel4.text")); // NOI18N
+        jLabel4.setToolTipText(resourceMap.getString("jLabel4.toolTipText")); // NOI18N
         jLabel4.setName("jLabel4"); // NOI18N
 
         jTextField3.setText(resourceMap.getString("jTextField3.text")); // NOI18N
+        jTextField3.setToolTipText(resourceMap.getString("jTextField3.toolTipText")); // NOI18N
         jTextField3.setName("jTextField3"); // NOI18N
 
+        jTextField4.setToolTipText(resourceMap.getString("jTextField4.toolTipText")); // NOI18N
         jTextField4.setName("jTextField4"); // NOI18N
 
         jButton3.setText(resourceMap.getString("jButton3.text")); // NOI18N
+        jButton3.setToolTipText(resourceMap.getString("jButton3.toolTipText")); // NOI18N
         jButton3.setName("jButton3"); // NOI18N
         jButton3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -244,6 +285,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
         });
 
         jButton4.setText(resourceMap.getString("jButton4.text")); // NOI18N
+        jButton4.setToolTipText(resourceMap.getString("jButton4.toolTipText")); // NOI18N
         jButton4.setName("jButton4"); // NOI18N
         jButton4.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -252,6 +294,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
         });
 
         jButton5.setText(resourceMap.getString("jButton5.text")); // NOI18N
+        jButton5.setToolTipText(resourceMap.getString("jButton5.toolTipText")); // NOI18N
         jButton5.setName("jButton5"); // NOI18N
         jButton5.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -304,12 +347,15 @@ public class SinhalaDictionaryToolsView extends FrameView {
         jScrollPane1.setViewportView(jTextArea1);
 
         jButton1.setText(resourceMap.getString("jButton1.text")); // NOI18N
+        jButton1.setToolTipText(resourceMap.getString("jButton1.toolTipText")); // NOI18N
         jButton1.setName("jButton1"); // NOI18N
 
         jButton8.setText(resourceMap.getString("jButton8.text")); // NOI18N
+        jButton8.setToolTipText(resourceMap.getString("jButton8.toolTipText")); // NOI18N
         jButton8.setName("jButton8"); // NOI18N
 
         jButton15.setText(resourceMap.getString("jButton15.text")); // NOI18N
+        jButton15.setToolTipText(resourceMap.getString("jButton15.toolTipText")); // NOI18N
         jButton15.setName("jButton15"); // NOI18N
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -344,7 +390,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
                     .addComponent(jButton1)
                     .addComponent(jButton15)
                     .addComponent(jButton8))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(38, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab(resourceMap.getString("jPanel1.TabConstraints.tabTitle"), jPanel1); // NOI18N
@@ -355,24 +401,31 @@ public class SinhalaDictionaryToolsView extends FrameView {
         jPanel6.setName("jPanel6"); // NOI18N
 
         jLabel5.setText(resourceMap.getString("jLabel5.text")); // NOI18N
+        jLabel5.setToolTipText(resourceMap.getString("jLabel5.toolTipText")); // NOI18N
         jLabel5.setName("jLabel5"); // NOI18N
 
         jTextField5.setText(resourceMap.getString("jTextField5.text")); // NOI18N
+        jTextField5.setToolTipText(resourceMap.getString("jTextField5.toolTipText")); // NOI18N
         jTextField5.setName("jTextField5"); // NOI18N
 
         jTextField6.setText(resourceMap.getString("jTextField6.text")); // NOI18N
+        jTextField6.setToolTipText(resourceMap.getString("jTextField6.toolTipText")); // NOI18N
         jTextField6.setName("jTextField6"); // NOI18N
 
         jLabel6.setText(resourceMap.getString("jLabel6.text")); // NOI18N
+        jLabel6.setToolTipText(resourceMap.getString("jLabel6.toolTipText")); // NOI18N
         jLabel6.setName("jLabel6"); // NOI18N
 
         jLabel7.setText(resourceMap.getString("jLabel7.text")); // NOI18N
+        jLabel7.setToolTipText(resourceMap.getString("jLabel7.toolTipText")); // NOI18N
         jLabel7.setName("jLabel7"); // NOI18N
 
         jTextField7.setText(resourceMap.getString("jTextField7.text")); // NOI18N
+        jTextField7.setToolTipText(resourceMap.getString("jTextField7.toolTipText")); // NOI18N
         jTextField7.setName("jTextField7"); // NOI18N
 
         jButton6.setText(resourceMap.getString("jButton6.text")); // NOI18N
+        jButton6.setToolTipText(resourceMap.getString("jButton6.toolTipText")); // NOI18N
         jButton6.setName("jButton6"); // NOI18N
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
@@ -414,24 +467,30 @@ public class SinhalaDictionaryToolsView extends FrameView {
         jPanel7.setName("jPanel7"); // NOI18N
 
         jLabel8.setText(resourceMap.getString("jLabel8.text")); // NOI18N
+        jLabel8.setToolTipText(resourceMap.getString("jLabel8.toolTipText")); // NOI18N
         jLabel8.setName("jLabel8"); // NOI18N
 
         jTextField8.setText(resourceMap.getString("jTextField8.text")); // NOI18N
+        jTextField8.setToolTipText(resourceMap.getString("jTextField8.toolTipText")); // NOI18N
         jTextField8.setName("jTextField8"); // NOI18N
 
         jButton7.setText(resourceMap.getString("jButton7.text")); // NOI18N
+        jButton7.setToolTipText(resourceMap.getString("jButton7.toolTipText")); // NOI18N
         jButton7.setName("jButton7"); // NOI18N
 
         jTextField9.setText(resourceMap.getString("jTextField9.text")); // NOI18N
         jTextField9.setName("jTextField9"); // NOI18N
 
         jButton9.setText(resourceMap.getString("jButton9.text")); // NOI18N
+        jButton9.setToolTipText(resourceMap.getString("jButton9.toolTipText")); // NOI18N
         jButton9.setName("jButton9"); // NOI18N
 
         jButton10.setText(resourceMap.getString("jButton10.text")); // NOI18N
+        jButton10.setToolTipText(resourceMap.getString("jButton10.toolTipText")); // NOI18N
         jButton10.setName("jButton10"); // NOI18N
 
         jButton16.setText(resourceMap.getString("jButton16.text")); // NOI18N
+        jButton16.setToolTipText(resourceMap.getString("jButton16.toolTipText")); // NOI18N
         jButton16.setName("jButton16"); // NOI18N
 
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
@@ -471,7 +530,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
                     .addComponent(jButton16)
                     .addComponent(jButton9)
                     .addComponent(jButton10))
-                .addContainerGap(13, Short.MAX_VALUE))
+                .addContainerGap(37, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -503,13 +562,121 @@ public class SinhalaDictionaryToolsView extends FrameView {
         jPanel11.setName("jPanel11"); // NOI18N
 
         jButton18.setText(resourceMap.getString("jButton18.text")); // NOI18N
+        jButton18.setToolTipText(resourceMap.getString("jButton18.toolTipText")); // NOI18N
         jButton18.setName("jButton18"); // NOI18N
 
         jButton19.setText(resourceMap.getString("jButton19.text")); // NOI18N
+        jButton19.setToolTipText(resourceMap.getString("jButton19.toolTipText")); // NOI18N
         jButton19.setName("jButton19"); // NOI18N
 
         jButton20.setText(resourceMap.getString("jButton20.text")); // NOI18N
+        jButton20.setToolTipText(resourceMap.getString("jButton20.toolTipText")); // NOI18N
         jButton20.setName("jButton20"); // NOI18N
+
+        jTextField14.setName("jTextField14"); // NOI18N
+
+        jLabel13.setText(resourceMap.getString("jLabel13.text")); // NOI18N
+        jLabel13.setName("jLabel13"); // NOI18N
+
+        jScrollPane2.setName("jScrollPane2"); // NOI18N
+
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, ""}
+            },
+            new String [] {
+                "Word", "Frequency"
+            }
+        ));
+        jTable1.setName("jTable1"); // NOI18N
+        jScrollPane2.setViewportView(jTable1);
+
+        jScrollPane3.setName("jScrollPane3"); // NOI18N
+
+        jTable2.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, ""}
+            },
+            new String [] {
+                "Word", "Frequency"
+            }
+        ));
+        jTable2.setName("jTable2"); // NOI18N
+        jScrollPane3.setViewportView(jTable2);
+
+        jButton21.setText(resourceMap.getString("jButton21.text")); // NOI18N
+        jButton21.setMaximumSize(new java.awt.Dimension(50, 33));
+        jButton21.setMinimumSize(new java.awt.Dimension(50, 33));
+        jButton21.setName("jButton21"); // NOI18N
+        jButton21.setPreferredSize(new java.awt.Dimension(50, 33));
+
+        jButton22.setText(resourceMap.getString("jButton22.text")); // NOI18N
+        jButton22.setMaximumSize(new java.awt.Dimension(50, 33));
+        jButton22.setMinimumSize(new java.awt.Dimension(50, 33));
+        jButton22.setName("jButton22"); // NOI18N
+        jButton22.setPreferredSize(new java.awt.Dimension(50, 33));
+
+        jButton24.setText(resourceMap.getString("jButton24.text")); // NOI18N
+        jButton24.setToolTipText(resourceMap.getString("jButton24.toolTipText")); // NOI18N
+        jButton24.setName("jButton24"); // NOI18N
+
+        jLabel16.setText(resourceMap.getString("jLabel16.text")); // NOI18N
+        jLabel16.setToolTipText(resourceMap.getString("jLabel16.toolTipText")); // NOI18N
+        jLabel16.setName("jLabel16"); // NOI18N
+
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "1", "2" }));
+        jComboBox1.setToolTipText(resourceMap.getString("jComboBox1.toolTipText")); // NOI18N
+        jComboBox1.setName("jComboBox1"); // NOI18N
+
+        jButton25.setText(resourceMap.getString("jButton25.text")); // NOI18N
+        jButton25.setToolTipText(resourceMap.getString("jButton25.toolTipText")); // NOI18N
+        jButton25.setName("jButton25"); // NOI18N
+
+        jButton26.setText(resourceMap.getString("jButton26.text")); // NOI18N
+        jButton26.setToolTipText(resourceMap.getString("jButton26.toolTipText")); // NOI18N
+        jButton26.setName("jButton26"); // NOI18N
+
+        jButton27.setText(resourceMap.getString("jButton27.text")); // NOI18N
+        jButton27.setToolTipText(resourceMap.getString("jButton27.toolTipText")); // NOI18N
+        jButton27.setName("jButton27"); // NOI18N
+
+        jButton28.setText(resourceMap.getString("jButton28.text")); // NOI18N
+        jButton28.setToolTipText(resourceMap.getString("jButton28.toolTipText")); // NOI18N
+        jButton28.setName("jButton28"); // NOI18N
+
+        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "1", "2" }));
+        jComboBox2.setToolTipText(resourceMap.getString("jComboBox2.toolTipText")); // NOI18N
+        jComboBox2.setName("jComboBox2"); // NOI18N
+
+        jLabel17.setText(resourceMap.getString("jLabel17.text")); // NOI18N
+        jLabel17.setToolTipText(resourceMap.getString("jLabel17.toolTipText")); // NOI18N
+        jLabel17.setName("jLabel17"); // NOI18N
+
+        jButton29.setText(resourceMap.getString("jButton29.text")); // NOI18N
+        jButton29.setName("jButton29"); // NOI18N
+
+        jButton30.setText(resourceMap.getString("jButton30.text")); // NOI18N
+        jButton30.setName("jButton30"); // NOI18N
+
+        jButton31.setText(resourceMap.getString("jButton31.text")); // NOI18N
+        jButton31.setToolTipText(resourceMap.getString("jButton31.toolTipText")); // NOI18N
+        jButton31.setName("jButton31"); // NOI18N
+
+        jButton32.setText(resourceMap.getString("jButton32.text")); // NOI18N
+        jButton32.setToolTipText(resourceMap.getString("jButton32.toolTipText")); // NOI18N
+        jButton32.setName("jButton32"); // NOI18N
+
+        jButton47.setText(resourceMap.getString("jButton47.text")); // NOI18N
+        jButton47.setToolTipText(resourceMap.getString("jButton47.toolTipText")); // NOI18N
+        jButton47.setName("jButton47"); // NOI18N
+
+        jButton48.setText(resourceMap.getString("jButton48.text")); // NOI18N
+        jButton48.setToolTipText(resourceMap.getString("jButton48.toolTipText")); // NOI18N
+        jButton48.setName("jButton48"); // NOI18N
+
+        jButton49.setText(resourceMap.getString("jButton49.text")); // NOI18N
+        jButton49.setToolTipText(resourceMap.getString("jButton49.toolTipText")); // NOI18N
+        jButton49.setName("jButton49"); // NOI18N
 
         javax.swing.GroupLayout jPanel11Layout = new javax.swing.GroupLayout(jPanel11);
         jPanel11.setLayout(jPanel11Layout);
@@ -517,22 +684,128 @@ public class SinhalaDictionaryToolsView extends FrameView {
             jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel11Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jButton19, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton18, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(1, 1, 1)
-                .addComponent(jButton20, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(368, Short.MAX_VALUE))
+                .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel11Layout.createSequentialGroup()
+                        .addComponent(jLabel13, javax.swing.GroupLayout.DEFAULT_SIZE, 67, Short.MAX_VALUE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jTextField14, javax.swing.GroupLayout.PREFERRED_SIZE, 469, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton47, javax.swing.GroupLayout.DEFAULT_SIZE, 98, Short.MAX_VALUE)
+                        .addGap(5, 5, 5))
+                    .addGroup(jPanel11Layout.createSequentialGroup()
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 281, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jButton21, javax.swing.GroupLayout.DEFAULT_SIZE, 89, Short.MAX_VALUE)
+                            .addComponent(jButton22, javax.swing.GroupLayout.DEFAULT_SIZE, 89, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 281, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel11Layout.createSequentialGroup()
+                        .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel11Layout.createSequentialGroup()
+                                .addComponent(jButton31, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jButton32, javax.swing.GroupLayout.DEFAULT_SIZE, 145, Short.MAX_VALUE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel11Layout.createSequentialGroup()
+                                .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(jPanel11Layout.createSequentialGroup()
+                                        .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(jButton19)
+                                            .addComponent(jLabel16))
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(jButton18, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addComponent(jButton29, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jButton30, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jButton24, javax.swing.GroupLayout.DEFAULT_SIZE, 97, Short.MAX_VALUE)
+                                    .addComponent(jButton20, javax.swing.GroupLayout.DEFAULT_SIZE, 97, Short.MAX_VALUE))))
+                        .addGap(101, 101, 101)
+                        .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel11Layout.createSequentialGroup()
+                                .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jButton25)
+                                    .addComponent(jLabel17))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(jPanel11Layout.createSequentialGroup()
+                                        .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(jButton28, javax.swing.GroupLayout.DEFAULT_SIZE, 98, Short.MAX_VALUE))
+                                    .addGroup(jPanel11Layout.createSequentialGroup()
+                                        .addComponent(jButton26, javax.swing.GroupLayout.DEFAULT_SIZE, 87, Short.MAX_VALUE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jButton27, javax.swing.GroupLayout.DEFAULT_SIZE, 98, Short.MAX_VALUE))))
+                            .addGroup(jPanel11Layout.createSequentialGroup()
+                                .addComponent(jButton49, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jButton48, javax.swing.GroupLayout.DEFAULT_SIZE, 145, Short.MAX_VALUE)))))
+                .addContainerGap())
         );
         jPanel11Layout.setVerticalGroup(
             jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel11Layout.createSequentialGroup()
-                .addGap(276, 276, 276)
-                .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton18)
-                    .addComponent(jButton19)
-                    .addComponent(jButton20))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel11Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel13)
+                            .addComponent(jTextField14, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jButton47))
+                        .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel11Layout.createSequentialGroup()
+                                .addGap(18, 18, 18)
+                                .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, 0, 0, Short.MAX_VALUE)
+                                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 232, Short.MAX_VALUE)))
+                            .addGroup(jPanel11Layout.createSequentialGroup()
+                                .addGap(103, 103, 103)
+                                .addComponent(jButton21, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jButton22, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(jButton19)
+                                .addComponent(jButton18)
+                                .addComponent(jButton20))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(jButton25)
+                                .addComponent(jButton26)
+                                .addComponent(jButton27)))
+                        .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel11Layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jLabel16)
+                                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(jPanel11Layout.createSequentialGroup()
+                                        .addGap(2, 2, 2)
+                                        .addComponent(jButton24))))
+                            .addGroup(jPanel11Layout.createSequentialGroup()
+                                .addGap(8, 8, 8)
+                                .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jButton28)
+                                    .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(jPanel11Layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jLabel17))))
+                    .addGroup(jPanel11Layout.createSequentialGroup()
+                        .addContainerGap(145, Short.MAX_VALUE)
+                        .addComponent(jButton29)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 59, Short.MAX_VALUE)
+                        .addComponent(jButton30)
+                        .addGap(111, 111, 111)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jButton32)
+                        .addComponent(jButton49)
+                        .addComponent(jButton48))
+                    .addComponent(jButton31))
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout jPanel10Layout = new javax.swing.GroupLayout(jPanel10);
@@ -548,8 +821,8 @@ public class SinhalaDictionaryToolsView extends FrameView {
             jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel10Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(95, 95, 95))
+                .addComponent(jPanel11, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab(resourceMap.getString("jPanel10.TabConstraints.tabTitle"), jPanel10); // NOI18N
@@ -560,13 +833,17 @@ public class SinhalaDictionaryToolsView extends FrameView {
         jPanel8.setName("jPanel8"); // NOI18N
 
         jLabel9.setText(resourceMap.getString("jLabel9.text")); // NOI18N
+        jLabel9.setToolTipText(resourceMap.getString("jLabel9.toolTipText")); // NOI18N
         jLabel9.setName("jLabel9"); // NOI18N
 
         jLabel10.setText(resourceMap.getString("jLabel10.text")); // NOI18N
+        jLabel10.setToolTipText(resourceMap.getString("jLabel10.toolTipText")); // NOI18N
         jLabel10.setName("jLabel10"); // NOI18N
 
+        jTextField10.setToolTipText(resourceMap.getString("jTextField10.toolTipText")); // NOI18N
         jTextField10.setName("jTextField10"); // NOI18N
 
+        jTextField11.setToolTipText(resourceMap.getString("jTextField11.toolTipText")); // NOI18N
         jTextField11.setName("jTextField11"); // NOI18N
 
         jButton12.setText(resourceMap.getString("jButton12.text")); // NOI18N
@@ -625,14 +902,17 @@ public class SinhalaDictionaryToolsView extends FrameView {
         jLabel11.setText(resourceMap.getString("jLabel11.text")); // NOI18N
         jLabel11.setName("jLabel11"); // NOI18N
 
+        jTextField12.setToolTipText(resourceMap.getString("jTextField12.toolTipText")); // NOI18N
         jTextField12.setName("jTextField12"); // NOI18N
 
         jButton11.setText(resourceMap.getString("jButton11.text")); // NOI18N
         jButton11.setName("jButton11"); // NOI18N
 
         jLabel12.setText(resourceMap.getString("jLabel12.text")); // NOI18N
+        jLabel12.setToolTipText(resourceMap.getString("jLabel12.toolTipText")); // NOI18N
         jLabel12.setName("jLabel12"); // NOI18N
 
+        jTextField13.setToolTipText(resourceMap.getString("jTextField13.toolTipText")); // NOI18N
         jTextField13.setName("jTextField13"); // NOI18N
 
         jButton14.setText(resourceMap.getString("jButton14.text")); // NOI18N
@@ -675,15 +955,76 @@ public class SinhalaDictionaryToolsView extends FrameView {
                 .addContainerGap())
         );
 
+        jPanel12.setBorder(javax.swing.BorderFactory.createTitledBorder(resourceMap.getString("jPanel12.border.title"))); // NOI18N
+        jPanel12.setName("jPanel12"); // NOI18N
+
+        jLabel14.setText(resourceMap.getString("jLabel14.text")); // NOI18N
+        jLabel14.setToolTipText(resourceMap.getString("jLabel14.toolTipText")); // NOI18N
+        jLabel14.setName("jLabel14"); // NOI18N
+
+        jTextField15.setToolTipText(resourceMap.getString("jTextField15.toolTipText")); // NOI18N
+        jTextField15.setName("jTextField15"); // NOI18N
+
+        jButton17.setText(resourceMap.getString("jButton17.text")); // NOI18N
+        jButton17.setName("jButton17"); // NOI18N
+
+        jLabel15.setText(resourceMap.getString("jLabel15.text")); // NOI18N
+        jLabel15.setToolTipText(resourceMap.getString("jLabel15.toolTipText")); // NOI18N
+        jLabel15.setName("jLabel15"); // NOI18N
+
+        jTextField16.setToolTipText(resourceMap.getString("jTextField16.toolTipText")); // NOI18N
+        jTextField16.setName("jTextField16"); // NOI18N
+
+        jButton23.setText(resourceMap.getString("jButton23.text")); // NOI18N
+        jButton23.setName("jButton23"); // NOI18N
+
+        javax.swing.GroupLayout jPanel12Layout = new javax.swing.GroupLayout(jPanel12);
+        jPanel12.setLayout(jPanel12Layout);
+        jPanel12Layout.setHorizontalGroup(
+            jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel12Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jLabel15, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel14, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel12Layout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addComponent(jTextField15, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jButton17, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel12Layout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addComponent(jTextField16, javax.swing.GroupLayout.DEFAULT_SIZE, 519, Short.MAX_VALUE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton23, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+        jPanel12Layout.setVerticalGroup(
+            jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel12Layout.createSequentialGroup()
+                .addGroup(jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel14)
+                    .addComponent(jTextField15, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton17))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel15)
+                    .addComponent(jTextField16, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton23))
+                .addContainerGap())
+        );
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+            .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jPanel9, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel8, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel12, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
@@ -693,7 +1034,9 @@ public class SinhalaDictionaryToolsView extends FrameView {
                 .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(211, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel12, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(120, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab(resourceMap.getString("jPanel3.TabConstraints.tabTitle"), jPanel3); // NOI18N
@@ -710,7 +1053,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(mainPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 498, Short.MAX_VALUE))
+                .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 520, Short.MAX_VALUE))
         );
 
         menuBar.setName("menuBar"); // NOI18N
@@ -817,21 +1160,44 @@ public class SinhalaDictionaryToolsView extends FrameView {
     private javax.swing.JButton jButton14;
     private javax.swing.JButton jButton15;
     private javax.swing.JButton jButton16;
+    private javax.swing.JButton jButton17;
     private javax.swing.JButton jButton18;
     private javax.swing.JButton jButton19;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton20;
+    private javax.swing.JButton jButton21;
+    private javax.swing.JButton jButton22;
+    private javax.swing.JButton jButton23;
+    private javax.swing.JButton jButton24;
+    private javax.swing.JButton jButton25;
+    private javax.swing.JButton jButton26;
+    private javax.swing.JButton jButton27;
+    private javax.swing.JButton jButton28;
+    private javax.swing.JButton jButton29;
     private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton30;
+    private javax.swing.JButton jButton31;
+    private javax.swing.JButton jButton32;
     private javax.swing.JButton jButton4;
+    private javax.swing.JButton jButton47;
+    private javax.swing.JButton jButton48;
+    private javax.swing.JButton jButton49;
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
     private javax.swing.JButton jButton7;
     private javax.swing.JButton jButton8;
     private javax.swing.JButton jButton9;
+    private javax.swing.JComboBox jComboBox1;
+    private javax.swing.JComboBox jComboBox2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel14;
+    private javax.swing.JLabel jLabel15;
+    private javax.swing.JLabel jLabel16;
+    private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -843,6 +1209,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel11;
+    private javax.swing.JPanel jPanel12;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
@@ -852,13 +1219,20 @@ public class SinhalaDictionaryToolsView extends FrameView {
     private javax.swing.JPanel jPanel8;
     private javax.swing.JPanel jPanel9;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JTable jTable1;
+    private javax.swing.JTable jTable2;
     private javax.swing.JTextArea jTextArea1;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField10;
     private javax.swing.JTextField jTextField11;
     private javax.swing.JTextField jTextField12;
     private javax.swing.JTextField jTextField13;
+    private javax.swing.JTextField jTextField14;
+    private javax.swing.JTextField jTextField15;
+    private javax.swing.JTextField jTextField16;
     private javax.swing.JTextField jTextField2;
     private javax.swing.JTextField jTextField3;
     private javax.swing.JTextField jTextField4;
