@@ -1,0 +1,37 @@
+PFX K Y 1
+PFX K 0 pre . 
+PFX F Y 5
+PFX F 0 com [bmp]
+PFX F 0 co [aeiouh]
+PFX F 0 cor r
+PFX F 0 col l
+PFX F 0 con [^abehilmopru].
+SFX D Y 25
+SFX D 0 d [^e]e 
+SFX D e d ee 
+SFX D 0 bed [^aeio][aeiou]b 
+SFX D 0 ked [^aeio][aeiou]c 
+SFX D 0 ded [^aeio][aeiou]d 
+SFX D 0 fed [^aeio][aeiou]f 
+SFX D 0 ged [^aeio][aeiou]g 
+SFX D 0 ked [^aeio][aeiou]k 
+SFX D 0 led [^aeio][eiou]l 
+SFX D 0 ed [aeio][eiou]l 
+SFX D 0 led [^aeo]al 
+SFX D 0 ed [aeo]al 
+SFX D 0 med [^aeio][aeiou]m 
+SFX D 0 ned [^aeio][aeiou]n 
+SFX D 0 ped [^aeio][aeiou]p 
+SFX D 0 red [^aeio][aeiou]r 
+SFX D 0 sed [^aeio][aeiou]s 
+SFX D 0 ted [^aeio][aeiou]t 
+SFX D 0 ved [^aeio][aeiou]v 
+SFX D 0 zed [^aeio][aeiou]z
+SFX D y ied [^aeiou]y
+SFX D 0 ed [aeiou]y
+SFX D 0 ed [aeio][aeiou][bcdfgkmnprstvz]
+SFX D 0 ed [^aeiou][bcdfgklmnprstvz]
+SFX D 0 ed [^ebcdfgklmnprstvyz]
+PFX C Y 2
+PFX C 0 de [^e] 
+PFX C 0 de- e 

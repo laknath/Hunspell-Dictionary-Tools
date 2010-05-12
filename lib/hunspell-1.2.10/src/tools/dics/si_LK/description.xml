@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<description xmlns="http://openoffice.org/extensions/description/2006" xmlns:d="http://openoffice.org/extensions/description/2006"  xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <registration>
+        <simple-license accept-by="admin" suppress-on-update="false" >
+            <license-text xlink:href="LICENSES-en.txt" lang="en" />
+        </simple-license>
+    </registration>
+    
+
+    <version value="0.0.1" />
+
+    <identifier value="sinhala.spell.checker" />
+    
+
+    <display-name>
+        <name lang="en">Sinhala Spell Dictionary</name>
+        <name lang="si">සිංහල ශබ්දකෝෂය</name>
+    </display-name>
+    
+    <!-- Dictionary should work with all platforms... -->
+    <platform value="all" />
+    
+    <!-- A minimal OpenOffice.org version the extension requires to be used with.
+         For dictionary extensions that will be 'OpenOffice.org 3.0' -->
+    
+    <dependencies>
+        <OpenOffice.org-minimal-version value="3.0" d:name="OpenOffice.org 3.0" />
+    </dependencies>
+
+    <publisher>
+        <name xlink:href="http://mytechgossips.com" lang="si">ලක්නාත්</name>
+    </publisher>
+    
+</description>
