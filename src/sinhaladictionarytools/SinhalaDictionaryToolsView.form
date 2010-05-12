@@ -23,7 +23,7 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="jTabbedPane1" pref="548" max="32767" attributes="0"/>
+                  <Component id="jTabbedPane1" pref="532" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -56,7 +56,7 @@
                           <Group type="103" groupAlignment="1" attributes="0">
                               <Component id="jScrollPane5" alignment="0" pref="716" max="32767" attributes="0"/>
                               <Component id="jPanel5" alignment="0" max="32767" attributes="1"/>
-                              <Component id="jPanel4" alignment="0" max="32767" attributes="1"/>
+                              <Component id="jPanel4" alignment="0" pref="716" max="32767" attributes="1"/>
                               <Group type="102" alignment="1" attributes="0">
                                   <Component id="jButton8" min="-2" pref="100" max="-2" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
@@ -73,7 +73,7 @@
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="jPanel4" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="jPanel5" min="-2" max="-2" attributes="0"/>
+                          <Component id="jPanel5" min="-2" pref="105" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="jScrollPane5" min="-2" pref="148" max="-2" attributes="0"/>
                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
@@ -81,7 +81,7 @@
                               <Component id="jButton1" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="jButton8" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace pref="16" max="32767" attributes="0"/>
+                          <EmptySpace max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -147,9 +147,14 @@
                     </Component>
                     <Component class="javax.swing.JTextField" name="jTextField1">
                       <Properties>
+                        <Property name="font" type="java.awt.Font" resourceKey="jTextField1.font"/>
                         <Property name="toolTipText" type="java.lang.String" resourceKey="jTextField1.toolTipText"/>
                         <Property name="name" type="java.lang.String" value="jTextField1" noResource="true"/>
                       </Properties>
+                      <Events>
+                        <EventHandler event="mouseEntered" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="jTextField1MouseEntered"/>
+                        <EventHandler event="mouseExited" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="jTextField1MouseExited"/>
+                      </Events>
                     </Component>
                     <Component class="javax.swing.JLabel" name="jLabel2">
                       <Properties>
@@ -181,9 +186,15 @@
                         <Component class="javax.swing.JTextArea" name="jTextArea1">
                           <Properties>
                             <Property name="columns" type="int" value="20"/>
+                            <Property name="font" type="java.awt.Font" resourceKey="jTextArea1.font"/>
                             <Property name="rows" type="int" value="5"/>
+                            <Property name="toolTipText" type="java.lang.String" resourceKey="jTextArea1.toolTipText"/>
                             <Property name="name" type="java.lang.String" value="jTextArea1" noResource="true"/>
                           </Properties>
+                          <Events>
+                            <EventHandler event="mouseEntered" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="jTextArea1MouseEntered"/>
+                            <EventHandler event="mouseExited" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="jTextArea1MouseExited"/>
+                          </Events>
                         </Component>
                       </SubComponents>
                     </Container>
@@ -247,6 +258,10 @@
                         <Property name="toolTipText" type="java.lang.String" resourceKey="jTextField3.toolTipText"/>
                         <Property name="name" type="java.lang.String" value="jTextField3" noResource="true"/>
                       </Properties>
+                      <Events>
+                        <EventHandler event="mouseEntered" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="jTextField3MouseEntered"/>
+                        <EventHandler event="mouseExited" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="jTextField3MouseExited"/>
+                      </Events>
                     </Component>
                     <Component class="javax.swing.JButton" name="jButton3">
                       <Properties>
@@ -499,7 +514,7 @@
                                   <Component id="jButton9" alignment="3" min="-2" max="-2" attributes="0"/>
                                   <Component id="jButton10" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
-                              <EmptySpace pref="65" max="32767" attributes="0"/>
+                              <EmptySpace pref="51" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
@@ -699,8 +714,8 @@
                                   <Group type="102" attributes="0">
                                       <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
                                       <Group type="103" groupAlignment="0" attributes="0">
-                                          <Component id="jScrollPane2" pref="319" max="32767" attributes="1"/>
-                                          <Component id="jScrollPane3" alignment="0" pref="319" max="32767" attributes="1"/>
+                                          <Component id="jScrollPane2" pref="305" max="32767" attributes="1"/>
+                                          <Component id="jScrollPane3" alignment="0" pref="305" max="32767" attributes="1"/>
                                       </Group>
                                       <EmptySpace max="-2" attributes="0"/>
                                       <Group type="103" groupAlignment="0" attributes="0">
@@ -1023,12 +1038,12 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="jPanel8" min="-2" max="-2" attributes="0"/>
+                          <Component id="jPanel8" min="-2" pref="62" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="jPanel9" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="jPanel12" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace pref="193" max="32767" attributes="0"/>
+                          <EmptySpace pref="177" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -1358,6 +1373,7 @@
     </Container>
     <Container class="javax.swing.JPanel" name="statusPanel">
       <Properties>
+        <Property name="toolTipText" type="java.lang.String" resourceKey="statusPanel.toolTipText"/>
         <Property name="name" type="java.lang.String" value="statusPanel" noResource="true"/>
       </Properties>
 
@@ -1378,7 +1394,7 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <Component id="statusPanelSeparator" min="-2" pref="2" max="-2" attributes="0"/>
-                  <EmptySpace max="32767" attributes="0"/>
+                  <EmptySpace pref="29" max="32767" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="statusMessageLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="statusAnimationLabel" alignment="3" min="-2" max="-2" attributes="0"/>

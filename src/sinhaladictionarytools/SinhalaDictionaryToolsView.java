@@ -5,6 +5,7 @@
 package sinhaladictionarytools;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -26,9 +27,11 @@ import com.stibocatalog.hunspell.Hunspell;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.InputStreamReader;
 import java.util.List;
 import java.util.Vector;
+import javax.swing.JComponent;
 import sinhaladictionarytools.lib.JavaSystemCaller.Exec;
 import sinhaladictionarytools.lib.JavaSystemCaller.StreamGobbler;
 import sinhaladictionarytools.lib.RelativePath;
@@ -89,6 +92,79 @@ public class SinhalaDictionaryToolsView extends FrameView {
                 }
             }
         });
+    }
+
+    //generate all the words from a given dic and aff file
+    public static String processWordset(String dicFile, String affFile, String output){
+        
+        String root, wordforms, affixcompress;
+        root = appResourceMap.getString("Application.hunspell_src");
+        wordforms = root.concat("/src/tools/wordforms");
+        affixcompress = root.concat("/src/tools/affixcompress");
+
+        try {
+
+            if (dicFile.endsWith(".dic") && dicFile.length() > 4 && new File(affFile).exists() ){
+
+                ///home/buddhika/Desktop/en_GB/en_GB.dic
+
+                File tmpDicTFile = new File(output);
+                tmpDicTFile.delete();
+                tmpDicTFile.createNewFile();
+
+                File fDicFile = new File(dicFile);
+				final FileReader isr = new FileReader(fDicFile);
+				final BufferedReader br = new BufferedReader(isr);
+				String line=null;
+                
+				while ( (line = br.readLine()) != null)
+				{
+
+                    int affIndex = line.indexOf("/");
+                    if (affIndex > 0){
+                        line = line.substring(0, affIndex);
+                    }
+
+                    Exec.execute(wordforms, tmpDicTFile, RelativePath.getRelativePath(new File(""), new File(affFile)), dicFile, line);
+				}
+
+				// any output?
+				final StreamGobbler outputGobbler = new
+					StreamGobbler(new FileInputStream(tmpDicTFile), "OUTPUT");
+                outputGobbler.start();
+
+                return outputGobbler.getOutput();
+
+                /*
+                List<String> list = Hunspell.getInstance().getDictionary(filepath).suggest("a");
+                Vector<String> vList = new Vector<String>();
+                for (String str : list){
+                    vList.add(str);
+                    System.out.println(str);
+                }
+                jList2.setListData(vList);
+                */
+            }else{
+                System.out.println("The file doesn't exist or not a dictionary file");
+            }
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            Logger.getLogger(SinhalaDictionaryToolsView.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return null;
+
+    }
+
+    //clear status message
+    public void clearStatusMessage(){
+        this.statusMessageLabel.setText("");        
+    }
+
+    //set status message
+    public void setStatusMessage(JComponent com){
+        this.statusMessageLabel.setText(com.getToolTipText());
     }
 
     @Action
@@ -215,8 +291,17 @@ public class SinhalaDictionaryToolsView extends FrameView {
         jLabel1.setToolTipText(resourceMap.getString("jLabel1.toolTipText")); // NOI18N
         jLabel1.setName("jLabel1"); // NOI18N
 
+        jTextField1.setFont(resourceMap.getFont("jTextField1.font")); // NOI18N
         jTextField1.setToolTipText(resourceMap.getString("jTextField1.toolTipText")); // NOI18N
         jTextField1.setName("jTextField1"); // NOI18N
+        jTextField1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                jTextField1MouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                jTextField1MouseExited(evt);
+            }
+        });
 
         jLabel2.setText(resourceMap.getString("jLabel2.text")); // NOI18N
         jLabel2.setToolTipText(resourceMap.getString("jLabel2.toolTipText")); // NOI18N
@@ -234,8 +319,18 @@ public class SinhalaDictionaryToolsView extends FrameView {
         jScrollPane1.setName("jScrollPane1"); // NOI18N
 
         jTextArea1.setColumns(20);
+        jTextArea1.setFont(resourceMap.getFont("jTextArea1.font")); // NOI18N
         jTextArea1.setRows(5);
+        jTextArea1.setToolTipText(resourceMap.getString("jTextArea1.toolTipText")); // NOI18N
         jTextArea1.setName("jTextArea1"); // NOI18N
+        jTextArea1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                jTextArea1MouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                jTextArea1MouseExited(evt);
+            }
+        });
         jScrollPane1.setViewportView(jTextArea1);
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
@@ -278,6 +373,14 @@ public class SinhalaDictionaryToolsView extends FrameView {
 
         jTextField3.setToolTipText(resourceMap.getString("jTextField3.toolTipText")); // NOI18N
         jTextField3.setName("jTextField3"); // NOI18N
+        jTextField3.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                jTextField3MouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                jTextField3MouseExited(evt);
+            }
+        });
 
         jButton3.setText(resourceMap.getString("jButton3.text")); // NOI18N
         jButton3.setToolTipText(resourceMap.getString("jButton3.toolTipText")); // NOI18N
@@ -349,7 +452,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jScrollPane5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 716, Short.MAX_VALUE)
                     .addComponent(jPanel5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 716, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jButton8, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -362,14 +465,14 @@ public class SinhalaDictionaryToolsView extends FrameView {
                 .addContainerGap()
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
                     .addComponent(jButton8))
-                .addContainerGap(16, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab(resourceMap.getString("jPanel1.TabConstraints.tabTitle"), jPanel1); // NOI18N
@@ -503,7 +606,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton9)
                     .addComponent(jButton10))
-                .addContainerGap(65, Short.MAX_VALUE))
+                .addContainerGap(51, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -711,8 +814,8 @@ public class SinhalaDictionaryToolsView extends FrameView {
                     .addGroup(jPanel11Layout.createSequentialGroup()
                         .addGap(12, 12, 12)
                         .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 319, Short.MAX_VALUE)
-                            .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 319, Short.MAX_VALUE))
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 305, Short.MAX_VALUE)
+                            .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 305, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -947,12 +1050,12 @@ public class SinhalaDictionaryToolsView extends FrameView {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel12, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(193, Short.MAX_VALUE))
+                .addContainerGap(177, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab(resourceMap.getString("jPanel3.TabConstraints.tabTitle"), jPanel3); // NOI18N
@@ -969,7 +1072,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(mainPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 548, Short.MAX_VALUE))
+                .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 532, Short.MAX_VALUE))
         );
 
         menuBar.setName("menuBar"); // NOI18N
@@ -993,6 +1096,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
 
         menuBar.add(helpMenu);
 
+        statusPanel.setToolTipText(resourceMap.getString("statusPanel.toolTipText")); // NOI18N
         statusPanel.setName("statusPanel"); // NOI18N
 
         statusPanelSeparator.setName("statusPanelSeparator"); // NOI18N
@@ -1018,7 +1122,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
             statusPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(statusPanelLayout.createSequentialGroup()
                 .addComponent(statusPanelSeparator, javax.swing.GroupLayout.PREFERRED_SIZE, 2, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 29, Short.MAX_VALUE)
                 .addGroup(statusPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(statusMessageLabel)
                     .addComponent(statusAnimationLabel))
@@ -1040,70 +1144,20 @@ public class SinhalaDictionaryToolsView extends FrameView {
         setStatusBar(statusPanel);
     }// </editor-fold>//GEN-END:initComponents
 
+    //Process a given dic file and generate all words
     private void fileSave(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fileSave
 
-        String dicFile, affFile, root, wordforms, affixcompress;
-        dicFile = jTextField3.getText();
-        affFile = dicFile.replace(".dic", ".aff");
-        root = appResourceMap.getString("Application.hunspell_src");
-        wordforms = root.concat("/src/tools/wordforms");
-        affixcompress = root.concat("/src/tools/affixcompress");
+        String dicFile = jTextField3.getText();
+        String affFile = dicFile.replace(".dic", ".aff");
+        String wordlist = processWordset(dicFile, affFile, "tmp/tmp1");
 
-        try {
-
-            if (dicFile.endsWith(".dic") && dicFile.length() > 4 && new File(affFile).exists() ){
-
-                ///home/buddhika/Desktop/en_GB/en_GB.dic
-
-                File tmpDicTFile = new File("tmp/tmp1");
-                tmpDicTFile.delete();
-                tmpDicTFile.createNewFile();
-
-                File fDicFile = new File(dicFile);
-				final FileReader isr = new FileReader(fDicFile);
-				final BufferedReader br = new BufferedReader(isr);
-				String line=null;
-				while ( (line = br.readLine()) != null)
-				{
-
-                    int affIndex = line.indexOf("/");
-                    if (affIndex > 0){
-                        line = line.substring(0, affIndex);
-                    }
-                    
-                    Exec.execute(wordforms, tmpDicTFile, RelativePath.getRelativePath(new File(""), new File(affFile)), dicFile, line);
-				}
-
-				// any output?
-				final StreamGobbler outputGobbler = new
-					StreamGobbler(new FileInputStream(tmpDicTFile), "OUTPUT");
-                outputGobbler.start();
-
-                this.jTextArea2.setText(outputGobbler.getOutput());
-
-                /*
-                List<String> list = Hunspell.getInstance().getDictionary(filepath).suggest("a");
-                Vector<String> vList = new Vector<String>();
-                for (String str : list){
-                    vList.add(str);
-                    System.out.println(str);
-                }
-                jList2.setListData(vList);
-                */
-            }else{
-                System.out.println("The file doesn't exist or not a dictionary file");
-            }
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            Logger.getLogger(SinhalaDictionaryToolsView.class.getName()).log(Level.SEVERE, null, ex);
-        }
-            
-
+        this.jTextArea2.setText(wordlist);
 
     }//GEN-LAST:event_fileSave
 
+    //Select a dic file
     private void jButton4fileSave(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4fileSave
+
         int returnVal = fileChooser.showOpenDialog(this.getFrame());
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             File file = fileChooser.getSelectedFile();
@@ -1111,16 +1165,64 @@ public class SinhalaDictionaryToolsView extends FrameView {
             
         } else {
             System.out.println("File access cancelled by user.");
-        }        
+        }
+
     }//GEN-LAST:event_jButton4fileSave
 
     private void jButton12fileSave(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton12fileSave
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton12fileSave
 
+    //Generate a tmp dic and aff file and generate a wordlist
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
+
+        try {
+            File dicFile = new File("tmp/tmp2.dic");
+            File affFile = new File("tmp/tmp3.aff");
+            FileWriter fw1 = new FileWriter(dicFile);
+            FileWriter fw2 = new FileWriter(affFile);
+
+            fw1.write(this.jTextField1.getText());
+            fw2.write(this.jTextArea1.getText());
+
+            fw1.close();
+            fw2.close();
+
+            String wordlist = processWordset(dicFile.getPath(), affFile.getPath(), "tmp/tmp1");
+
+            this.jTextArea2.setText(wordlist);
+
+        } catch (IOException ex) {
+
+            System.err.println("Couldn't create temp dic/aff files.");
+            Logger.getLogger(SinhalaDictionaryToolsView.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jTextField1MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTextField1MouseEntered
+        setStatusMessage(this.jTextField1);
+    }//GEN-LAST:event_jTextField1MouseEntered
+
+    private void jTextField1MouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTextField1MouseExited
+        clearStatusMessage();
+    }//GEN-LAST:event_jTextField1MouseExited
+
+    private void jTextArea1MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTextArea1MouseEntered
+        setStatusMessage(this.jTextArea1);
+    }//GEN-LAST:event_jTextArea1MouseEntered
+
+    private void jTextArea1MouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTextArea1MouseExited
+        clearStatusMessage();
+    }//GEN-LAST:event_jTextArea1MouseExited
+
+    private void jTextField3MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTextField3MouseEntered
+        setStatusMessage(this.jTextField3);
+    }//GEN-LAST:event_jTextField3MouseEntered
+
+    private void jTextField3MouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTextField3MouseExited
+        clearStatusMessage();
+    }//GEN-LAST:event_jTextField3MouseExited
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JFileChooser fileChooser;
@@ -1217,6 +1319,6 @@ public class SinhalaDictionaryToolsView extends FrameView {
 
     private JDialog aboutBox;
 
-    private ResourceMap appResourceMap = org.jdesktop.application.Application.getInstance(sinhaladictionarytools.SinhalaDictionaryToolsApp.class).getContext().getResourceMap(SinhalaDictionaryToolsApp.class);
+    private static ResourceMap appResourceMap = org.jdesktop.application.Application.getInstance(sinhaladictionarytools.SinhalaDictionaryToolsApp.class).getContext().getResourceMap(SinhalaDictionaryToolsApp.class);
 
 }
