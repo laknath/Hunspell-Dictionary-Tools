@@ -1,9 +1,9 @@
 /* unmunch header file */
 
-#define MAX_LN_LEN    200
-#define MAX_WD_LEN    200
+#define MAX_LN_LEN    5000
+#define MAX_WD_LEN    5000
 #define MAX_PREFIXES  256
-#define MAX_SUFFIXES  256
+#define MAX_SUFFIXES  5000
 #define MAX_WORDS     500000
  
 #define ROTATE_LEN      5
@@ -21,6 +21,7 @@ struct affent
 {
     char *  appnd;
     char *  strip;
+    char *  numflag;
     short   appndl;
     short   stripl;
     char    achar;

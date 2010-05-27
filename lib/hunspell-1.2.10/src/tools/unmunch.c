@@ -35,14 +35,8 @@ int main(int argc, char** argv)
   /* first parse the command line options */
   /* arg1 - munched wordlist, arg2 - affix file */
 
-  if (argv[1]) {
+  if (argv[1] && argv[2]) {
        wf = mystrdup(argv[1]);
-  } else {
-    fprintf(stderr,"correct syntax is:\n"); 
-    fprintf(stderr,"unmunch dic_file affix_file\n");
-    exit(1);
-  }
-  if (argv[2]) {
        af = mystrdup(argv[2]);
   } else {
     fprintf(stderr,"correct syntax is:\n"); 
@@ -110,7 +104,7 @@ int main(int argc, char** argv)
     numwords++;
     
     if (al)
-       expand_rootword(ts,wl,ap,al);
+    	expand_rootword(ts,wl,ap,al);
   
     for (i=0; i < numwords; i++) {
       fprintf(stdout,"%s\n",wlist[i].word);
@@ -149,27 +143,37 @@ int parse_aff_file(FILE * afflst)
        if (ft != ' ') {
           char * tp = line;
           char * piece;
+	  char * numflag;
+
 	  ff = 0;
           i = 0;
-          while ((piece=mystrsep(&tp,' '))) {
+          while ((piece=mystrsep(&tp,' '))) {	     
+
              if (*piece != '\0') {
                  switch(i) {
                     case 0: break;
-                    case 1: { achar = *piece; break; }
+                    case 1: { achar = *piece; numflag = mystrdup(piece); break; }
                     case 2: { if (*piece == 'Y') ff = XPRODUCT; break; }
                     case 3: { numents = atoi(piece); 
                               ptr = malloc(numents * sizeof(struct affent));
                               ptr->achar = achar;
                               ptr->xpflg = ff;
-	                      fprintf(stderr,"parsing %c entries %d\n",achar,numents);
+                              ptr->numflag = numflag;
+
+                              fprintf(stderr,"parsing %c entries %d\n",achar,numents);
                               break;
                             }
 		    default: break;
                  }
                  i++;
              }
+
              free(piece);
           }
+
+	  if (i < 4)
+             free(numflag);
+
           /* now parse all of the sub entries*/
           nptr = ptr;
           for (j=0; j < numents; j++) {
@@ -391,7 +395,7 @@ void suf_add (const char * word, int len, struct affent * ep, int num)
 
       if ((len + fullstrip > aent->stripl) && (len >= aent->numconds) &&
             ((aent->stripl == 0) ||
-            (strcmp(aent->strip, word + len - aent->stripl) == 0))) {
+            (strcmp(aent->strip, word + len - aent->stripl) == 0))) {		
 	cp = (unsigned char *) (word + len);
 	for (cond = aent->numconds;  --cond >= 0;  ) {
 	    if ((aent->conds[*--cp] & (1 << cond)) == 0) break;
@@ -427,13 +431,26 @@ int expand_rootword(const char * ts, int wl, const char * ap, int al)
     int j;
     int nh=0;
     int nwl;
+    char * strclass;
 
     for (i=0; i < numsfx; i++) {
-      if (strchr(ap,(stable[i].aep)->achar)) {
-         suf_add(ts, wl, stable[i].aep, stable[i].num);
-      }
+        if (isdigit((stable[i].aep)->achar)) {
+            char * ap1 = mystrdup(ap);            
+
+            strclass=strtok(ap1,",");
+            while (strclass != NULL) {
+                if (strcmp(strclass,(stable[i].aep)->numflag) == 0) {
+                    suf_add(ts, wl, stable[i].aep, stable[i].num);
+                }
+                strclass=strtok(NULL,",");
+            }
+
+            free(ap1);
+        }else if (strchr(ap,(stable[i].aep)->achar)) {
+            suf_add(ts, wl, stable[i].aep, stable[i].num);
+        }
     }
-   
+
     nh = numwords;
 
     if (nh > 1) {

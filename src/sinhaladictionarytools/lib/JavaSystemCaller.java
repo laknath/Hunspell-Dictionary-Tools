@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -38,11 +39,18 @@ public final class JavaSystemCaller
 		private InputStream is;
 		private String type;
 		private StringBuffer output = new StringBuffer();
+                private ConcurrentHashMap<String, Integer> hashMap;
 
 		public StreamGobbler(final InputStream anIs, final String aType)
 		{
 			this.is = anIs;
 			this.type = aType;
+		}
+
+		public StreamGobbler(final InputStream anIs, final String aType, final ConcurrentHashMap<String, Integer> hashMap)
+		{
+			this(anIs, aType);
+                        this.hashMap = hashMap;
 		}
 
 		/**
@@ -57,15 +65,24 @@ public final class JavaSystemCaller
 			{
 				final InputStreamReader isr = new InputStreamReader(this.is);
 				final BufferedReader br = new BufferedReader(isr);
-				String line=null;
+                                String lineseperator = System.getProperty("line.separator");
+				String line = null;
 				while ( (line = br.readLine()) != null)
 				{
-                    if (this.type.equals("ERROR")){
-                        System.out.println(type + " > " + line);
-                    }
-					
-					this.output.append(line+System.getProperty("line.separator"));
+                                    if (this.type.equals("MSG")){
+                                        System.out.println(type + " > " + line);
+                                    }
+
+                                    this.output.append(line + lineseperator);
+
+                                    if (hashMap != null){
+                                        line = line.trim();
+                                        Integer freq = hashMap.get(line);
+                                        hashMap.put(line, (freq == null) ? 1 : freq + 1);
+                                    }
 				}
+                                
+                                isr.close();
 
 			} catch (final IOException ioe)
 			{
@@ -77,10 +94,22 @@ public final class JavaSystemCaller
 		 * Should be called after execution
 		 * @return final output
 		 */
-		public final String getOutput()
+		public synchronized final String getOutput()
 		{
 			return this.output.toString();
 		}
+
+                
+		/**
+		 * Get output filled asynchronously. <br />
+		 * Should be called after execution
+		 * @return final output
+		 */
+		public synchronized final ConcurrentHashMap<String, Integer> getHashmap()
+		{
+			return this.hashMap;
+		}
+
 	}
 	/**
 	 * Execute a system command in the appropriate shell. <br />
@@ -102,40 +131,41 @@ public final class JavaSystemCaller
 			String output = "";
 			try
 			{
-				ExecEnvironmentFactory anExecEnvFactory = getExecEnvironmentFactory(aCommand, someParameters);
-				final IShell aShell = anExecEnvFactory.createShell();
-				final String aCommandLine = anExecEnvFactory.createCommandLine();
+                            ExecEnvironmentFactory anExecEnvFactory = getExecEnvironmentFactory(aCommand, someParameters);
+                            final IShell aShell = anExecEnvFactory.createShell();
+                            final String aCommandLine = anExecEnvFactory.createCommandLine();
 
-				final Runtime rt = Runtime.getRuntime();
-				System.out.println("Executing " + aCommandLine);
+                            final Runtime rt = Runtime.getRuntime();
+                            System.out.println("Executing " + aCommandLine);
+                            final Process proc = rt.exec(aCommandLine);
 
-				final Process proc = rt.exec(aCommandLine);
-				final int exitVal = proc.waitFor();
+                            // any output?
+                            final StreamGobbler outputGobbler = new
+                                    StreamGobbler(proc.getInputStream(), "OUTPUT");
 
+                            // any error message?
+                            final StreamGobbler errorGobbler = new
+                                    StreamGobbler(proc.getErrorStream(), "MSG");
 
-				// any error message?
-				final StreamGobbler errorGobbler = new
-					StreamGobbler(proc.getErrorStream(), "ERROR");
+                            //kick them off
+                            errorGobbler.start();
+                            outputGobbler.start();
 
-				// any output?
-				final StreamGobbler outputGobbler = new
-					StreamGobbler(proc.getInputStream(), "OUTPUT");
+                            // any error???
+                            final int exitVal = proc.waitFor();
+                            errorGobbler.join();
+                            outputGobbler.join();
+                            
+                            //System.out.println("ExitValue: " + exitVal);
+                            output = outputGobbler.getOutput();
 
-				// kick them off
-				errorGobbler.start();
-				outputGobbler.start();
-
-				// any error???
-				//System.out.println("ExitValue: " + exitVal);
-
-				output = outputGobbler.getOutput();
-
-                if (out != null){
-                    System.out.print(output);
-                    FileWriter fw = new FileWriter(out, true);
-                    fw.write(output);
-                    fw.close();
-                }                
+                            if (out != null){
+                                System.out.print(output);
+                                FileWriter fw = new FileWriter(out, false);
+                                fw.write(output);
+                                fw.flush();
+                                fw.close();
+                            }
 
 			} catch (final Throwable t)
 			{
