@@ -1,10 +1,10 @@
 /* unmunch header file */
 
 #define MAX_LN_LEN    5000
-#define MAX_WD_LEN    5000
+#define MAX_WD_LEN    1000
 #define MAX_PREFIXES  256
-#define MAX_SUFFIXES  5000
-#define MAX_WORDS     500000
+#define MAX_SUFFIXES  7000
+#define MAX_WORDS     100000
  
 #define ROTATE_LEN      5
  
