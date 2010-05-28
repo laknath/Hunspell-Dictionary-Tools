@@ -6,7 +6,6 @@ package sinhaladictionarytools;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jdesktop.application.Action;
@@ -23,20 +22,17 @@ import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import com.stibocatalog.hunspell.Hunspell;
-import java.io.BufferedReader;
 import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.util.Enumeration;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.swing.JComponent;
+import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableModel;
 import sinhaladictionarytools.lib.JavaSystemCaller.Exec;
 import sinhaladictionarytools.lib.JavaSystemCaller.StreamGobbler;
-import sinhaladictionarytools.lib.RelativePath;
 
 /**
  * The application's main frame.
@@ -96,8 +92,14 @@ public class SinhalaDictionaryToolsView extends FrameView {
         });
     }
 
-    //generate all the words from a given dic and aff file
-    public static String processWordset(String dicFile, String affFile, String output){
+    /**
+     * generate all the words from a given dic and aff file
+     *
+     * @param dicFile Dictionary file
+     * @param affFile Affix file
+     * @param output The output file
+     */
+    public String processWordset(String dicFile, String affFile, String output){
         
         String root, unmunch, affixcompress;
         root = appResourceMap.getString("Application.hunspell_src");
@@ -106,7 +108,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
 
         try {
 
-            if (dicFile.endsWith(".dic") && dicFile.length() > 4 && new File(affFile).exists() ){
+            if (dicFile.endsWith(".dic") && new File(affFile).exists() ){
 
                 File tmpDicTFile = new File(output);
                 tmpDicTFile.delete();
@@ -138,7 +140,8 @@ public class SinhalaDictionaryToolsView extends FrameView {
                 jList2.setListData(vList);
                 */
             }else{
-                System.out.println("The file doesn't exist or not a dictionary file");
+                setStatusMessage("The file doesn't exist or not a dictionary file", true);
+                JOptionPane.showMessageDialog(null, "The file doesn't exist or not a dictionary file");
             }
 
         } catch (Exception ex) {
@@ -150,7 +153,12 @@ public class SinhalaDictionaryToolsView extends FrameView {
 
     }
 
-    //load hashtable
+    /**
+     * load hashtable
+     *
+     * @param file the file to loaded into the hash table
+     * @param table the table which the hashtable should be associated with
+     */    
     public void loadToHashTable(String file, JTable table){
 
         try {
@@ -167,72 +175,111 @@ public class SinhalaDictionaryToolsView extends FrameView {
 
             
         } catch (FileNotFoundException ex) {
-            System.err.println("File is not found");
+            setStatusMessage("File is not found", true);            
             Logger.getLogger(SinhalaDictionaryToolsView.class.getName()).log(Level.SEVERE, null, ex);
         } catch (InterruptedException ie){
-            System.err.println("Thread is interrupted");
+            setStatusMessage("Process is interrupted");            
             Logger.getLogger(SinhalaDictionaryToolsView.class.getName()).log(Level.SEVERE, null, ie);
         }
     }
 
-        /**
-         * This method initializes m_table
-         *
-         * @return javax.swing.JTable
-         */
-        private TableModel getTableModel(final ConcurrentHashMap<String, Integer> hashMap) {
+    /**
+     * This method returns a TableModel based on a hashmap
+     *
+     * @param hashMap the hashmap which the table model should be based on
+     * @return javax.swing.JTable
+     */
+    private TableModel getTableModel(final ConcurrentHashMap<String, Integer> hashMap) {
 
-            return new AbstractTableModel(){
-                private static final long serialVersionUID = 1L;
-                private ConcurrentHashMap<String, Integer> hashmap = hashMap;
+        return new AbstractTableModel(){
+            private static final long serialVersionUID = 1L;
+            private ConcurrentHashMap<String, Integer> hashmap = hashMap;
 
-                public int getColumnCount() {
-                        return 2;
-                }
+            public int getColumnCount() {
+                    return 2;
+            }
 
-                public int getRowCount() {
-                        return hashMap.size();
-                }
+            public int getRowCount() {
+                    return hashMap.size();
+            }
 
-                public String getColumnName(int column) {
-                        if (column == 0) {
-                                return "Word";
-                        } else {
-                                return "Frequency";
-                        }
-                }
+            public String getColumnName(int column) {
+                    if (column == 0) {
+                            return "Word";
+                    } else {
+                            return "Frequency";
+                    }
+            }
 
-                public Object getValueAt(int rowIndex, int columnIndex) {
-                        if (columnIndex == 0) {
-                                return getKey(rowIndex);
-                        } else {
-                                return hashmap.get(getKey(rowIndex));
-                        }
-                }
+            public Object getValueAt(int rowIndex, int columnIndex) {
+                    if (columnIndex == 0) {
+                            return getKey(rowIndex);
+                    } else {
+                            return hashmap.get(getKey(rowIndex));
+                    }
+            }
 
-                private String getKey(int a_index) {
-                        String retval = "";
-                        Enumeration<String> e = hashmap.keys();
-                        for (int i = 0; i < a_index + 1; i++) {
-                                retval = e.nextElement();
-                        }
+            private String getKey(int a_index) {
+                    String retval = "";
+                    Enumeration<String> e = hashmap.keys();
+                    for (int i = 0; i < a_index + 1; i++) {
+                            retval = e.nextElement();
+                    }
 
-                        return retval;
-                }
-         };
+                    return retval;
+            }
+        };
     }
 
+    /**
+     * Moves to analyze tab
+     *
+     * @param filepath the file path to move to the analyser
+     */
+    public void moveToAnalyze(String filepath){
+        this.jTextField14.setText(filepath);
+        this.jTabbedPane1.setSelectedIndex(2);
+    }
 
-    //clear status message
+    /**
+     * clear status message
+     */
     public void clearStatusMessage(){
         this.statusMessageLabel.setText("");        
     }
 
-    //set status message
+    /**
+     * set status messge
+     * @param com the JComponent from which the tooltip will be take as a status message
+     */
     public void setStatusMessage(JComponent com){
-        this.statusMessageLabel.setText(com.getToolTipText());
+        setStatusMessage(com.getToolTipText());
     }
 
+    /**
+     * set status message
+     * @param s the string to be displayed
+     * @param error is this an error ?
+     */
+    public void setStatusMessage(String s, boolean error){
+        setStatusMessage(s);
+
+        if (error){
+            System.err.println(s);
+        }else{
+            System.out.println(s);
+        }
+    }
+
+    /**
+     * set status message
+     * @param s the string to be displayed
+     */
+    public void setStatusMessage(String s){
+        this.statusMessageLabel.setText(s);
+    }
+
+    
     @Action
     public void showAboutBox() {
         if (aboutBox == null) {
@@ -513,6 +560,11 @@ public class SinhalaDictionaryToolsView extends FrameView {
         jButton8.setText(resourceMap.getString("jButton8.text")); // NOI18N
         jButton8.setToolTipText(resourceMap.getString("jButton8.toolTipText")); // NOI18N
         jButton8.setName("jButton8"); // NOI18N
+        jButton8.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton8ActionPerformed(evt);
+            }
+        });
 
         jScrollPane5.setName("jScrollPane5"); // NOI18N
 
@@ -1371,8 +1423,15 @@ public class SinhalaDictionaryToolsView extends FrameView {
     private void fileSave(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fileSave
 
         String dicFile = jTextField3.getText();
+
+        if (dicFile.isEmpty()){
+            setStatusMessage("No file to load", true);
+            JOptionPane.showMessageDialog(null, "No file to load");
+            return;
+        }
+
         String affFile = dicFile.replace(".dic", ".aff");
-        String wordlist = processWordset(dicFile, affFile, "tmp/tmp2");
+        String wordlist = processWordset(dicFile, affFile, "tmp/tmp1");
         System.out.println(wordlist);
 
         this.jTextArea2.setText(wordlist);
@@ -1388,7 +1447,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
             jTextField3.setText(file.getAbsolutePath());
             
         } else {
-            System.out.println("File access cancelled by user.");
+            setStatusMessage("Couldn't create temp dic/aff files.", true);
         }
 
     }//GEN-LAST:event_jButton4fileSave
@@ -1400,13 +1459,22 @@ public class SinhalaDictionaryToolsView extends FrameView {
     //Generate a tmp dic and aff file and generate a wordlist
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
 
+
         try {
+
+            String dicText = this.jTextField1.getText();
+            if (dicText.isEmpty()){
+                setStatusMessage("No dictionary text to process.", true);
+                JOptionPane.showMessageDialog(null, "No dictionary text to process.");
+                return;
+            }
+
             File dicFile = new File("tmp/tmp1.dic");
             File affFile = new File("tmp/tmp1.aff");
             FileWriter fw1 = new FileWriter(dicFile);
             FileWriter fw2 = new FileWriter(affFile);
 
-            fw1.write("1" + System.getProperty("line.separator") + this.jTextField1.getText());
+            fw1.write("1" + System.getProperty("line.separator") + dicText);
             fw2.write(this.jTextArea1.getText());
 
             fw1.close();
@@ -1417,8 +1485,8 @@ public class SinhalaDictionaryToolsView extends FrameView {
             this.jTextArea2.setText(wordlist);
 
         } catch (IOException ex) {
-
-            System.err.println("Couldn't create temp dic/aff files.");
+            
+            setStatusMessage("Couldn't create temp dic/aff files.", true);
             Logger.getLogger(SinhalaDictionaryToolsView.class.getName()).log(Level.SEVERE, null, ex);
         }
 
@@ -1456,20 +1524,43 @@ public class SinhalaDictionaryToolsView extends FrameView {
             jTextField14.setText(file.getAbsolutePath());
 
         } else {
-            System.out.println("File access cancelled by user.");
+            setStatusMessage("File access cancelled by user.", true);
         }
     }//GEN-LAST:event_jButton5fileSave
 
     //load a file to table1
     private void jButton47ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton47ActionPerformed
-        loadToHashTable(jTextField14.getText(), jTable4);
-        
+
+        String s = jTextField14.getText();
+        if (!s.isEmpty()){
+                loadToHashTable(s, jTable4);
+        }else{
+            setStatusMessage("No file to load", true);
+            JOptionPane.showMessageDialog(null, "No file to load");
+        }
     }//GEN-LAST:event_jButton47ActionPerformed
 
     //load a file to table2
     private void jButton50ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton50ActionPerformed
-        loadToHashTable(jTextField14.getText(), jTable3);
+        
+        String s = jTextField14.getText();
+        if (!s.isEmpty()){
+                loadToHashTable(s, jTable3);
+        }else{
+            setStatusMessage("No file to load", true);
+            JOptionPane.showMessageDialog(null, "No file to load");
+        }
     }//GEN-LAST:event_jButton50ActionPerformed
+
+    //Analyze button - tab1
+    private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
+        
+        if (!jTextArea1.getText().isEmpty()){
+            moveToAnalyze("tmp/tmp1");
+        }else{
+            JOptionPane.showMessageDialog(null, "You haven't processed any dictionary file yet.");
+        }
+    }//GEN-LAST:event_jButton8ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JFileChooser fileChooser;
