@@ -376,4 +376,29 @@ public final class JavaSystemCaller
                 return "/bin/sh -c";
         }
     }
+
+
+    /*
+    // any output?
+    tmpDicTFile = new File(output);
+    final StreamGobbler outputGobbler = new
+            StreamGobbler(new FileInputStream(tmpDicTFile), "OUTPUT");
+    outputGobbler.start();
+    outputGobbler.join();
+
+    String out = outputGobbler.getOutput();
+    System.out.println("etsting");
+    return out;
+    /*
+    /home/buddhika/Desktop/en_GB/en_GB.dic
+    /home/buddhika/Desktop/si_LK/dictionaries/si-LK.dic
+    RelativePath.getRelativePath(new File(""), new File(affFile))
+    List<String> list = Hunspell.getInstance().getDictionary(filepath).suggest("a");
+    Vector<String> vList = new Vector<String>();
+    for (String str : list){
+        vList.add(str);
+        System.out.println(str);
+    }
+    jList2.setListData(vList);
+    */
 }

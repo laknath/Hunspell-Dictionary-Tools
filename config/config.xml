@@ -1,0 +1,16 @@
+<?xml version="1.0" ?>
+<properties>
+  <category name="hunspell">
+    <property name="installed" value="0"/>
+    <property name="path" value="lib/hunspell-1.2.10"/>
+  </category>
+  <category name="crawl">
+    <property name="baseDomain" value="test.com"/>
+    <property name="maxLevels" value="6"/>
+    <property name="maxPages" value="500"/>
+    <property name="maxWords" value="10000"/>
+  </category>
+  <category name="general">
+    <property name="maxAffixRules" value="-1"/>
+  </category>
+</properties>

@@ -8,6 +8,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.jconfig.ConfigurationManagerException;
 import org.jdesktop.application.Action;
 import org.jdesktop.application.ResourceMap;
 import org.jdesktop.application.SingleFrameApplication;
@@ -31,6 +32,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableModel;
+import org.jconfig.Configuration;
+import org.jconfig.ConfigurationManager;
 import sinhaladictionarytools.lib.FileOutput;
 import sinhaladictionarytools.lib.JavaSystemCaller.Exec;
 import sinhaladictionarytools.lib.JavaSystemCaller.StreamGobbler;
@@ -44,6 +47,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
         super(app);
 
         initComponents();
+        getConfigs();
 
         // status bar initialization - message timeout, idle icon and busy animation, etc
         ResourceMap resourceMap = getResourceMap();
@@ -98,11 +102,15 @@ public class SinhalaDictionaryToolsView extends FrameView {
      *
      * @param wordlist the input wordlist to be compressed into hunspell file format
      */
-    public void affixcompress(File f){
-        String affixcompress = appResourceMap.getString("Application.hunspell_src").concat("/src/tools/affixcompress");;       
+    private void affixcompress(File f){
+        String affixcompress = getHunspellCommand("affixcompress");
         String filePath = f.getAbsolutePath();
-
-        Exec.execute(affixcompress, null, filePath);
+        String maxAffixRules = conf.getProperty("maxAffixRules", "-1");
+        if (maxAffixRules.equals("-1")) {
+            Exec.execute(affixcompress, null, filePath);
+        } else {
+            Exec.execute(affixcompress, null, filePath, maxAffixRules);
+        }
         f.delete();
     }
 
@@ -113,9 +121,9 @@ public class SinhalaDictionaryToolsView extends FrameView {
      * @param affFile Affix file
      * @param output The output file
      */
-    public String unmunch(String dicFile, String affFile, String output){
-        
-        String unmunch = appResourceMap.getString("Application.hunspell_src").concat("/src/tools/unmunch");        
+    private String unmunch(String dicFile, String affFile, String output){
+
+        String unmunch = getHunspellCommand("unmunch");
 
         try {
 
@@ -127,29 +135,6 @@ public class SinhalaDictionaryToolsView extends FrameView {
 
                 return Exec.execute(unmunch, tmpDicTFile, dicFile, affFile);
 
-                /*
-                // any output?
-                tmpDicTFile = new File(output);
-                final StreamGobbler outputGobbler = new
-                        StreamGobbler(new FileInputStream(tmpDicTFile), "OUTPUT");
-                outputGobbler.start();                
-                outputGobbler.join();
-
-                String out = outputGobbler.getOutput();
-                System.out.println("etsting");
-                return out;
-                /*
-                /home/buddhika/Desktop/en_GB/en_GB.dic
-                /home/buddhika/Desktop/si_LK/dictionaries/si-LK.dic
-                RelativePath.getRelativePath(new File(""), new File(affFile))
-                List<String> list = Hunspell.getInstance().getDictionary(filepath).suggest("a");
-                Vector<String> vList = new Vector<String>();
-                for (String str : list){
-                    vList.add(str);
-                    System.out.println(str);
-                }
-                jList2.setListData(vList);
-                */
             }else{
                 setStatusMessage("The file doesn't exist or not a dictionary file", true);
                 JOptionPane.showMessageDialog(null, "The file doesn't exist or not a dictionary file");
@@ -161,7 +146,27 @@ public class SinhalaDictionaryToolsView extends FrameView {
         }
 
         return null;
+    }
 
+    /**
+     * get hunspell command depending on the configurations
+     *     
+     */
+    private String getHunspellCommand(String command){
+
+        if (conf.getIntProperty("installed", 0, "hunspell") == 0) {
+            String sep = System.getProperty("file.separator");
+            String base = conf.getProperty("path", "lib/hunspell-1.2.10", "hunspell");
+
+            if (!base.endsWith(sep)){
+                base = base.concat(sep);
+            }
+
+            command = base.concat("src").concat(sep).concat("tools").concat(sep).concat(command);
+
+        }
+
+        return command;
     }
 
     /**
@@ -247,7 +252,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
      *
      * @param filepath the file path to move to the analyser
      */
-    public void moveToAnalyze(String filepath){
+    private void moveToAnalyze(String filepath){
 
         File file = new File(filepath);
         filepath = file.isAbsolute() ? filepath : file.getAbsolutePath();
@@ -259,7 +264,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
     /**
      * clear status message
      */
-    public void clearStatusMessage(){
+    private void clearStatusMessage(){
         this.statusMessageLabel.setText("");        
     }
 
@@ -267,7 +272,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
      * set status messge
      * @param com the JComponent from which the tooltip will be take as a status message
      */
-    public void setStatusMessage(JComponent com){
+    private void setStatusMessage(JComponent com){
         setStatusMessage(com.getToolTipText());
     }
 
@@ -276,7 +281,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
      * @param s the string to be displayed
      * @param error is this an error ?
      */
-    public void setStatusMessage(String s, boolean error){
+    private void setStatusMessage(String s, boolean error){
         setStatusMessage(s);
 
         if (error){
@@ -290,7 +295,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
      * set status message
      * @param s the string to be displayed
      */
-    public void setStatusMessage(String s){
+    private void setStatusMessage(String s){
         this.statusMessageLabel.setText(s);
     }
 
@@ -625,16 +630,16 @@ public class SinhalaDictionaryToolsView extends FrameView {
                 .addContainerGap()
                 .addComponent(jLabel21)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
                     .addComponent(jButton8))
-                .addContainerGap(17, Short.MAX_VALUE))
+                .addContainerGap(19, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab(resourceMap.getString("jPanel1.TabConstraints.tabTitle"), jPanel1); // NOI18N
@@ -671,6 +676,11 @@ public class SinhalaDictionaryToolsView extends FrameView {
         jButton6.setText(resourceMap.getString("jButton6.text")); // NOI18N
         jButton6.setToolTipText(resourceMap.getString("jButton6.toolTipText")); // NOI18N
         jButton6.setName("jButton6"); // NOI18N
+        jButton6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton6ActionPerformed(evt);
+            }
+        });
 
         jLabel18.setText(resourceMap.getString("jLabel18.text")); // NOI18N
         jLabel18.setToolTipText(resourceMap.getString("jLabel18.toolTipText")); // NOI18N
@@ -715,14 +725,11 @@ public class SinhalaDictionaryToolsView extends FrameView {
                     .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel7)
                     .addComponent(jTextField7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel18)
-                    .addGroup(jPanel6Layout.createSequentialGroup()
-                        .addGap(4, 4, 4)
-                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jTextField9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jButton6))))
+                .addGap(10, 10, 10)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jTextField9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton6)
+                    .addComponent(jLabel18))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -739,6 +746,11 @@ public class SinhalaDictionaryToolsView extends FrameView {
         jButton7.setText(resourceMap.getString("jButton7.text")); // NOI18N
         jButton7.setToolTipText(resourceMap.getString("jButton7.toolTipText")); // NOI18N
         jButton7.setName("jButton7"); // NOI18N
+        jButton7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton7ActionPerformed(evt);
+            }
+        });
 
         jButton9.setText(resourceMap.getString("jButton9.text")); // NOI18N
         jButton9.setToolTipText(resourceMap.getString("jButton9.toolTipText")); // NOI18N
@@ -1178,7 +1190,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
                     .addComponent(jTextField10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton12)
                     .addComponent(jLabel9))
-                .addContainerGap(14, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jPanel9.setBorder(javax.swing.BorderFactory.createTitledBorder(resourceMap.getString("jPanel9.border.title"))); // NOI18N
@@ -1451,7 +1463,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
         String affFile = dicFile.replace(".dic", ".aff");
 
         setStatusMessage("Processing dic/aff files");
-        String wordlist = unmunch(dicFile, affFile, "tmp/tmp1");
+        String wordlist = unmunch(dicFile, affFile, tmp.concat("tmp1"));
         System.out.println(wordlist);
 
         setStatusMessage("Processing was completed & wordlist generated.");
@@ -1479,6 +1491,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
         try {
 
             String dicText = this.jTextField1.getText();
+
             if (dicText.isEmpty()){
                 setStatusMessage("No dictionary text to process.", true);
                 JOptionPane.showMessageDialog(null, "No dictionary text to process.");
@@ -1486,8 +1499,8 @@ public class SinhalaDictionaryToolsView extends FrameView {
             }
 
             setStatusMessage("Creating temp files");
-            File dicFile = new File("tmp/tmp1.dic");
-            File affFile = new File("tmp/tmp1.aff");
+            File dicFile = new File(tmp.concat("tmp1.dic"));
+            File affFile = new File(tmp.concat("tmp1.aff"));
             FileWriter fw1 = new FileWriter(dicFile);
             FileWriter fw2 = new FileWriter(affFile);
 
@@ -1498,7 +1511,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
             fw2.close();
 
             setStatusMessage("Processing...");
-            String wordlist = unmunch(dicFile.getPath(), affFile.getPath(), "tmp/tmp1");
+            String wordlist = unmunch(dicFile.getPath(), affFile.getPath(), tmp.concat("tmp1"));
 
             setStatusMessage("Wordlist generated");
             this.jTextArea2.setText(wordlist);
@@ -1577,7 +1590,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
     private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
         
         if (!jTextArea2.getText().isEmpty()){
-            moveToAnalyze("tmp/tmp1");
+            moveToAnalyze(tmp.concat("tmp1"));
         }else{
             JOptionPane.showMessageDialog(null, "You haven't processed any dictionary file yet.");
         }
@@ -1595,8 +1608,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
                     file = new File(file.getAbsolutePath().substring(0, file.getAbsolutePath().lastIndexOf('.')));
                 }
 
-                FileOutput.copyFile(new File("tmp/tmp1"), file);
-                
+                FileOutput.copyFile(new File(tmp.concat("tmp1")), file);
                 if (fileChooser.getFileFilter().getDescription().equals("Dic File")) {
                     affixcompress(file);
                 }
@@ -1611,6 +1623,15 @@ public class SinhalaDictionaryToolsView extends FrameView {
         }
 
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    //start crawling a given url
+    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
+    }//GEN-LAST:event_jButton7ActionPerformed
+
+    //save crawl settings
+    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+        setConfigs();
+    }//GEN-LAST:event_jButton6ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JFileChooser fileChooser;
@@ -1720,7 +1741,29 @@ public class SinhalaDictionaryToolsView extends FrameView {
     private int busyIconIndex = 0;
 
     private JDialog aboutBox;
+    private Configuration conf = ConfigurationManager.getConfiguration("config");
+    private String tmp = "tmp".concat(System.getProperty("file.separator"));
 
-    private static ResourceMap appResourceMap = org.jdesktop.application.Application.getInstance(sinhaladictionarytools.SinhalaDictionaryToolsApp.class).getContext().getResourceMap(SinhalaDictionaryToolsApp.class);
+    private void getConfigs() {
+                
+        jTextField5.setText(conf.getProperty("maxLevels", "-1", "crawl"));
+        jTextField6.setText(conf.getProperty("maxPages", "-1", "crawl"));
+        jTextField7.setText(conf.getProperty("maxWords", "10000", "crawl"));
+        jTextField9.setText(conf.getProperty("baseDomain", "", "crawl"));
 
+    }
+
+    private void setConfigs(){
+        try {          
+            conf.setProperty("maxLevels", jTextField5.getText(), "crawl");
+            conf.setProperty("maxPages", jTextField6.getText(), "crawl");
+            conf.setProperty("maxWords", jTextField7.getText(), "crawl");
+            conf.setProperty("baseDomain", jTextField9.getText(), "crawl");
+            SinhalaDictionaryToolsApp.getConfiguration().save("config");
+        } catch (ConfigurationManagerException ex) {
+            setStatusMessage("Couldn't save settings.", true);
+            Logger.getLogger(SinhalaDictionaryToolsView.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }
 }

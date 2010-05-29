@@ -4,6 +4,10 @@
 
 package sinhaladictionarytools;
 
+import java.io.File;
+import org.jconfig.Configuration;
+import org.jconfig.ConfigurationManager;
+import org.jconfig.handler.XMLFileHandler;
 import org.jdesktop.application.Application;
 import org.jdesktop.application.SingleFrameApplication;
 
@@ -11,11 +15,12 @@ import org.jdesktop.application.SingleFrameApplication;
  * The main class of the application.
  */
 public class SinhalaDictionaryToolsApp extends SingleFrameApplication {
-
+    
     /**
      * At startup create and show the main frame of the application.
      */
     @Override protected void startup() {
+        getConfiguration();
         show(new SinhalaDictionaryToolsView(this));
     }
 
@@ -41,4 +46,28 @@ public class SinhalaDictionaryToolsApp extends SingleFrameApplication {
     public static void main(String[] args) {
         launch(SinhalaDictionaryToolsApp.class, args);
     }
+
+    public static ConfigurationManager getConfiguration(){
+
+        if (cm == null){
+            cm = ConfigurationManager.getInstance();
+            File file = new File("config/config.xml");
+            XMLFileHandler handler = new XMLFileHandler();
+            handler.setFile(file);
+
+            try {
+                System.out.println("Trying to load file");
+                cm.load(handler,"config");                                
+                System.out.println("Settings successfully saved");
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        }
+
+        return cm;
+    }
+
+    private static ConfigurationManager cm;
 }
