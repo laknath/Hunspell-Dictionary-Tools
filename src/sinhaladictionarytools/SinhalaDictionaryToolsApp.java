@@ -51,14 +51,12 @@ public class SinhalaDictionaryToolsApp extends SingleFrameApplication {
 
         if (cm == null){
             cm = ConfigurationManager.getInstance();
-            File file = new File("config/config.xml");
-            XMLFileHandler handler = new XMLFileHandler();
-            handler.setFile(file);
+            XMLFileHandler handler = new XMLFileHandler("config/config.xml");
 
             try {
                 System.out.println("Trying to load file");
                 cm.load(handler,"config");                                
-                System.out.println("Settings successfully saved");
+                System.out.println("Settings successfully loaded");
             }
             catch (Exception e) {
                 e.printStackTrace();
