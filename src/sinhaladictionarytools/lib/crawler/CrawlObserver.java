@@ -21,8 +21,16 @@ public class CrawlObserver implements Observer {
         this.area = area;
     }
 
-    public void update(Observable o, Object arg) {
+    public void update(Observable o, Object arg) {        
         area.append((String)arg);
         area.revalidate();
     }
+}
+
+class CrawlObservable extends Observable{
+
+    public void setCrawlerChanged(){
+        setChanged();
+    }
+    
 }

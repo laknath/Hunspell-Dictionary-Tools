@@ -26,8 +26,8 @@ import javax.swing.JFrame;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.FileInputStream;
 import java.io.FileWriter;
-import java.net.URL;
 import java.util.Enumeration;
+import java.util.Observable;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
@@ -40,12 +40,14 @@ import org.jconfig.handler.XMLFileHandler;
 import sinhaladictionarytools.lib.FileOutput;
 import sinhaladictionarytools.lib.JavaSystemCaller.Exec;
 import sinhaladictionarytools.lib.JavaSystemCaller.StreamGobbler;
+import sinhaladictionarytools.lib.crawler.CrawlObserver;
 import sinhaladictionarytools.lib.crawler.LangAction;
 import sinhaladictionarytools.lib.crawler.LangCrawler;
 import sinhaladictionarytools.lib.crawler.LangCrawlerListener;
 import websphinx.CrawlEvent;
 import websphinx.Crawler;
 import websphinx.DownloadParameters;
+import websphinx.EventLog;
 import websphinx.Link;
 
 /**
@@ -307,6 +309,31 @@ public class SinhalaDictionaryToolsView extends FrameView {
         this.statusMessageLabel.setText(s);
     }
 
+
+    private void saveToTmpFile(String tmpFile){
+        int returnVal = fileChooser.showSaveDialog(this.getFrame());
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            try {
+                File file = fileChooser.getSelectedFile();
+
+                if (file.getAbsolutePath().toLowerCase().endsWith(".dic")){
+                    file = new File(file.getAbsolutePath().substring(0, file.getAbsolutePath().lastIndexOf('.')));
+                }
+
+                FileOutput.copyFile(new File(tmp.concat(tmpFile)), file);
+                if (fileChooser.getFileFilter().getDescription().equals("Dic File")) {
+                    affixcompress(file);
+                }
+
+                setStatusMessage(file.getAbsolutePath() + " was saved.");
+            } catch (IOException ex) {
+                Logger.getLogger(SinhalaDictionaryToolsView.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+        } else {
+            setStatusMessage("File save cancelled by user.", true);
+        }
+    }
     
     @Action
     public void showAboutBox() {
@@ -364,9 +391,9 @@ public class SinhalaDictionaryToolsView extends FrameView {
         jButton7 = new javax.swing.JButton();
         jButton9 = new javax.swing.JButton();
         jButton10 = new javax.swing.JButton();
-        jScrollPane4 = new javax.swing.JScrollPane();
-        jList1 = new javax.swing.JList();
         jButton11 = new javax.swing.JButton();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jTextArea3 = new javax.swing.JTextArea();
         jLabel10 = new javax.swing.JLabel();
         jPanel10 = new javax.swing.JPanel();
         jPanel11 = new javax.swing.JPanel();
@@ -744,15 +771,20 @@ public class SinhalaDictionaryToolsView extends FrameView {
         jButton9.setText(resourceMap.getString("jButton9.text")); // NOI18N
         jButton9.setToolTipText(resourceMap.getString("jButton9.toolTipText")); // NOI18N
         jButton9.setName("jButton9"); // NOI18N
+        jButton9.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton9ActionPerformed(evt);
+            }
+        });
 
         jButton10.setText(resourceMap.getString("jButton10.text")); // NOI18N
         jButton10.setToolTipText(resourceMap.getString("jButton10.toolTipText")); // NOI18N
         jButton10.setName("jButton10"); // NOI18N
-
-        jScrollPane4.setName("jScrollPane4"); // NOI18N
-
-        jList1.setName("jList1"); // NOI18N
-        jScrollPane4.setViewportView(jList1);
+        jButton10.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton10ActionPerformed(evt);
+            }
+        });
 
         jButton11.setText(resourceMap.getString("jButton11.text")); // NOI18N
         jButton11.setToolTipText(resourceMap.getString("jButton11.toolTipText")); // NOI18N
@@ -764,6 +796,14 @@ public class SinhalaDictionaryToolsView extends FrameView {
             }
         });
 
+        jScrollPane2.setName("jScrollPane2"); // NOI18N
+
+        jTextArea3.setColumns(20);
+        jTextArea3.setFont(resourceMap.getFont("jTextArea3.font")); // NOI18N
+        jTextArea3.setRows(5);
+        jTextArea3.setName("jTextArea3"); // NOI18N
+        jScrollPane2.setViewportView(jTextArea3);
+
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
         jPanel7Layout.setHorizontalGroup(
@@ -771,7 +811,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
             .addGroup(jPanel7Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 747, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 747, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
                         .addComponent(jButton10, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -794,9 +834,9 @@ public class SinhalaDictionaryToolsView extends FrameView {
                     .addComponent(jTextField8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton11)
                     .addComponent(jButton7))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 217, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 217, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton9)
                     .addComponent(jButton10))
@@ -1412,29 +1452,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
     //save the firts text area to file out
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
 
-        int returnVal = fileChooser.showSaveDialog(this.getFrame());
-        if (returnVal == JFileChooser.APPROVE_OPTION) {
-            try {
-                File file = fileChooser.getSelectedFile();
-
-                if (file.getAbsolutePath().toLowerCase().endsWith(".dic")){
-                    file = new File(file.getAbsolutePath().substring(0, file.getAbsolutePath().lastIndexOf('.')));
-                }
-
-                FileOutput.copyFile(new File(tmp.concat("tmp1")), file);
-                if (fileChooser.getFileFilter().getDescription().equals("Dic File")) {
-                    affixcompress(file);
-                }
-                
-                setStatusMessage(file.getAbsolutePath() + " was saved.");
-            } catch (IOException ex) {
-                Logger.getLogger(SinhalaDictionaryToolsView.class.getName()).log(Level.SEVERE, null, ex);
-            }
-
-        } else {
-            setStatusMessage("File save cancelled by user.", true);
-        }
-
+        saveToTmpFile("tmp1");
     }//GEN-LAST:event_jButton1ActionPerformed
 
     //start crawling a given url
@@ -1454,15 +1472,20 @@ public class SinhalaDictionaryToolsView extends FrameView {
                 crawler.configure(conf);
                 crawler.addCrawlListener(new LangCrawlerListener(jButton7, jButton11));
                 crawler.setAction(new LangAction(this.statusMessageLabel));
+                crawler.addObserver(new CrawlObserver(this.jTextArea3));
 
                 DownloadParameters dp = new DownloadParameters();
                 dp.changeObeyRobotExclusion(true);
                 dp.changeUserAgent(conf.getProperty("name", "LangCrawler", "crawl") + " Mozilla/5.0 (X11; U; "+System.getProperty("os.name")
                            +System.getProperty("os.arch") + "; en-US; rv:1.8.1.4) WebSPHINX 0.5");
                 crawler.setDownloadParameters(dp);
+                this.jTextArea3.setText("");
 
                 new Thread(crawler).start();
-            } catch (MalformedURLException ex) {
+
+            }   catch (MalformedURLException ex) {
+                Logger.getLogger(SinhalaDictionaryToolsView.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ex) {
                 Logger.getLogger(SinhalaDictionaryToolsView.class.getName()).log(Level.SEVERE, null, ex);
             }
         }else{
@@ -1485,6 +1508,46 @@ public class SinhalaDictionaryToolsView extends FrameView {
             crawler.pause();
         }
     }//GEN-LAST:event_jButton11ActionPerformed
+
+    private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
+        FileWriter fw = null;
+        try {
+            File f = new File(tmp.concat("tmp2"));
+            fw = new FileWriter(f);
+            fw.write(jTextArea3.getText());
+            moveToAnalyze(f.getPath());
+
+        } catch (IOException ex) {
+            Logger.getLogger(SinhalaDictionaryToolsView.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                fw.close();
+            } catch (IOException ex) {
+                Logger.getLogger(SinhalaDictionaryToolsView.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+    }//GEN-LAST:event_jButton10ActionPerformed
+
+    private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
+
+        FileWriter fw = null;
+        try {
+            File f = new File(tmp.concat("tmp2"));
+            fw = new FileWriter(f);
+            fw.write(jTextArea3.getText());
+        } catch (IOException ex) {
+            Logger.getLogger(SinhalaDictionaryToolsView.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                fw.close();
+            } catch (IOException ex) {
+                Logger.getLogger(SinhalaDictionaryToolsView.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+        saveToTmpFile("tmp2");
+    }//GEN-LAST:event_jButton9ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JFileChooser fileChooser;
@@ -1529,7 +1592,6 @@ public class SinhalaDictionaryToolsView extends FrameView {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
-    private javax.swing.JList jList1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel11;
@@ -1542,8 +1604,8 @@ public class SinhalaDictionaryToolsView extends FrameView {
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JScrollPane jScrollPane7;
@@ -1553,6 +1615,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
     private javax.swing.JTable jTable4;
     private javax.swing.JTextArea jTextArea1;
     private javax.swing.JTextArea jTextArea2;
+    private javax.swing.JTextArea jTextArea3;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField14;
     private javax.swing.JTextField jTextField3;

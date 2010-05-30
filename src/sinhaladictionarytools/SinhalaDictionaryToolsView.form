@@ -525,10 +525,10 @@
                   <Layout>
                     <DimensionLayout dim="0">
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="102" attributes="0">
+                          <Group type="102" alignment="0" attributes="0">
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="jScrollPane4" alignment="0" pref="747" max="32767" attributes="0"/>
+                                  <Component id="jScrollPane2" alignment="0" pref="747" max="32767" attributes="0"/>
                                   <Group type="102" alignment="1" attributes="0">
                                       <Component id="jButton10" min="-2" pref="100" max="-2" attributes="0"/>
                                       <EmptySpace max="-2" attributes="0"/>
@@ -557,9 +557,9 @@
                                   <Component id="jButton11" alignment="3" min="-2" max="-2" attributes="0"/>
                                   <Component id="jButton7" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
-                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                              <Component id="jScrollPane4" min="-2" pref="217" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
+                              <Component id="jScrollPane2" min="-2" pref="217" max="-2" attributes="0"/>
+                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="3" attributes="0">
                                   <Component id="jButton9" alignment="3" min="-2" max="-2" attributes="0"/>
                                   <Component id="jButton10" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -599,6 +599,9 @@
                         <Property name="toolTipText" type="java.lang.String" resourceKey="jButton9.toolTipText"/>
                         <Property name="name" type="java.lang.String" value="jButton9" noResource="true"/>
                       </Properties>
+                      <Events>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton9ActionPerformed"/>
+                      </Events>
                     </Component>
                     <Component class="javax.swing.JButton" name="jButton10">
                       <Properties>
@@ -606,27 +609,10 @@
                         <Property name="toolTipText" type="java.lang.String" resourceKey="jButton10.toolTipText"/>
                         <Property name="name" type="java.lang.String" value="jButton10" noResource="true"/>
                       </Properties>
+                      <Events>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton10ActionPerformed"/>
+                      </Events>
                     </Component>
-                    <Container class="javax.swing.JScrollPane" name="jScrollPane4">
-                      <Properties>
-                        <Property name="name" type="java.lang.String" value="jScrollPane4" noResource="true"/>
-                      </Properties>
-                      <AuxValues>
-                        <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
-                      </AuxValues>
-
-                      <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
-                      <SubComponents>
-                        <Component class="javax.swing.JList" name="jList1">
-                          <Properties>
-                            <Property name="model" type="javax.swing.ListModel" editor="org.netbeans.modules.form.editors2.ListModelEditor">
-                              <StringArray count="0"/>
-                            </Property>
-                            <Property name="name" type="java.lang.String" value="jList1" noResource="true"/>
-                          </Properties>
-                        </Component>
-                      </SubComponents>
-                    </Container>
                     <Component class="javax.swing.JButton" name="jButton11">
                       <Properties>
                         <Property name="text" type="java.lang.String" resourceKey="jButton11.text"/>
@@ -638,6 +624,26 @@
                         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton11ActionPerformed"/>
                       </Events>
                     </Component>
+                    <Container class="javax.swing.JScrollPane" name="jScrollPane2">
+                      <Properties>
+                        <Property name="name" type="java.lang.String" value="jScrollPane2" noResource="true"/>
+                      </Properties>
+                      <AuxValues>
+                        <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
+                      </AuxValues>
+
+                      <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
+                      <SubComponents>
+                        <Component class="javax.swing.JTextArea" name="jTextArea3">
+                          <Properties>
+                            <Property name="columns" type="int" value="20"/>
+                            <Property name="font" type="java.awt.Font" resourceKey="jTextArea3.font"/>
+                            <Property name="rows" type="int" value="5"/>
+                            <Property name="name" type="java.lang.String" value="jTextArea3" noResource="true"/>
+                          </Properties>
+                        </Component>
+                      </SubComponents>
+                    </Container>
                   </SubComponents>
                 </Container>
                 <Component class="javax.swing.JLabel" name="jLabel10">
