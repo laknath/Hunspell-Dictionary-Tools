@@ -25,8 +25,9 @@ public class LangAction implements Action{
         //throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public void disconnected(Crawler arg0) {
-        //throw new UnsupportedOperationException("Not supported yet.");
+    public void disconnected(Crawler crawler) {
+        LangCrawler langCrawler =  (LangCrawler)crawler;
+        label.setText("Collected total of " + langCrawler.getParsedWords());
     }
 
     public void visit(Page page) {

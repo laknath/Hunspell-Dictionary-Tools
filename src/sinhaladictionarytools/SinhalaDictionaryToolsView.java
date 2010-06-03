@@ -1460,6 +1460,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
 
         LangCrawler crawler = LangCrawler.getCrawler();        
 
+
         if (crawler.getState() != CrawlEvent.STARTED){
             try {
 

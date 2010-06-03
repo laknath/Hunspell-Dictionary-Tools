@@ -1,9 +1,11 @@
 package sinhaladictionarytools.lib.crawler;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Observable;
 import java.util.Observer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -14,6 +16,8 @@ import websphinx.EventLog;
 import websphinx.Link;
 import websphinx.Page;
 import websphinx.Text;
+import sinhaladictionarytools.lib.Trie;
+import websphinx.Action;
 
 
 /**
@@ -59,9 +63,10 @@ public class LangCrawler extends Crawler{
             this.setMaxDepth(conf.getIntProperty("maxDepth", 5, "crawl"));
             this.setMaxPages(conf.getIntProperty("maxPages", 500, "crawl"));
             this.setMaxWords(conf.getIntProperty("maxWords", 10000, "crawl"));
-            this.setCharRange(conf.getIntProperty("charRangeMin", 10000, "parsing"), conf.getIntProperty("charRangeMax", 10000, "parsing"));
+            this.setCharRange(conf.getCharProperty("charRangeMin", '\u0D80', "parsing"), conf.getCharProperty("charRangeMax", '\u0DFF', "parsing"));
             this.setCharset(conf.getProperty("charset", "UTF-8", "parsing"));
             this.setMaxBadWords(conf.getDoubleProperty("maxBadWordPercentage", 0.5, "parsing"));
+            this.setOmitWords(conf.getProperty("bannedWordsPath", "config/banned.txt", "parsing"));
 
             //add logging
             EventLog eventLog = new EventLog(logPath);
@@ -71,6 +76,7 @@ public class LangCrawler extends Crawler{
 
             try {
                 domain = new Link(conf.getProperty("baseDomain", "", "crawl")).getHost();
+
             } catch (MalformedURLException ex) {
                 Logger.getLogger(LangCrawler.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -108,22 +114,40 @@ public class LangCrawler extends Crawler{
 
     protected void parse(Page page) {
         URL url = page.getURL();
+        int tmpWordsParsedInPage = 0;
         try {
             Text [] words = page.getWords();
 
             for (int i=0; i < words.length; i++){
-                Text t = words[i];
+                String word = words[i].toText();
 
-                buf.append(t.toText() + System.getProperty("line.separator"));                
-                parsedWords++;
+                //stop parsing the page if it doesn't have necessary ammount of words
+                if (i == Math.round(words.length/2)){
+                    if (parsedWords/words.length < getMaxBadWords()){
+                        System.out.println("Successful word rate in the page("+(parsedWords/words.length)+") is below the required("+getMaxBadWords() +"). Opting out parsing the page");
+                        return;
+                    }
+                }
 
-                if ((parsedWords % MAX_WORDS_PER_UPDATE) == 0){                    
-                    
-                    System.out.println(t.toText());
+                //strip unwanted characters
+                if (this.getStripChars() != null){
+                    word = stripChars(word);
+                }
 
-                    this.observerble.setCrawlerChanged();
-                    this.observerble.notifyObservers(buf.toString());
-                    buf = new StringBuffer();
+                //check unicode range
+                if (isValidWord(word) && !ommitWords.contains(word)){
+
+                    buf.append(word + System.getProperty("line.separator"));
+                    parsedWords++;
+                    tmpWordsParsedInPage++;
+                    System.out.println(word);
+
+                    if ((parsedWords % MAX_WORDS_PER_UPDATE) == 0){
+
+                        this.observerble.setCrawlerChanged();
+                        this.observerble.notifyObservers(buf.toString());
+                        buf = new StringBuffer();
+                    }
                 }
 
                 page.discardContent();
@@ -133,6 +157,49 @@ public class LangCrawler extends Crawler{
           System.err.println("Could not download url:" + url.toString());
           e.printStackTrace();
         }
+    }
+
+    /**
+     * Parse a string and check if it's within the given char range
+     *
+     * @param t input text
+     * @return if the text is valid
+     */
+    private boolean isValidWord(String t){
+
+        if ((maxCharRange | minCharRange) != 0){            
+
+            for (int i=0; i < t.length(); i++){
+                if ((maxCharRange > 0 && t.charAt(i) > maxCharRange) ||
+                        (minCharRange > 0 && t.charAt(i) < minCharRange)){
+                        return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Strip all chars from the word (a very bad implementation, hope to visit back later)
+     *
+     * @param word input word
+     * @return modified word
+     */
+    private String stripChars(String word){
+
+        StringBuffer strbuf = new StringBuffer(word);
+
+        for (int i=0; i < stripChars.length; i++){
+
+            for (int j = strbuf.length(); j > 0; j-- ){
+                if (strbuf.charAt(j-1) == stripChars[i]){
+                    strbuf.deleteCharAt(j-1);
+                }
+            }
+        }
+
+        return word;
     }
 
     public void addObserver(Observer observer){
@@ -152,7 +219,7 @@ public class LangCrawler extends Crawler{
         this.maxWords = maxWords;
     }
 
-    public void setCharRange(int minCharRange, int maxCharRange) {
+    public void setCharRange(char minCharRange, char maxCharRange) {
         this.minCharRange = minCharRange;
         this.maxCharRange = maxCharRange;
     }
@@ -176,6 +243,43 @@ public class LangCrawler extends Crawler{
 
     public void setLogPath(String logPath) {
         this.logPath = logPath;
+    }
+
+    public void setOmitWords(String filepath){
+        BufferedReader reader = null;
+        
+        if (maxCharRange > 256){
+            this.ommitWords = new Trie(maxCharRange);
+        }
+
+        try {
+            reader = new BufferedReader(new FileReader(filepath));
+            String line = null;
+            while ((line = reader.readLine()) != null) {
+                String word = line.trim();
+                if (!word.isEmpty()){
+                    ommitWords.add(word);
+                }
+            }
+
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(LangCrawler.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(LangCrawler.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                reader.close();
+            } catch (IOException ex) {
+                Logger.getLogger(LangCrawler.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+
+    public void setOmitWords(String[] words){
+
+        for (int i=0; i < words.length; i++){
+            ommitWords.add(words[i]);
+        }
     }
 
     public int[] getCharRange() {
@@ -206,6 +310,10 @@ public class LangCrawler extends Crawler{
         return logPath;
     }
 
+    public int getParsedWords() {
+        return parsedWords;
+    }
+
 
     //max pages to parse
     private int maxPages = 500;
@@ -221,7 +329,7 @@ public class LangCrawler extends Crawler{
 
     private int parsedWords = 0;
 
-    private int maxCharRange, minCharRange;
+    private char maxCharRange, minCharRange;
 
     private String charset = "UTF-8";
 
@@ -232,6 +340,8 @@ public class LangCrawler extends Crawler{
     private String logPath = "logs/crawler.log";
 
     private StringBuffer buf = new StringBuffer(maxPages*2);
+
+    private Trie ommitWords = new Trie();
 
     private CrawlObservable observerble = new CrawlObservable();
 }

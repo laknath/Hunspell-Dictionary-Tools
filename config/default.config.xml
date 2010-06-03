@@ -4,20 +4,20 @@
     <property name="installed" value="0"/>
     <property name="path" value="lib/hunspell-1.2.10"/>
   </category>
+  <category name="parsing">
+    <property name="bannedWordsPath" value="config/banned.txt"/>
+    <property name="charRangeMax" value="෴"/>
+    <property name="charRangeMin" value="$ං"/>
+    <property name="charset" value="UTF-8"/>
+    <property name="maxBadWordPercentage" value="0.5"/>
+    <property name="stripChars" value=".,/`|1234567890!@#$%*^=()_+-[]"/>
+  </category>
   <category name="crawl">
-    <property name="baseDomain" value="http://www.dinamina.lk/"/>
+    <property name="baseDomain" value="http://www.dinamina.lk"/>
     <property name="maxDepth" value="5"/>
     <property name="maxPages" value="500"/>
     <property name="maxWords" value="10000"/>
     <property name="name" value="LangCrawler"/>
-  </category>
-  <category name="parsing">
-    <property name="bannedWordsPath" value="config/banned.txt"/>
-    <property name="charRangeMax" value="0D80"/>
-    <property name="charRangeMin" value="0DFF"/>
-    <property name="stripChars" value=".,/'`|1234567890!@#$%*^()_+-"/>
-    <property name="maxBadWordPercentage" value="0.8"/>
-    <property name="charset" value="UTF-8"/>
   </category>
   <category name="general">
     <property name="maxAffixRules" value="-1"/>
