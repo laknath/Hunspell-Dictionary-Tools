@@ -26,14 +26,12 @@ import javax.swing.JFrame;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.FileInputStream;
 import java.io.FileWriter;
-import java.util.Enumeration;
-import java.util.Observable;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
-import javax.swing.table.AbstractTableModel;
-import javax.swing.table.TableModel;
 import org.jconfig.Configuration;
 import org.jconfig.ConfigurationManager;
 import org.jconfig.handler.XMLFileHandler;
@@ -44,10 +42,9 @@ import sinhaladictionarytools.lib.crawler.CrawlObserver;
 import sinhaladictionarytools.lib.crawler.LangAction;
 import sinhaladictionarytools.lib.crawler.LangCrawler;
 import sinhaladictionarytools.lib.crawler.LangCrawlerListener;
+import sinhaladictionarytools.lib.table.TableModel;
 import websphinx.CrawlEvent;
-import websphinx.Crawler;
 import websphinx.DownloadParameters;
-import websphinx.EventLog;
 import websphinx.Link;
 
 /**
@@ -190,13 +187,13 @@ public class SinhalaDictionaryToolsView extends FrameView {
 
         try {
             File wordfile = new File(file);
-            ConcurrentHashMap<String, Integer> hashMap = new ConcurrentHashMap<String, Integer>(70000);
+            HashMap<String, Integer> hashMap = new HashMap<String, Integer>(70000);
 
             final StreamGobbler outputGobbler = new StreamGobbler(new FileInputStream(wordfile), "OUTPUT", hashMap);
             outputGobbler.start();
             outputGobbler.join();
 
-            table.setModel(getTableModel(hashMap));
+            table.setModel(new TableModel(hashMap));
             System.out.println(hashMap.size());
 
             
@@ -207,54 +204,6 @@ public class SinhalaDictionaryToolsView extends FrameView {
             setStatusMessage("Process is interrupted");            
             Logger.getLogger(SinhalaDictionaryToolsView.class.getName()).log(Level.SEVERE, null, ie);
         }
-    }
-
-    /**
-     * This method returns a TableModel based on a hashmap
-     *
-     * @param hashMap the hashmap which the table model should be based on
-     * @return javax.swing.JTable
-     */
-    private TableModel getTableModel(final ConcurrentHashMap<String, Integer> hashMap) {
-
-        return new AbstractTableModel(){
-            private static final long serialVersionUID = 1L;
-            private ConcurrentHashMap<String, Integer> hashmap = hashMap;
-
-            public int getColumnCount() {
-                    return 2;
-            }
-
-            public int getRowCount() {
-                    return hashMap.size();
-            }
-
-            public String getColumnName(int column) {
-                    if (column == 0) {
-                            return "Word";
-                    } else {
-                            return "Frequency";
-                    }
-            }
-
-            public Object getValueAt(int rowIndex, int columnIndex) {
-                    if (columnIndex == 0) {
-                            return getKey(rowIndex);
-                    } else {
-                            return hashmap.get(getKey(rowIndex));
-                    }
-            }
-
-            private String getKey(int a_index) {
-                    String retval = "";
-                    Enumeration<String> e = hashmap.keys();
-                    for (int i = 0; i < a_index + 1; i++) {
-                            retval = e.nextElement();
-                    }
-
-                    return retval;
-            }
-        };
     }
 
     /**
@@ -310,6 +259,11 @@ public class SinhalaDictionaryToolsView extends FrameView {
     }
 
 
+    /**
+     * Save a file to selected output location
+     *
+     * @param tmpFile the tmpfile location
+     */
     private void saveToTmpFile(String tmpFile){
         int returnVal = fileChooser.showSaveDialog(this.getFrame());
         if (returnVal == JFileChooser.APPROVE_OPTION) {
@@ -334,7 +288,71 @@ public class SinhalaDictionaryToolsView extends FrameView {
             setStatusMessage("File save cancelled by user.", true);
         }
     }
-    
+
+    /**
+     * Merge rows from table1 to table 2
+     * If anyrows from table1 selected they will be merged
+     * If not whole table will be merged on confirmation
+     *
+     * @param table1
+     * @param table2
+     */
+    public void mergeTables(JTable table1, JTable table2){
+
+        try{
+            TableModel model1 = (TableModel)table1.getModel();
+            TableModel model2 = (TableModel)table2.getModel();
+
+            if (table1.getSelectedRowCount() == 0){
+                if (JOptionPane.showConfirmDialog(this.getFrame(), "You haven't selected any rows. Do you really want to merge the whole table ?",
+                        "Merge tables?", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION){
+                    model2.addRows(model1);
+                }
+            }else{
+                int[] rows = table1.getSelectedRows();
+                HashSet<String> set = new HashSet<String>(rows.length);
+
+                for (int i=0; i < rows.length; i++){
+                    set.add((String)model1.getValueAt(rows[i], 0));
+                }
+
+                model2.addRows(set);
+            }
+
+        }catch(ClassCastException cce){
+            setStatusMessage("A word list hasn't been loaded to the table", true);
+            JOptionPane.showMessageDialog(null, "A word list hasn't been loaded to the table");
+        }
+
+    }
+
+
+    /**
+     * Diff table1 from table2 selected values
+     *
+     * @param table1
+     * @param table2
+     */
+    public void diffTables(JTable table1, JTable table2){
+
+       try{
+            TableModel model1 = (TableModel)table1.getModel();
+            TableModel model2 = (TableModel)table2.getModel();
+
+            int[] rows = table2.getSelectedRows();            
+
+            for (int i=0; i < rows.length; i++){
+                model1.removeRow((String)model2.getValueAt(rows[i], 0));
+            }
+            model1.fireTableDataChanged();
+
+        }catch(ClassCastException cce){
+            setStatusMessage("A word list hasn't been loaded to the table", true);
+            JOptionPane.showMessageDialog(null, "A word list hasn't been loaded to the table");
+        }
+
+    }
+
     @Action
     public void showAboutBox() {
         if (aboutBox == null) {
@@ -438,6 +456,15 @@ public class SinhalaDictionaryToolsView extends FrameView {
         jScrollPane3 = new javax.swing.JScrollPane();
         jTable2 = new javax.swing.JTable();
         fileSaver = new javax.swing.JFileChooser();
+        jDialog1 = new javax.swing.JDialog();
+        jButton12 = new javax.swing.JButton();
+        jButton13 = new javax.swing.JButton();
+        jPanel3 = new javax.swing.JPanel();
+        jTextField2 = new javax.swing.JTextField();
+        jLabel11 = new javax.swing.JLabel();
+        jLabel9 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        jComboBox3 = new javax.swing.JComboBox();
 
         mainPanel.setMinimumSize(new java.awt.Dimension(500, 500));
         mainPanel.setName("mainPanel"); // NOI18N
@@ -648,14 +675,14 @@ public class SinhalaDictionaryToolsView extends FrameView {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
                     .addComponent(jButton8))
-                .addContainerGap(19, Short.MAX_VALUE))
+                .addContainerGap(17, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab(resourceMap.getString("jPanel1.TabConstraints.tabTitle"), jPanel1); // NOI18N
@@ -840,7 +867,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton9)
                     .addComponent(jButton10))
-                .addContainerGap(14, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jLabel10.setText(resourceMap.getString("jLabel10.text")); // NOI18N
@@ -943,6 +970,11 @@ public class SinhalaDictionaryToolsView extends FrameView {
         jButton26.setText(resourceMap.getString("jButton26.text")); // NOI18N
         jButton26.setToolTipText(resourceMap.getString("jButton26.toolTipText")); // NOI18N
         jButton26.setName("jButton26"); // NOI18N
+        jButton26.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton26ActionPerformed(evt);
+            }
+        });
 
         jComboBox2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "1", "2" }));
         jComboBox2.setToolTipText(resourceMap.getString("jComboBox2.toolTipText")); // NOI18N
@@ -951,10 +983,20 @@ public class SinhalaDictionaryToolsView extends FrameView {
         jButton28.setText(resourceMap.getString("jButton28.text")); // NOI18N
         jButton28.setToolTipText(resourceMap.getString("jButton28.toolTipText")); // NOI18N
         jButton28.setName("jButton28"); // NOI18N
+        jButton28.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton28ActionPerformed(evt);
+            }
+        });
 
         jButton27.setText(resourceMap.getString("jButton27.text")); // NOI18N
         jButton27.setToolTipText(resourceMap.getString("jButton27.toolTipText")); // NOI18N
         jButton27.setName("jButton27"); // NOI18N
+        jButton27.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton27ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel13Layout = new javax.swing.GroupLayout(jPanel13);
         jPanel13.setLayout(jPanel13Layout);
@@ -996,18 +1038,38 @@ public class SinhalaDictionaryToolsView extends FrameView {
         jButton20.setText(resourceMap.getString("jButton20.text")); // NOI18N
         jButton20.setToolTipText(resourceMap.getString("jButton20.toolTipText")); // NOI18N
         jButton20.setName("jButton20"); // NOI18N
+        jButton20.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton20ActionPerformed(evt);
+            }
+        });
 
         jButton24.setText(resourceMap.getString("jButton24.text")); // NOI18N
         jButton24.setToolTipText(resourceMap.getString("jButton24.toolTipText")); // NOI18N
         jButton24.setName("jButton24"); // NOI18N
+        jButton24.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton24ActionPerformed(evt);
+            }
+        });
 
         jButton18.setText(resourceMap.getString("jButton18.text")); // NOI18N
         jButton18.setToolTipText(resourceMap.getString("jButton18.toolTipText")); // NOI18N
         jButton18.setName("jButton18"); // NOI18N
+        jButton18.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton18ActionPerformed(evt);
+            }
+        });
 
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "1", "2" }));
         jComboBox1.setToolTipText(resourceMap.getString("jComboBox1.toolTipText")); // NOI18N
         jComboBox1.setName("jComboBox1"); // NOI18N
+        jComboBox1.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                jComboBox1ItemStateChanged(evt);
+            }
+        });
 
         jButton47.setText(resourceMap.getString("jButton47.text")); // NOI18N
         jButton47.setToolTipText(resourceMap.getString("jButton47.toolTipText")); // NOI18N
@@ -1066,24 +1128,44 @@ public class SinhalaDictionaryToolsView extends FrameView {
         jButton30.setMinimumSize(new java.awt.Dimension(50, 33));
         jButton30.setName("jButton30"); // NOI18N
         jButton30.setPreferredSize(new java.awt.Dimension(50, 33));
+        jButton30.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton30ActionPerformed(evt);
+            }
+        });
 
         jButton29.setText(resourceMap.getString("jButton29.text")); // NOI18N
         jButton29.setMaximumSize(new java.awt.Dimension(50, 33));
         jButton29.setMinimumSize(new java.awt.Dimension(50, 33));
         jButton29.setName("jButton29"); // NOI18N
         jButton29.setPreferredSize(new java.awt.Dimension(50, 33));
+        jButton29.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton29ActionPerformed(evt);
+            }
+        });
 
         jButton22.setText(resourceMap.getString("jButton22.text")); // NOI18N
         jButton22.setMaximumSize(new java.awt.Dimension(50, 33));
         jButton22.setMinimumSize(new java.awt.Dimension(50, 33));
         jButton22.setName("jButton22"); // NOI18N
         jButton22.setPreferredSize(new java.awt.Dimension(50, 33));
+        jButton22.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton22ActionPerformed(evt);
+            }
+        });
 
         jButton21.setText(resourceMap.getString("jButton21.text")); // NOI18N
         jButton21.setMaximumSize(new java.awt.Dimension(50, 33));
         jButton21.setMinimumSize(new java.awt.Dimension(50, 33));
         jButton21.setName("jButton21"); // NOI18N
         jButton21.setPreferredSize(new java.awt.Dimension(50, 33));
+        jButton21.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton21ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel15Layout = new javax.swing.GroupLayout(jPanel15);
         jPanel15.setLayout(jPanel15Layout);
@@ -1297,6 +1379,98 @@ public class SinhalaDictionaryToolsView extends FrameView {
 
         fileSaver.setName("fileSaver"); // NOI18N
 
+        jDialog1.setTitle(resourceMap.getString("jDialog1.title")); // NOI18N
+        jDialog1.setAlwaysOnTop(true);
+        jDialog1.setMinimumSize(new java.awt.Dimension(623, 260));
+        jDialog1.setModalityType(java.awt.Dialog.ModalityType.APPLICATION_MODAL);
+        jDialog1.setName("jDialog1"); // NOI18N
+        jDialog1.setResizable(false);
+
+        jButton12.setText(resourceMap.getString("jButton12.text")); // NOI18N
+        jButton12.setName("jButton12"); // NOI18N
+
+        jButton13.setText(resourceMap.getString("jButton13.text")); // NOI18N
+        jButton13.setName("jButton13"); // NOI18N
+
+        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(resourceMap.getString("jPanel3.border.title"))); // NOI18N
+        jPanel3.setName("jPanel3"); // NOI18N
+
+        jTextField2.setText(resourceMap.getString("jTextField2.text")); // NOI18N
+        jTextField2.setName("jTextField2"); // NOI18N
+
+        jLabel11.setText(resourceMap.getString("jLabel11.text")); // NOI18N
+        jLabel11.setName("jLabel11"); // NOI18N
+
+        jLabel9.setText(resourceMap.getString("jLabel9.text")); // NOI18N
+        jLabel9.setName("jLabel9"); // NOI18N
+
+        jLabel4.setText(resourceMap.getString("jLabel4.text")); // NOI18N
+        jLabel4.setName("jLabel4"); // NOI18N
+
+        jComboBox3.setName("jComboBox3"); // NOI18N
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel11, javax.swing.GroupLayout.DEFAULT_SIZE, 561, Short.MAX_VALUE)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel4)
+                            .addComponent(jLabel9))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jComboBox3, javax.swing.GroupLayout.PREFERRED_SIZE, 242, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jTextField2, javax.swing.GroupLayout.DEFAULT_SIZE, 472, Short.MAX_VALUE))))
+                .addContainerGap())
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel11)
+                .addGap(21, 21, 21)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel4))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel9)
+                    .addComponent(jComboBox3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
+        );
+
+        javax.swing.GroupLayout jDialog1Layout = new javax.swing.GroupLayout(jDialog1.getContentPane());
+        jDialog1.getContentPane().setLayout(jDialog1Layout);
+        jDialog1Layout.setHorizontalGroup(
+            jDialog1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jDialog1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jDialog1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jDialog1Layout.createSequentialGroup()
+                        .addComponent(jButton12, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton13, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap())
+                    .addGroup(jDialog1Layout.createSequentialGroup()
+                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(14, 14, 14))))
+        );
+        jDialog1Layout.setVerticalGroup(
+            jDialog1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jDialog1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(8, 8, 8)
+                .addGroup(jDialog1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton12)
+                    .addComponent(jButton13))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
         setComponent(mainPanel);
         setMenuBar(menuBar);
         setStatusBar(statusPanel);
@@ -1419,7 +1593,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
         String s = jTextField14.getText();
         if (!s.isEmpty()){
                 setStatusMessage("Loading the wordlist");
-                loadToHashTable(s, jTable4);
+                loadToHashTable(s, jTable4);                
         }else{
             setStatusMessage("No file to load", true);
             JOptionPane.showMessageDialog(null, "No file to load");
@@ -1510,45 +1684,142 @@ public class SinhalaDictionaryToolsView extends FrameView {
         }
     }//GEN-LAST:event_jButton11ActionPerformed
 
+    //move to analyzer
     private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
-        FileWriter fw = null;
-        try {
-            File f = new File(tmp.concat("tmp2"));
-            fw = new FileWriter(f);
-            fw.write(jTextArea3.getText());
-            moveToAnalyze(f.getPath());
 
-        } catch (IOException ex) {
-            Logger.getLogger(SinhalaDictionaryToolsView.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            try {
-                fw.close();
-            } catch (IOException ex) {
-                Logger.getLogger(SinhalaDictionaryToolsView.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
+        File f = new File(tmp.concat("tmp2"));
+        new FileOutput(f, jTextArea3.getText()).start();
+        moveToAnalyze(f.getPath());
 
     }//GEN-LAST:event_jButton10ActionPerformed
 
+    //save to output file - dic/aff or txt
     private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
 
-        FileWriter fw = null;
-        try {
-            File f = new File(tmp.concat("tmp2"));
-            fw = new FileWriter(f);
-            fw.write(jTextArea3.getText());
-        } catch (IOException ex) {
-            Logger.getLogger(SinhalaDictionaryToolsView.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            try {
-                fw.close();
-            } catch (IOException ex) {
-                Logger.getLogger(SinhalaDictionaryToolsView.class.getName()).log(Level.SEVERE, null, ex);
-            }
+        new FileOutput(new File(tmp.concat("tmp2")), jTextArea3.getText()).start();
+        saveToTmpFile("tmp2");        
+    }//GEN-LAST:event_jButton9ActionPerformed
+
+    //remove selected rows from the table 1
+    private void jButton18ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton18ActionPerformed
+        
+        try{
+            TableModel model = (TableModel)jTable4.getModel();
+            model.removeRows(jTable4.getSelectedRows());
+
+        }catch(ClassCastException cce){
+            setStatusMessage("A word list hasn't been loaded to the table", true);
+            JOptionPane.showMessageDialog(null, "A word list hasn't been loaded to the table");
+        }        
+    }//GEN-LAST:event_jButton18ActionPerformed
+
+    //add words to the table1
+    private void jButton20ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton20ActionPerformed
+        
+        try{        
+            TableModel model = (TableModel)jTable4.getModel();
+            this.jDialog1.setVisible(true);
+
+            
+        }catch(ClassCastException cce){
+            this.jDialog1.setVisible(false);
+            setStatusMessage("A word list hasn't been loaded to the table", true);
+            JOptionPane.showMessageDialog(null, "A word list hasn't been loaded to the table");
+        }
+    }//GEN-LAST:event_jButton20ActionPerformed
+
+    //show only table1 items with given value
+    private void jComboBox1ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBox1ItemStateChanged
+
+        
+    }//GEN-LAST:event_jComboBox1ItemStateChanged
+
+    //save the table to a dic or txt file
+    private void jButton24ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton24ActionPerformed
+
+        try{
+            
+            TableModel model = (TableModel)jTable4.getModel();
+            new FileOutput(new File(tmp.concat("tmp3")), model.toString()).start();
+            saveToTmpFile("tmp3");
+            
+        }catch(ClassCastException cce){
+            setStatusMessage("A word list hasn't been loaded to the table", true);
+            JOptionPane.showMessageDialog(null, "A word list hasn't been loaded to the table");
         }
 
-        saveToTmpFile("tmp2");
-    }//GEN-LAST:event_jButton9ActionPerformed
+    }//GEN-LAST:event_jButton24ActionPerformed
+
+    //remove words from table 2
+    private void jButton26ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton26ActionPerformed
+       
+        try{
+            TableModel model = (TableModel)jTable3.getModel();
+            model.removeRows(jTable3.getSelectedRows());
+
+        }catch(ClassCastException cce){
+            setStatusMessage("A word list hasn't been loaded to the table", true);
+            JOptionPane.showMessageDialog(null, "A word list hasn't been loaded to the table");
+        }
+        
+    }//GEN-LAST:event_jButton26ActionPerformed
+
+    //add words to table 2
+    private void jButton27ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton27ActionPerformed
+
+        try{
+            TableModel model = (TableModel)jTable3.getModel();
+            this.jDialog1.setVisible(true);
+
+        }catch(ClassCastException cce){
+            this.jDialog1.setVisible(false);
+            setStatusMessage("A word list hasn't been loaded to the table", true);
+            JOptionPane.showMessageDialog(null, "A word list hasn't been loaded to the table");
+        }
+    }//GEN-LAST:event_jButton27ActionPerformed
+
+    //save words from table 2
+    private void jButton28ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton28ActionPerformed
+
+        try{
+
+            TableModel model = (TableModel)jTable3.getModel();
+            new FileOutput(new File(tmp.concat("tmp4")), model.toString()).start();
+            saveToTmpFile("tmp4");
+
+        }catch(ClassCastException cce){
+            setStatusMessage("A word list hasn't been loaded to the table", true);
+            JOptionPane.showMessageDialog(null, "A word list hasn't been loaded to the table");
+        }
+    }//GEN-LAST:event_jButton28ActionPerformed
+
+    //move table1 list to table 2
+    private void jButton21ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton21ActionPerformed
+
+        mergeTables(jTable4, jTable3);
+
+    }//GEN-LAST:event_jButton21ActionPerformed
+
+
+    //move table2 list to table1
+    private void jButton22ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton22ActionPerformed
+
+        mergeTables(jTable3, jTable4);
+
+    }//GEN-LAST:event_jButton22ActionPerformed
+
+    //Table 2 - Table 1
+    private void jButton29ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton29ActionPerformed
+
+        diffTables(jTable3, jTable4);
+
+    }//GEN-LAST:event_jButton29ActionPerformed
+
+    //Table 1 - Table 2
+    private void jButton30ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton30ActionPerformed
+
+        diffTables(jTable4, jTable3);
+    }//GEN-LAST:event_jButton30ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JFileChooser fileChooser;
@@ -1557,6 +1828,8 @@ public class SinhalaDictionaryToolsView extends FrameView {
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton10;
     private javax.swing.JButton jButton11;
+    private javax.swing.JButton jButton12;
+    private javax.swing.JButton jButton13;
     private javax.swing.JButton jButton18;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton20;
@@ -1579,8 +1852,11 @@ public class SinhalaDictionaryToolsView extends FrameView {
     private javax.swing.JButton jButton9;
     private javax.swing.JComboBox jComboBox1;
     private javax.swing.JComboBox jComboBox2;
+    private javax.swing.JComboBox jComboBox3;
+    private javax.swing.JDialog jDialog1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel17;
@@ -1589,10 +1865,12 @@ public class SinhalaDictionaryToolsView extends FrameView {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel21;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel11;
@@ -1600,6 +1878,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
     private javax.swing.JPanel jPanel14;
     private javax.swing.JPanel jPanel15;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
@@ -1619,6 +1898,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
     private javax.swing.JTextArea jTextArea3;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField14;
+    private javax.swing.JTextField jTextField2;
     private javax.swing.JTextField jTextField3;
     private javax.swing.JTextField jTextField5;
     private javax.swing.JTextField jTextField6;
