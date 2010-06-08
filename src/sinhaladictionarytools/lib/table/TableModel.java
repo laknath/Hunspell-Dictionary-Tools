@@ -1,6 +1,7 @@
 package sinhaladictionarytools.lib.table;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import javax.swing.table.AbstractTableModel;
@@ -13,6 +14,7 @@ public class TableModel extends AbstractTableModel{
 
     private String [] keys;
     private HashMap<String, Integer> hashmap;
+    private String filter = "All";
     
     /***
      *
@@ -31,7 +33,7 @@ public class TableModel extends AbstractTableModel{
      * @return the row count
      */
     public int getColumnCount() {
-            return 2;
+        return 2;
     }
 
     /**
@@ -39,7 +41,7 @@ public class TableModel extends AbstractTableModel{
      * @return the total row count in the table
      */
     public int getRowCount() {
-            return hashmap.size();
+        return keys.length;
     }
 
     /**
@@ -64,11 +66,11 @@ public class TableModel extends AbstractTableModel{
      * @return the value at the given table row,column point
      */
     public Object getValueAt(int rowIndex, int columnIndex) {
-            if (columnIndex == 0) {                    
-                    return keys[rowIndex];
-            } else {
-                    return hashmap.get(keys[rowIndex]);
-            }
+        if (columnIndex == 0) {
+                return keys[rowIndex];
+        } else {
+                return hashmap.get(keys[rowIndex]);
+        }
     }
 
     /**
@@ -127,12 +129,16 @@ public class TableModel extends AbstractTableModel{
      * Remove a given row set
      *
      * @param rows set of row indexes to be removed
+     * 
      */
     public void removeRows(int[] rows){
         
         for (int i = rows.length; i > 0; i--){            
-            this.removeRow(rows[i-1]);
-        }        
+            hashmap.remove(keys[rows[i-1]]);
+        }
+
+        keys = hashmap.keySet().toArray(new String[0]);
+        fireTableRowsDeleted(rows[0], rows[rows.length-1]);
     }
 
 
@@ -163,6 +169,7 @@ public class TableModel extends AbstractTableModel{
         
     }
 
+
     /**
      *
      * @return the list of keys in printable format
@@ -171,18 +178,78 @@ public class TableModel extends AbstractTableModel{
     @Override
     public String toString(){
 
-        Iterator<String> keys = hashmap.keySet().iterator();
         String output = "";
 
-        while (keys.hasNext()){
-            output += keys.next() + System.getProperty("line.separator") ;
+        for (int i=0; i < keys.length; i++){
+            output += keys[i] + System.getProperty("line.separator") ;
         }
+
 
         return output;
     }
 
+    /**
+     *
+     * @return the hashmap of the model
+     */
     public HashMap<String, Integer> getHashMap(){
         return this.hashmap;
+    }
+
+    /**
+     *
+     * @return unique values from the model
+     */
+    public HashSet<Integer> getUniqueValues(){
+
+        return new HashSet<Integer>(this.hashmap.values());
+
+    }
+
+    /**
+     * 
+     * @param filter the string code used for filtering table values
+     */
+    public synchronized void setFilter(String filter) {
+        this.filter = filter;
+        Iterator<String> it = hashmap.keySet().iterator();
+        HashSet<String> keyset = new HashSet<String>();
+
+        while (it.hasNext()){
+            String key = it.next();
+            if (filteroutElement(key)){
+                keyset.add(key);
+            }
+        }
+
+        this.keys = keyset.toArray(new String[0]);
+
+        fireTableDataChanged();
+    }
+
+    /**
+     * Checks if the given key fits the filter
+     *
+     * @param key the key to be checked
+     * @return true if the key fits/false if not
+     */
+    private boolean filteroutElement(String key){
+
+        if (filter.equals("All")){
+            return true;
+        }else if (filter.startsWith(">") || filter.startsWith("<")){
+
+            int filterKey = Integer.parseInt(filter.substring(1));
+
+            if ((filter.startsWith(">") && hashmap.get(key).intValue() > filterKey)
+                    || (filter.startsWith("<") && hashmap.get(key).intValue() < filterKey)){
+                return true;
+            }
+        }else if (hashmap.get(key).intValue()  == Integer.parseInt(filter)){
+            return true;
+        }
+
+        return false;
     }
 
 }
