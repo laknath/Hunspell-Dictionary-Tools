@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
+import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -17,11 +18,13 @@ public class FileOutput extends Thread{
 
     FileWriter fw;
     String out;
+    boolean sort = false;
 
-    public FileOutput(File f, String out) {
+    public FileOutput(File f, String out, boolean sort) {
         try {
             this.fw = new FileWriter(f);
             this.out = out;
+            this.sort = sort;
         } catch (IOException ex) {
             System.err.println("Couldn't create the file output.");
             Logger.getLogger(FileOutput.class.getName()).log(Level.SEVERE, null, ex);
@@ -29,7 +32,19 @@ public class FileOutput extends Thread{
     }
 
     public void run(){
-        if (fw != null){            
+        if (fw != null){
+            //sort the output wordlist
+
+            if (sort){
+                String[] tmp = out.split(System.getProperty("line.separator"));
+                Arrays.sort(tmp);
+
+                out = "";
+                for (int i=0; i < tmp.length; i++){
+                    out += tmp[i] + System.getProperty("line.separator");
+                }
+            }
+
             try {
                 fw.write(out);
                 fw.flush();

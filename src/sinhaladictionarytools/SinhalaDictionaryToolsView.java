@@ -4,8 +4,9 @@
 
 package sinhaladictionarytools;
 
-import java.awt.Image;
-import java.awt.Toolkit;
+import java.awt.Component;
+import java.awt.Font;
+import java.awt.GraphicsEnvironment;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -32,7 +33,6 @@ import java.io.FileWriter;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Set;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
@@ -189,7 +189,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
      * @param file the file to loaded into the hash table
      * @param table the table which the hashtable should be associated with
      */    
-    public void loadToHashTable(String file, JTable table){
+    private void loadToHashTable(String file, JTable table){
 
         try {
             File wordfile = new File(file);
@@ -275,7 +275,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             try {
                 File file = fileChooser.getSelectedFile();
-
+                
                 if (file.getAbsolutePath().toLowerCase().endsWith(".dic")){
                     file = new File(file.getAbsolutePath().substring(0, file.getAbsolutePath().lastIndexOf('.')));
                 }
@@ -303,7 +303,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
      * @param table1
      * @param table2
      */
-    public void mergeTables(JTable table1, JTable table2){
+    private void mergeTables(JTable table1, JTable table2){
 
         try{
             TableModel model1 = (TableModel)table1.getModel();
@@ -339,7 +339,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
      * @param table1
      * @param table2
      */
-    public void diffTables(JTable table1, JTable table2){
+    private void diffTables(JTable table1, JTable table2){
 
        try{
             TableModel model1 = (TableModel)table1.getModel();
@@ -359,13 +359,41 @@ public class SinhalaDictionaryToolsView extends FrameView {
 
     }
 
+    private void setFont(String font){
+        Font f = new Font(font, Font.PLAIN, 12);
+        jTextField1.setFont(f);
+        jTextField2.setFont(f);
+        jTextField3.setFont(f);
+        jTextField4.setFont(f);
+        jTextField5.setFont(f);
+        jTextField6.setFont(f);
+        jTextField7.setFont(f);
+        jTextField8.setFont(f);
+        jTextField9.setFont(f);
+        jTextField10.setFont(f);
+        jTextField11.setFont(f);
+        jTextField12.setFont(f);
+        jTextField13.setFont(f);
+        jTextField14.setFont(f);
+        jTextField15.setFont(f);
+        jTextField16.setFont(f);
+        jTextField17.setFont(f);
+        
+        jTable3.setFont(f);
+        jTable4.setFont(f);
+
+        jTextArea1.setFont(f);
+        jTextArea2.setFont(f);
+        jTextArea3.setFont(f);        
+    }
+
     /**
      * Bind  a table model with a combo box
      *
      * @param table the table to listen to
      * @param box the combobox to be binded
      */
-    public void addTableListener(JTable table, final JComboBox box){
+    private void addTableListener(JTable table, final JComboBox box){
 
         try{
             final TableModel model = (TableModel) table.getModel();
@@ -407,6 +435,76 @@ public class SinhalaDictionaryToolsView extends FrameView {
             aboutBox.setLocationRelativeTo(mainFrame);
         }
         SinhalaDictionaryToolsApp.getApplication().show(aboutBox);
+    }
+
+    /**
+     * Read and set settings
+     */
+    private void getConfigs() {
+
+        ResourceMap resourceMap = getResourceMap();
+        this.getFrame().setIconImage(resourceMap.getImageIcon("Application.icon").getImage());
+
+        jComboBox4.removeAllItems();
+        Font[] allFonts = GraphicsEnvironment.getLocalGraphicsEnvironment().getAllFonts();
+
+        for (int i=0; i < allFonts.length; i++){
+            jComboBox4.addItem(allFonts[i].getFontName());
+        }
+        setFont(conf.getProperty("font", "Arial", "general"));
+
+        jComboBox4.setSelectedItem(conf.getProperty("font", "Arial", "general"));
+        jTextField4.setText(conf.getProperty("maxAffixRules", "-1", "general"));
+        jCheckBox1.setSelected(conf.getBooleanProperty("sortBeforeSave", true, "general"));
+
+        jTextField5.setText(conf.getProperty("maxDepth", "-1", "crawl"));
+        jTextField6.setText(conf.getProperty("maxPages", "-1", "crawl"));
+        jTextField7.setText(conf.getProperty("maxWords", "10000", "crawl"));
+        jTextField9.setText(conf.getProperty("baseDomain", "", "crawl"));
+        jTextField17.setText(conf.getProperty("name", "LangCrawler", "crawl"));
+
+        jTextField10.setText(conf.getProperty("bannedWordsPath", "", "parsing"));
+        jTextField15.setText(conf.getProperty("stripChars", "", "parsing"));
+        jTextField16.setText(conf.getProperty("charset", "UTF-8", "parsing"));
+        jTextField13.setText(conf.getProperty("maxBadWordPercentage", "0.5", "parsing"));
+        jTextField11.setText(conf.getProperty("charRangeMin", "a", "parsing"));
+        jTextField12.setText(conf.getProperty("charRangeMax", "Z", "parsing"));
+
+        this.getFrame().setResizable(false);
+    }
+
+    /**
+     * Save settings
+     */
+    private void setConfigs(){
+        try {
+
+            XMLFileHandler handler = new XMLFileHandler("config/config.xml");
+
+            conf.setProperty("font", jComboBox4.getSelectedItem().toString(), "general");        
+            conf.setProperty("maxAffixRules", jTextField4.getText(), "general");
+            conf.setBooleanProperty("sortBeforeSave", jCheckBox1.isSelected(), "general");
+            setFont(jComboBox4.getSelectedItem().toString());
+
+            conf.setProperty("maxDepth", jTextField5.getText(), "crawl");
+            conf.setProperty("maxPages", jTextField6.getText(), "crawl");
+            conf.setProperty("maxWords", jTextField7.getText(), "crawl");
+            conf.setProperty("baseDomain", jTextField9.getText(), "crawl");
+            conf.setProperty("name", jTextField17.getText(), "crawl");
+
+            conf.setProperty("bannedWordsPath", jTextField10.getText(), "parsing");
+            conf.setProperty("stripChars", jTextField15.getText(), "parsing");
+            conf.setProperty("charset", jTextField16.getText(), "parsing");
+            conf.setProperty("maxBadWordPercentage", jTextField13.getText(), "parsing");
+            conf.setProperty("charRangeMin", jTextField11.getText(), "parsing");
+            conf.setProperty("charRangeMax", jTextField12.getText(), "parsing");
+
+            SinhalaDictionaryToolsApp.getConfiguration().save(handler, conf);
+        } catch (ConfigurationManagerException ex) {
+            setStatusMessage("Couldn't save settings.", true);
+            Logger.getLogger(SinhalaDictionaryToolsView.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
     }
 
     /** This method is called from within the constructor to
@@ -495,8 +593,6 @@ public class SinhalaDictionaryToolsView extends FrameView {
         statusAnimationLabel = new javax.swing.JLabel();
         fileChooser = new javax.swing.JFileChooser();
         fileChooser2 = new javax.swing.JFileChooser();
-        jScrollPane3 = new javax.swing.JScrollPane();
-        jTable2 = new javax.swing.JTable();
         fileSaver = new javax.swing.JFileChooser();
         jDialog1 = new javax.swing.JDialog();
         jButton12 = new javax.swing.JButton();
@@ -515,6 +611,9 @@ public class SinhalaDictionaryToolsView extends FrameView {
         jPanel16 = new javax.swing.JPanel();
         jLabel12 = new javax.swing.JLabel();
         jTextField4 = new javax.swing.JTextField();
+        jCheckBox1 = new javax.swing.JCheckBox();
+        jLabel26 = new javax.swing.JLabel();
+        jComboBox4 = new javax.swing.JComboBox();
         jPanel9 = new javax.swing.JPanel();
         jPanel6 = new javax.swing.JPanel();
         jLabel5 = new javax.swing.JLabel();
@@ -751,14 +850,14 @@ public class SinhalaDictionaryToolsView extends FrameView {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
                     .addComponent(jButton8))
-                .addContainerGap(19, Short.MAX_VALUE))
+                .addContainerGap(17, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab(resourceMap.getString("jPanel1.TabConstraints.tabTitle"), jPanel1); // NOI18N
@@ -1404,22 +1503,6 @@ public class SinhalaDictionaryToolsView extends FrameView {
 
         fileChooser2.setName("fileChooser2"); // NOI18N
 
-        jScrollPane3.setName("jScrollPane3"); // NOI18N
-
-        jTable2.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
-            }
-        ));
-        jTable2.setName("jTable2"); // NOI18N
-        jScrollPane3.setViewportView(jTable2);
-
         fileSaver.setName("fileSaver"); // NOI18N
 
         jDialog1.setTitle(resourceMap.getString("jDialog1.title")); // NOI18N
@@ -1506,7 +1589,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
             jDialog1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jDialog1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 159, Short.MAX_VALUE)
                 .addGap(8, 8, 8)
                 .addGroup(jDialog1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton12)
@@ -1550,39 +1633,60 @@ public class SinhalaDictionaryToolsView extends FrameView {
         jTextField4.setText(resourceMap.getString("jTextField4.text")); // NOI18N
         jTextField4.setName("jTextField4"); // NOI18N
 
+        jCheckBox1.setText(resourceMap.getString("jCheckBox1.text")); // NOI18N
+        jCheckBox1.setName("jCheckBox1"); // NOI18N
+
+        jLabel26.setText(resourceMap.getString("jLabel26.text")); // NOI18N
+        jLabel26.setName("jLabel26"); // NOI18N
+
+        jComboBox4.setName("jComboBox4"); // NOI18N
+
         javax.swing.GroupLayout jPanel16Layout = new javax.swing.GroupLayout(jPanel16);
         jPanel16.setLayout(jPanel16Layout);
         jPanel16Layout.setHorizontalGroup(
             jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel16Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(76, 76, 76)
-                .addComponent(jTextField4, javax.swing.GroupLayout.DEFAULT_SIZE, 554, Short.MAX_VALUE)
+                .addGroup(jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jCheckBox1)
+                    .addGroup(jPanel16Layout.createSequentialGroup()
+                        .addGroup(jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel26, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(76, 76, 76)
+                        .addGroup(jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jComboBox4, javax.swing.GroupLayout.PREFERRED_SIZE, 216, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jTextField4, javax.swing.GroupLayout.DEFAULT_SIZE, 554, Short.MAX_VALUE))))
                 .addContainerGap())
         );
         jPanel16Layout.setVerticalGroup(
             jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel16Layout.createSequentialGroup()
                 .addContainerGap()
+                .addComponent(jCheckBox1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel12)
                     .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(219, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel26)
+                    .addComponent(jComboBox4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(152, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel12Layout = new javax.swing.GroupLayout(jPanel12);
         jPanel12.setLayout(jPanel12Layout);
         jPanel12Layout.setHorizontalGroup(
             jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel12Layout.createSequentialGroup()
+            .addGroup(jPanel12Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel16, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel12Layout.setVerticalGroup(
             jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel12Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel12Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel16, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
@@ -1689,7 +1793,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jTextField17, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel25, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(43, Short.MAX_VALUE))
+                .addContainerGap(67, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
@@ -2100,7 +2204,8 @@ public class SinhalaDictionaryToolsView extends FrameView {
     private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
 
         File f = new File(tmp.concat("tmp2"));
-        new FileOutput(f, jTextArea3.getText()).start();
+        new FileOutput(f, jTextArea3.getText(),
+                conf.getBooleanProperty("sortBeforeSave", true, "general")).start();
         moveToAnalyze(f.getPath());
 
     }//GEN-LAST:event_jButton10ActionPerformed
@@ -2108,7 +2213,8 @@ public class SinhalaDictionaryToolsView extends FrameView {
     //save to output file - dic/aff or txt
     private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
 
-        new FileOutput(new File(tmp.concat("tmp2")), jTextArea3.getText()).start();
+        new FileOutput(new File(tmp.concat("tmp2")), jTextArea3.getText(),
+                conf.getBooleanProperty("sortBeforeSave", true, "general")).start();
         saveToTmpFile("tmp2");        
     }//GEN-LAST:event_jButton9ActionPerformed
 
@@ -2146,7 +2252,8 @@ public class SinhalaDictionaryToolsView extends FrameView {
         try{
             
             TableModel model = (TableModel)jTable4.getModel();
-            new FileOutput(new File(tmp.concat("tmp3")), model.toString()).start();
+            new FileOutput(new File(tmp.concat("tmp3")), model.toString(),
+                    conf.getBooleanProperty("sortBeforeSave", true, "general")).start();
             saveToTmpFile("tmp3");
             
         }catch(ClassCastException cce){
@@ -2190,7 +2297,8 @@ public class SinhalaDictionaryToolsView extends FrameView {
         try{
 
             TableModel model = (TableModel)jTable3.getModel();
-            new FileOutput(new File(tmp.concat("tmp4")), model.toString()).start();
+            new FileOutput(new File(tmp.concat("tmp4")), model.toString(),
+                    conf.getBooleanProperty("sortBeforeSave", true, "general")).start();
             saveToTmpFile("tmp4");
 
         }catch(ClassCastException cce){
@@ -2310,9 +2418,11 @@ public class SinhalaDictionaryToolsView extends FrameView {
     private javax.swing.JButton jButton7;
     private javax.swing.JButton jButton8;
     private javax.swing.JButton jButton9;
+    private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JComboBox jComboBox1;
     private javax.swing.JComboBox jComboBox2;
     private javax.swing.JComboBox jComboBox3;
+    private javax.swing.JComboBox jComboBox4;
     private javax.swing.JDialog jDialog1;
     private javax.swing.JDialog jDialog2;
     private javax.swing.JLabel jLabel1;
@@ -2333,6 +2443,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
     private javax.swing.JLabel jLabel23;
     private javax.swing.JLabel jLabel24;
     private javax.swing.JLabel jLabel25;
+    private javax.swing.JLabel jLabel26;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -2364,14 +2475,12 @@ public class SinhalaDictionaryToolsView extends FrameView {
     private javax.swing.JPanel jPanel9;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JScrollPane jScrollPane7;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTabbedPane jTabbedPane2;
-    private javax.swing.JTable jTable2;
     private javax.swing.JTable jTable3;
     private javax.swing.JTable jTable4;
     private javax.swing.JTextArea jTextArea1;
@@ -2410,53 +2519,4 @@ public class SinhalaDictionaryToolsView extends FrameView {
     private JDialog aboutBox;
     private Configuration conf = ConfigurationManager.getConfiguration("config");
     private String tmp = "tmp".concat(System.getProperty("file.separator"));
-
-    private void getConfigs() {
-
-        ResourceMap resourceMap = getResourceMap();      
-        this.getFrame().setIconImage(resourceMap.getImageIcon("Application.icon").getImage());
-
-        jTextField4.setText(conf.getProperty("maxAffixRules", "-1", "general"));
-
-        jTextField5.setText(conf.getProperty("maxDepth", "-1", "crawl"));
-        jTextField6.setText(conf.getProperty("maxPages", "-1", "crawl"));
-        jTextField7.setText(conf.getProperty("maxWords", "10000", "crawl"));
-        jTextField9.setText(conf.getProperty("baseDomain", "", "crawl"));
-        jTextField17.setText(conf.getProperty("name", "LangCrawler", "crawl"));
-
-        jTextField10.setText(conf.getProperty("bannedWordsPath", "", "parsing"));
-        jTextField15.setText(conf.getProperty("stripChars", "", "parsing"));
-        jTextField16.setText(conf.getProperty("charset", "UTF-8", "parsing"));
-        jTextField13.setText(conf.getProperty("maxBadWordPercentage", "0.5", "parsing"));
-        jTextField11.setText(conf.getProperty("charRangeMin", "a", "parsing"));
-        jTextField12.setText(conf.getProperty("charRangeMax", "Z", "parsing"));
-    }
-
-    private void setConfigs(){
-        try {
-            
-            XMLFileHandler handler = new XMLFileHandler("config/config.xml");
-
-            conf.setProperty("maxAffixRules", jTextField4.getText(), "general");
-
-            conf.setProperty("maxDepth", jTextField5.getText(), "crawl");
-            conf.setProperty("maxPages", jTextField6.getText(), "crawl");
-            conf.setProperty("maxWords", jTextField7.getText(), "crawl");
-            conf.setProperty("baseDomain", jTextField9.getText(), "crawl");
-            conf.setProperty("name", jTextField17.getText(), "crawl");
-
-            conf.setProperty("bannedWordsPath", jTextField10.getText(), "parsing");
-            conf.setProperty("stripChars", jTextField15.getText(), "parsing");
-            conf.setProperty("charset", jTextField16.getText(), "parsing");
-            conf.setProperty("maxBadWordPercentage", jTextField13.getText(), "parsing");
-            conf.setProperty("charRangeMin", jTextField11.getText(), "parsing");
-            conf.setProperty("charRangeMax", jTextField12.getText(), "parsing");
-
-            SinhalaDictionaryToolsApp.getConfiguration().save(handler, conf);
-        } catch (ConfigurationManagerException ex) {
-            setStatusMessage("Couldn't save settings.", true);
-            Logger.getLogger(SinhalaDictionaryToolsView.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-    }
 }
