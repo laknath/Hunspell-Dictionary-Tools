@@ -1,7 +1,5 @@
 <?xml version="1.0" ?>
 <properties>
-  <include properties="vocabulary_catagory.xml"/>
-
   <category name="hunspell">
     <property name="installed" value="0"/>
     <property name="path" value="lib/hunspell-1.2.10"/>
