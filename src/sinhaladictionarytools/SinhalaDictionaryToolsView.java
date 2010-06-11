@@ -1097,10 +1097,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
         jTable3.setFont(resourceMap.getFont("jTable4.font")); // NOI18N
         jTable3.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null}
+
             },
             new String [] {
                 "Word", "Frequency"
@@ -1115,6 +1112,11 @@ public class SinhalaDictionaryToolsView extends FrameView {
             }
         });
         jTable3.setName("jTable3"); // NOI18N
+        jTable3.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                jTable3KeyPressed(evt);
+            }
+        });
         jScrollPane6.setViewportView(jTable3);
 
         jScrollPane7.setName("jScrollPane7"); // NOI18N
@@ -1122,16 +1124,26 @@ public class SinhalaDictionaryToolsView extends FrameView {
         jTable4.setFont(resourceMap.getFont("jTable4.font")); // NOI18N
         jTable4.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null}
+
             },
             new String [] {
                 "Word", "Frequency"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         jTable4.setName("jTable4"); // NOI18N
+        jTable4.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                jTable4KeyPressed(evt);
+            }
+        });
         jScrollPane7.setViewportView(jTable4);
 
         jPanel13.setName("jPanel13"); // NOI18N
@@ -2538,15 +2550,20 @@ public class SinhalaDictionaryToolsView extends FrameView {
         if (!dicText.isEmpty()){
 
             try {
-                dicText = addAffixes(dicText, vconf.getArray(jComboBox3.getSelectedItem().toString(),
-                                            new String[]{}, "categories"));
-
-                File affFile = new File(vconf.getProperty("affpath", "config/global.aff", "general"));
-                String wordlist = generateAllAddWords(dicText, affFile, "tmp5");
-
-                String[] arrayWordList = wordlist.split(System.getProperty("line.separator"));
-
+                String[] arrayWordList = null;
                 TableModel model = null;
+
+                if (jComboBox3.getSelectedIndex() == 0){
+                    arrayWordList = new String[]{dicText};
+                }else{
+                    dicText = addAffixes(dicText, vconf.getArray(jComboBox3.getSelectedItem().toString(),
+                                                new String[]{}, "categories"));
+
+                    File affFile = new File(vconf.getProperty("affpath", "config/global.aff", "general"));
+                    String wordlist = generateAllAddWords(dicText, affFile, "tmp5");
+                    arrayWordList = wordlist.split(System.getProperty("line.separator"));
+                }
+               
                 if (jCheckBox2.isSelected()) {
                     model = (TableModel) jTable4.getModel();
                 } else {
@@ -2572,12 +2589,28 @@ public class SinhalaDictionaryToolsView extends FrameView {
     private void jDialog1ComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_jDialog1ComponentShown
 
         jComboBox3.removeAllItems();
-        
+
+        jComboBox3.addItem("None");
         for (String cat: vconf.getPropertyNames("categories")){
             jComboBox3.addItem(cat);
         }
 
     }//GEN-LAST:event_jDialog1ComponentShown
+
+    private void jTable4KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTable4KeyPressed
+
+        if (evt.getKeyCode() == 127){
+            jButton18.doClick();
+        }
+
+    }//GEN-LAST:event_jTable4KeyPressed
+
+    private void jTable3KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTable3KeyPressed
+
+        if (evt.getKeyCode() == 127){
+            jButton26.doClick();
+        }
+    }//GEN-LAST:event_jTable3KeyPressed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JFileChooser fileChooser;
