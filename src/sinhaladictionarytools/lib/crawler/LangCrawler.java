@@ -165,7 +165,7 @@ public class LangCrawler extends Crawler{
      * @param t input text
      * @return if the text is valid
      */
-    private boolean isValidWord(String t){
+    public boolean isValidWord(String t){
 
         if ((maxCharRange | minCharRange) != 0){            
 
@@ -186,7 +186,7 @@ public class LangCrawler extends Crawler{
      * @param word input word
      * @return modified word
      */
-    private String stripChars(String word){
+    public String stripChars(String word){
 
         StringBuffer strbuf = new StringBuffer(word);
 
@@ -202,49 +202,103 @@ public class LangCrawler extends Crawler{
         return word;
     }
 
+    /**
+     * Add an observer to the crawler
+     *
+     * @param observer an observer to listen to events
+     */
     public void addObserver(Observer observer){
         this.observerble.addObserver(observer);
     }
 
+    /**
+     * Remove an registered observer
+     *
+     * @param observer the observer object to be removed
+     */
     public void removeObserver(Observer observer){
         this.observerble.deleteObserver(observer);
     }
 
-
+    /**
+     * Set the maximum pages to crawl
+     *
+     * @param maxPages the maximum number of pages to crawl
+     */
     public void setMaxPages(int maxPages) {
         this.maxPages = maxPages;
     }
 
+    /**
+     * The maximum number of words to crawl
+     *
+     * @param maxWords maximum number of words
+     */
     public void setMaxWords(int maxWords) {
         this.maxWords = maxWords;
     }
 
+    /**
+     * The valid unicode range of words to collect
+     *
+     * @param minCharRange minimum unicode character
+     * @param maxCharRange maximum unicode character
+     */
     public void setCharRange(char minCharRange, char maxCharRange) {
         this.minCharRange = minCharRange;
         this.maxCharRange = maxCharRange;
     }
 
+    /**
+     * Set the character set of the crawler
+     *
+     * @param charset the caracter set
+     */
     public void setCharset(String charset) {
         this.charset = charset;
     }
 
+    /**
+     * string a given character sequence
+     *
+     * @param stripChars a set of characters to be removed
+     */
     public void setStripChars(char[] stripChars) {
         this.stripChars = stripChars;
     }
 
+    /**
+     * A converence method for setStripChars(char[] stripChars)
+     *
+     * @param charString
+     */
     public void setStripChars(String charString) {
         this.setStripChars(charString.toCharArray());
     }
 
-
+    /**
+     * Set the maximum percentage of bad words
+     *
+     * @param maxBadWords the percentage of max bad words
+     */
     public void setMaxBadWords(double maxBadWords) {
         this.maxBadWords = maxBadWords;
     }
 
+    /**
+     * Set the log file path
+     *
+     * @param logPath the file path of the log
+     */
     public void setLogPath(String logPath) {
         this.logPath = logPath;
     }
 
+    /**
+     * Set words to be ommited from the crawler
+     *
+     * @param filepath the file path containing a list of words per each line
+     */
     public void setOmitWords(String filepath){
         BufferedReader reader = null;
         
@@ -275,12 +329,18 @@ public class LangCrawler extends Crawler{
         }
     }
 
+    /**
+     * Set words to be ommited from the crawler
+     *
+     * @param words array of words
+     */
     public void setOmitWords(String[] words){
 
         for (int i=0; i < words.length; i++){
             ommitWords.add(words[i]);
         }
     }
+
 
     public int[] getCharRange() {
         return new int[]{this.minCharRange, this.maxCharRange };
