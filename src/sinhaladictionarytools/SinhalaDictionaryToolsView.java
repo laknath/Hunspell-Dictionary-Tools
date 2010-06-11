@@ -39,6 +39,7 @@ import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTable;
+import javax.swing.JViewport;
 import javax.swing.event.TableModelListener;
 import org.jconfig.Configuration;
 import org.jconfig.ConfigurationManager;
@@ -380,7 +381,10 @@ public class SinhalaDictionaryToolsView extends FrameView {
         jTextField15.setFont(f);
         jTextField16.setFont(f);
         jTextField17.setFont(f);
-        
+        jTextField18.setFont(f);
+        jTextField19.setFont(f);
+
+
         jTable3.setFont(f);
         jTable4.setFont(f);
 
@@ -412,7 +416,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
                         int i = it.next();
 
                         box.addItem("<" + i);
-                        box.addItem(i);
+                        box.addItem("=" + i);
                         box.addItem(">" + i);
                     }
                     box.revalidate();
@@ -685,7 +689,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
         fileChooser = new javax.swing.JFileChooser();
         fileChooser2 = new javax.swing.JFileChooser();
         fileSaver = new javax.swing.JFileChooser();
-        jDialog1 = new javax.swing.JDialog();
+        addWordsDialog = new javax.swing.JDialog();
         jButton12 = new javax.swing.JButton();
         jButton13 = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
@@ -695,7 +699,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
         jLabel4 = new javax.swing.JLabel();
         jComboBox3 = new javax.swing.JComboBox();
         jCheckBox2 = new javax.swing.JCheckBox();
-        jDialog2 = new javax.swing.JDialog();
+        settingsDialog = new javax.swing.JDialog();
         jButton14 = new javax.swing.JButton();
         jButton15 = new javax.swing.JButton();
         jTabbedPane2 = new javax.swing.JTabbedPane();
@@ -732,12 +736,18 @@ public class SinhalaDictionaryToolsView extends FrameView {
         jTextField15 = new javax.swing.JTextField();
         jTextField16 = new javax.swing.JTextField();
         jTextField12 = new javax.swing.JTextField();
-        jDialog3 = new javax.swing.JDialog();
+        findWordsDialog = new javax.swing.JDialog();
         jButton16 = new javax.swing.JButton();
         jButton17 = new javax.swing.JButton();
         jPanel17 = new javax.swing.JPanel();
         jTextField18 = new javax.swing.JTextField();
         jLabel29 = new javax.swing.JLabel();
+        filterWordsDialog = new javax.swing.JDialog();
+        jButton19 = new javax.swing.JButton();
+        jButton23 = new javax.swing.JButton();
+        jPanel19 = new javax.swing.JPanel();
+        jTextField19 = new javax.swing.JTextField();
+        jLabel30 = new javax.swing.JLabel();
 
         mainPanel.setMinimumSize(new java.awt.Dimension(500, 500));
         mainPanel.setName("mainPanel"); // NOI18N
@@ -948,7 +958,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -1121,6 +1131,11 @@ public class SinhalaDictionaryToolsView extends FrameView {
             }
         });
         jTable3.setName("jTable3"); // NOI18N
+        jTable3.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                jTable3FocusGained(evt);
+            }
+        });
         jTable3.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 jTable3KeyPressed(evt);
@@ -1148,6 +1163,12 @@ public class SinhalaDictionaryToolsView extends FrameView {
             }
         });
         jTable4.setName("jTable4"); // NOI18N
+        jTable4.setUpdateSelectionOnSort(false);
+        jTable4.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                jTable4FocusGained(evt);
+            }
+        });
         jTable4.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 jTable4KeyPressed(evt);
@@ -1507,6 +1528,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
 
         menuBar.setName("menuBar"); // NOI18N
 
+        fileMenu.setMnemonic('F');
         fileMenu.setText(resourceMap.getString("fileMenu.text")); // NOI18N
         fileMenu.setName("fileMenu"); // NOI18N
 
@@ -1554,6 +1576,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
 
         menuBar.add(fileMenu);
 
+        jMenu1.setMnemonic('E');
         jMenu1.setText(resourceMap.getString("jMenu1.text")); // NOI18N
         jMenu1.setName("jMenu1"); // NOI18N
 
@@ -1561,6 +1584,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
         jMenuItem5.setMnemonic('F');
         jMenuItem5.setText(resourceMap.getString("jMenuItem5.text")); // NOI18N
         jMenuItem5.setToolTipText(resourceMap.getString("jMenuItem5.toolTipText")); // NOI18N
+        jMenuItem5.setEnabled(false);
         jMenuItem5.setName("jMenuItem5"); // NOI18N
         jMenuItem5.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1573,7 +1597,13 @@ public class SinhalaDictionaryToolsView extends FrameView {
         jMenuItem6.setMnemonic('L');
         jMenuItem6.setText(resourceMap.getString("jMenuItem6.text")); // NOI18N
         jMenuItem6.setToolTipText(resourceMap.getString("jMenuItem6.toolTipText")); // NOI18N
+        jMenuItem6.setEnabled(false);
         jMenuItem6.setName("jMenuItem6"); // NOI18N
+        jMenuItem6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem6ActionPerformed(evt);
+            }
+        });
         jMenu1.add(jMenuItem6);
 
         jSeparator2.setName("jSeparator2"); // NOI18N
@@ -1593,6 +1623,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
 
         menuBar.add(jMenu1);
 
+        helpMenu.setMnemonic('H');
         helpMenu.setText(resourceMap.getString("helpMenu.text")); // NOI18N
         helpMenu.setName("helpMenu"); // NOI18N
 
@@ -1650,15 +1681,15 @@ public class SinhalaDictionaryToolsView extends FrameView {
 
         fileSaver.setName("fileSaver"); // NOI18N
 
-        jDialog1.setTitle(resourceMap.getString("jDialog1.title")); // NOI18N
-        jDialog1.setAlwaysOnTop(true);
-        jDialog1.setMinimumSize(new java.awt.Dimension(623, 260));
-        jDialog1.setModalityType(java.awt.Dialog.ModalityType.APPLICATION_MODAL);
-        jDialog1.setName("jDialog1"); // NOI18N
-        jDialog1.setResizable(false);
-        jDialog1.addComponentListener(new java.awt.event.ComponentAdapter() {
+        addWordsDialog.setTitle(resourceMap.getString("addWordsDialog.title")); // NOI18N
+        addWordsDialog.setAlwaysOnTop(true);
+        addWordsDialog.setMinimumSize(new java.awt.Dimension(623, 260));
+        addWordsDialog.setModalityType(java.awt.Dialog.ModalityType.APPLICATION_MODAL);
+        addWordsDialog.setName("addWordsDialog"); // NOI18N
+        addWordsDialog.setResizable(false);
+        addWordsDialog.addComponentListener(new java.awt.event.ComponentAdapter() {
             public void componentShown(java.awt.event.ComponentEvent evt) {
-                jDialog1ComponentShown(evt);
+                addWordsDialogComponentShown(evt);
             }
         });
 
@@ -1735,48 +1766,48 @@ public class SinhalaDictionaryToolsView extends FrameView {
         jCheckBox2.setEnabled(false);
         jCheckBox2.setName("jCheckBox2"); // NOI18N
 
-        javax.swing.GroupLayout jDialog1Layout = new javax.swing.GroupLayout(jDialog1.getContentPane());
-        jDialog1.getContentPane().setLayout(jDialog1Layout);
-        jDialog1Layout.setHorizontalGroup(
-            jDialog1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jDialog1Layout.createSequentialGroup()
+        javax.swing.GroupLayout addWordsDialogLayout = new javax.swing.GroupLayout(addWordsDialog.getContentPane());
+        addWordsDialog.getContentPane().setLayout(addWordsDialogLayout);
+        addWordsDialogLayout.setHorizontalGroup(
+            addWordsDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(addWordsDialogLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jDialog1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jDialog1Layout.createSequentialGroup()
+                .addGroup(addWordsDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, addWordsDialogLayout.createSequentialGroup()
                         .addComponent(jButton13, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton12, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(14, 14, 14))
-            .addGroup(jDialog1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(jDialog1Layout.createSequentialGroup()
+            .addGroup(addWordsDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(addWordsDialogLayout.createSequentialGroup()
                     .addGap(0, 148, Short.MAX_VALUE)
                     .addComponent(jCheckBox2)
                     .addGap(0, 149, Short.MAX_VALUE)))
         );
-        jDialog1Layout.setVerticalGroup(
-            jDialog1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jDialog1Layout.createSequentialGroup()
+        addWordsDialogLayout.setVerticalGroup(
+            addWordsDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(addWordsDialogLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(8, 8, 8)
-                .addGroup(jDialog1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(addWordsDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton12)
                     .addComponent(jButton13))
                 .addContainerGap())
-            .addGroup(jDialog1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(jDialog1Layout.createSequentialGroup()
+            .addGroup(addWordsDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(addWordsDialogLayout.createSequentialGroup()
                     .addGap(0, 103, Short.MAX_VALUE)
                     .addComponent(jCheckBox2)
                     .addGap(0, 103, Short.MAX_VALUE)))
         );
 
-        jDialog2.setTitle(resourceMap.getString("jDialog2.title")); // NOI18N
-        jDialog2.setAlwaysOnTop(true);
-        jDialog2.setMinimumSize(new java.awt.Dimension(840, 450));
-        jDialog2.setModalityType(java.awt.Dialog.ModalityType.APPLICATION_MODAL);
-        jDialog2.setName("jDialog2"); // NOI18N
-        jDialog2.setResizable(false);
+        settingsDialog.setTitle(resourceMap.getString("settingsDialog.title")); // NOI18N
+        settingsDialog.setAlwaysOnTop(true);
+        settingsDialog.setMinimumSize(new java.awt.Dimension(840, 450));
+        settingsDialog.setModalityType(java.awt.Dialog.ModalityType.APPLICATION_MODAL);
+        settingsDialog.setName("settingsDialog"); // NOI18N
+        settingsDialog.setResizable(false);
 
         jButton14.setText(resourceMap.getString("jButton14.text")); // NOI18N
         jButton14.setToolTipText(resourceMap.getString("jButton14.toolTipText")); // NOI18N
@@ -2141,38 +2172,38 @@ public class SinhalaDictionaryToolsView extends FrameView {
 
         jTabbedPane2.addTab(resourceMap.getString("jPanel8.TabConstraints.tabTitle"), jPanel8); // NOI18N
 
-        javax.swing.GroupLayout jDialog2Layout = new javax.swing.GroupLayout(jDialog2.getContentPane());
-        jDialog2.getContentPane().setLayout(jDialog2Layout);
-        jDialog2Layout.setHorizontalGroup(
-            jDialog2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jDialog2Layout.createSequentialGroup()
+        javax.swing.GroupLayout settingsDialogLayout = new javax.swing.GroupLayout(settingsDialog.getContentPane());
+        settingsDialog.getContentPane().setLayout(settingsDialogLayout);
+        settingsDialogLayout.setHorizontalGroup(
+            settingsDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(settingsDialogLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jDialog2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jDialog2Layout.createSequentialGroup()
+                .addGroup(settingsDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, settingsDialogLayout.createSequentialGroup()
                         .addComponent(jButton15, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton14, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jTabbedPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 814, Short.MAX_VALUE))
                 .addContainerGap())
         );
-        jDialog2Layout.setVerticalGroup(
-            jDialog2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jDialog2Layout.createSequentialGroup()
+        settingsDialogLayout.setVerticalGroup(
+            settingsDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, settingsDialogLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jTabbedPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 356, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jDialog2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(settingsDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton14)
                     .addComponent(jButton15))
                 .addContainerGap())
         );
 
-        jDialog3.setTitle(resourceMap.getString("jDialog3.title")); // NOI18N
-        jDialog3.setAlwaysOnTop(true);
-        jDialog3.setMinimumSize(new java.awt.Dimension(623, 260));
-        jDialog3.setModalityType(java.awt.Dialog.ModalityType.APPLICATION_MODAL);
-        jDialog3.setName("jDialog3"); // NOI18N
-        jDialog3.setResizable(false);
+        findWordsDialog.setTitle(resourceMap.getString("findWordsDialog.title")); // NOI18N
+        findWordsDialog.setAlwaysOnTop(true);
+        findWordsDialog.setMinimumSize(new java.awt.Dimension(430, 200));
+        findWordsDialog.setModal(false);
+        findWordsDialog.setName("findWordsDialog"); // NOI18N
+        findWordsDialog.setResizable(false);
 
         jButton16.setText(resourceMap.getString("jButton16.text")); // NOI18N
         jButton16.setName("jButton16"); // NOI18N
@@ -2220,31 +2251,109 @@ public class SinhalaDictionaryToolsView extends FrameView {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        javax.swing.GroupLayout jDialog3Layout = new javax.swing.GroupLayout(jDialog3.getContentPane());
-        jDialog3.getContentPane().setLayout(jDialog3Layout);
-        jDialog3Layout.setHorizontalGroup(
-            jDialog3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jDialog3Layout.createSequentialGroup()
-                .addGroup(jDialog3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jDialog3Layout.createSequentialGroup()
+        javax.swing.GroupLayout findWordsDialogLayout = new javax.swing.GroupLayout(findWordsDialog.getContentPane());
+        findWordsDialog.getContentPane().setLayout(findWordsDialogLayout);
+        findWordsDialogLayout.setHorizontalGroup(
+            findWordsDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(findWordsDialogLayout.createSequentialGroup()
+                .addGroup(findWordsDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(findWordsDialogLayout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(jPanel17, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jDialog3Layout.createSequentialGroup()
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, findWordsDialogLayout.createSequentialGroup()
                         .addGap(217, 217, 217)
                         .addComponent(jButton17, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jButton16, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
-        jDialog3Layout.setVerticalGroup(
-            jDialog3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jDialog3Layout.createSequentialGroup()
+        findWordsDialogLayout.setVerticalGroup(
+            findWordsDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(findWordsDialogLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel17, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jDialog3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 8, Short.MAX_VALUE)
+                .addGroup(findWordsDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton16)
                     .addComponent(jButton17))
+                .addContainerGap())
+        );
+
+        filterWordsDialog.setTitle(resourceMap.getString("filterWordsDialog.title")); // NOI18N
+        filterWordsDialog.setAlwaysOnTop(true);
+        filterWordsDialog.setMinimumSize(new java.awt.Dimension(430, 200));
+        filterWordsDialog.setName("filterWordsDialog"); // NOI18N
+        filterWordsDialog.setResizable(false);
+
+        jButton19.setText(resourceMap.getString("jButton19.text")); // NOI18N
+        jButton19.setName("jButton19"); // NOI18N
+        jButton19.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton19ActionPerformed(evt);
+            }
+        });
+
+        jButton23.setText(resourceMap.getString("jButton23.text")); // NOI18N
+        jButton23.setName("jButton23"); // NOI18N
+        jButton23.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton23ActionPerformed(evt);
+            }
+        });
+
+        jPanel19.setBorder(javax.swing.BorderFactory.createTitledBorder(resourceMap.getString("jPanel19.border.title"))); // NOI18N
+        jPanel19.setName("jPanel19"); // NOI18N
+
+        jTextField19.setToolTipText(resourceMap.getString("jTextField19.toolTipText")); // NOI18N
+        jTextField19.setName("jTextField19"); // NOI18N
+
+        jLabel30.setText(resourceMap.getString("jLabel30.text")); // NOI18N
+        jLabel30.setName("jLabel30"); // NOI18N
+
+        javax.swing.GroupLayout jPanel19Layout = new javax.swing.GroupLayout(jPanel19);
+        jPanel19.setLayout(jPanel19Layout);
+        jPanel19Layout.setHorizontalGroup(
+            jPanel19Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel19Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel30)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jTextField19, javax.swing.GroupLayout.DEFAULT_SIZE, 331, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jPanel19Layout.setVerticalGroup(
+            jPanel19Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel19Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel19Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jTextField19, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel30))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        javax.swing.GroupLayout filterWordsDialogLayout = new javax.swing.GroupLayout(filterWordsDialog.getContentPane());
+        filterWordsDialog.getContentPane().setLayout(filterWordsDialogLayout);
+        filterWordsDialogLayout.setHorizontalGroup(
+            filterWordsDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(filterWordsDialogLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(filterWordsDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel19, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, filterWordsDialogLayout.createSequentialGroup()
+                        .addComponent(jButton23, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton19, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
+        );
+        filterWordsDialogLayout.setVerticalGroup(
+            filterWordsDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(filterWordsDialogLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel19, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 8, Short.MAX_VALUE)
+                .addGroup(filterWordsDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton19)
+                    .addComponent(jButton23))
                 .addContainerGap())
         );
 
@@ -2486,10 +2595,10 @@ public class SinhalaDictionaryToolsView extends FrameView {
 
         try{        
             TableModel model = (TableModel)jTable4.getModel();
-            this.jDialog1.setVisible(true);
+            this.addWordsDialog.setVisible(true);
             
         }catch(ClassCastException cce){
-            this.jDialog1.setVisible(false);
+            this.addWordsDialog.setVisible(false);
             setStatusMessage("A word list hasn't been loaded to the table", true);
             JOptionPane.showMessageDialog(null, "A word list hasn't been loaded to the table");
         }
@@ -2534,10 +2643,10 @@ public class SinhalaDictionaryToolsView extends FrameView {
 
         try{
             TableModel model = (TableModel)jTable3.getModel();
-            this.jDialog1.setVisible(true);
+            this.addWordsDialog.setVisible(true);
 
         }catch(ClassCastException cce){
-            this.jDialog1.setVisible(false);
+            this.addWordsDialog.setVisible(false);
             setStatusMessage("A word list hasn't been loaded to the table", true);
             JOptionPane.showMessageDialog(null, "A word list hasn't been loaded to the table");
         }
@@ -2609,16 +2718,16 @@ public class SinhalaDictionaryToolsView extends FrameView {
     //save configurations
     private void jButton15ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton15ActionPerformed
         setConfigs();
-        this.jDialog2.setVisible(false);
+        this.settingsDialog.setVisible(false);
     }//GEN-LAST:event_jButton15ActionPerformed
 
     private void jButton14ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton14ActionPerformed
-        this.jDialog2.setVisible(false);
+        this.settingsDialog.setVisible(false);
     }//GEN-LAST:event_jButton14ActionPerformed
 
     private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
         getConfigs();
-        this.jDialog2.setVisible(true);
+        this.settingsDialog.setVisible(true);
     }//GEN-LAST:event_jMenuItem4ActionPerformed
 
     //change 1st combo box item selection
@@ -2701,14 +2810,16 @@ public class SinhalaDictionaryToolsView extends FrameView {
             }
         }
 
-        jDialog1.setVisible(false);
+        addWordsDialog.setVisible(false);
     }//GEN-LAST:event_jButton13ActionPerformed
 
+    //cancel add words dialog
     private void jButton12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton12ActionPerformed
-        jDialog1.setVisible(false);
+        addWordsDialog.setVisible(false);
     }//GEN-LAST:event_jButton12ActionPerformed
 
-    private void jDialog1ComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_jDialog1ComponentShown
+    //show add words dialog
+    private void addWordsDialogComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_addWordsDialogComponentShown
 
         jComboBox3.removeAllItems();
 
@@ -2717,8 +2828,9 @@ public class SinhalaDictionaryToolsView extends FrameView {
             jComboBox3.addItem(cat);
         }
 
-    }//GEN-LAST:event_jDialog1ComponentShown
+    }//GEN-LAST:event_addWordsDialogComponentShown
 
+    //key press on table1
     private void jTable4KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTable4KeyPressed
 
         if (evt.getKeyCode() == 127){
@@ -2727,6 +2839,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
 
     }//GEN-LAST:event_jTable4KeyPressed
 
+    //key press on table2
     private void jTable3KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTable3KeyPressed
 
         if (evt.getKeyCode() == 127){
@@ -2734,30 +2847,93 @@ public class SinhalaDictionaryToolsView extends FrameView {
         }
     }//GEN-LAST:event_jTable3KeyPressed
 
+    //cancel find words dialog
     private void jButton16ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton16ActionPerformed
-        // TODO add your handling code here:
+
+        findWordsDialog.setVisible(false);
     }//GEN-LAST:event_jButton16ActionPerformed
 
+    //find word button
     private void jButton17ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton17ActionPerformed
-        // TODO add your handling code here:
+        TableModel model = (TableModel)lastFocusedTable.getModel();
+
+        if (lastRow != 0){
+            lastRow += 1;
+        }
+
+        while ((lastRow = model.findKey(jTextField18.getText(), lastRow)) != -1){
+            lastFocusedTable.setRowSelectionInterval(lastRow, lastRow);
+            lastFocusedTable.scrollRectToVisible(lastFocusedTable.getCellRect(lastRow, 0, true));
+            break;
+        }
+
+        if (lastRow == -1){
+            JOptionPane.showMessageDialog(null, "Reached the end of the list and word not found. Re-starting from the beginning.");
+            lastRow = 0;
+        }
+
     }//GEN-LAST:event_jButton17ActionPerformed
 
+    //show word find dialog
     private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem5ActionPerformed
 
-        if (jTable3.isFocusOwner()){
-            System.out.print("testing");
+        if (lastFocusedTable != null){
+            findWordsDialog.setVisible(true);
+            lastRow = 0;
+        }else{
+            JOptionPane.showMessageDialog(null, "No wordlist loaded.");
         }
-
-        if (jTable4.isFocusOwner()){
-            System.out.print("testing 1");
-        }
-
+        
     }//GEN-LAST:event_jMenuItem5ActionPerformed
 
+    //jTable focus gained
+    private void jTable4FocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTable4FocusGained
+        jMenuItem5.setEnabled(true);
+        jMenuItem6.setEnabled(true);
+        lastFocusedTable = jTable4;
+    }//GEN-LAST:event_jTable4FocusGained
+
+    //jTable focus lost
+    private void jTable3FocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTable3FocusGained
+        jMenuItem5.setEnabled(true);
+        jMenuItem6.setEnabled(true);
+        lastFocusedTable = jTable3;
+    }//GEN-LAST:event_jTable3FocusGained
+
+    //show filter table dialog
+    private void jMenuItem6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem6ActionPerformed
+
+        if (lastFocusedTable != null){
+            filterWordsDialog.setVisible(true);            
+        }else{
+            JOptionPane.showMessageDialog(null, "No wordlist loaded.");
+        }
+    }//GEN-LAST:event_jMenuItem6ActionPerformed
+
+    //Filter Cancel
+    private void jButton19ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton19ActionPerformed
+
+        TableModel model = (TableModel)lastFocusedTable.getModel();
+        model.setFilter("All");
+        filterWordsDialog.setVisible(false);
+    }//GEN-LAST:event_jButton19ActionPerformed
+
+    //Filter OK
+    private void jButton23ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton23ActionPerformed
+
+        TableModel model = (TableModel)lastFocusedTable.getModel();
+        model.setFilter(jTextField19.getText());
+        model.fireTableDataChanged();
+        System.out.println(jTextField19.getText());
+    }//GEN-LAST:event_jButton23ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JDialog addWordsDialog;
     private javax.swing.JFileChooser fileChooser;
     private javax.swing.JFileChooser fileChooser2;
     private javax.swing.JFileChooser fileSaver;
+    private javax.swing.JDialog filterWordsDialog;
+    private javax.swing.JDialog findWordsDialog;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton10;
     private javax.swing.JButton jButton11;
@@ -2768,10 +2944,12 @@ public class SinhalaDictionaryToolsView extends FrameView {
     private javax.swing.JButton jButton16;
     private javax.swing.JButton jButton17;
     private javax.swing.JButton jButton18;
+    private javax.swing.JButton jButton19;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton20;
     private javax.swing.JButton jButton21;
     private javax.swing.JButton jButton22;
+    private javax.swing.JButton jButton23;
     private javax.swing.JButton jButton24;
     private javax.swing.JButton jButton26;
     private javax.swing.JButton jButton27;
@@ -2792,9 +2970,6 @@ public class SinhalaDictionaryToolsView extends FrameView {
     private javax.swing.JComboBox jComboBox2;
     private javax.swing.JComboBox jComboBox3;
     private javax.swing.JComboBox jComboBox4;
-    private javax.swing.JDialog jDialog1;
-    private javax.swing.JDialog jDialog2;
-    private javax.swing.JDialog jDialog3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -2816,6 +2991,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
     private javax.swing.JLabel jLabel26;
     private javax.swing.JLabel jLabel29;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel30;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
@@ -2839,6 +3015,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
     private javax.swing.JPanel jPanel16;
     private javax.swing.JPanel jPanel17;
     private javax.swing.JPanel jPanel18;
+    private javax.swing.JPanel jPanel19;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
@@ -2871,6 +3048,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
     private javax.swing.JTextField jTextField16;
     private javax.swing.JTextField jTextField17;
     private javax.swing.JTextField jTextField18;
+    private javax.swing.JTextField jTextField19;
     private javax.swing.JTextField jTextField2;
     private javax.swing.JTextField jTextField3;
     private javax.swing.JTextField jTextField4;
@@ -2881,6 +3059,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
     private javax.swing.JTextField jTextField9;
     private javax.swing.JPanel mainPanel;
     private javax.swing.JMenuBar menuBar;
+    private javax.swing.JDialog settingsDialog;
     private javax.swing.JLabel statusAnimationLabel;
     private javax.swing.JLabel statusMessageLabel;
     private javax.swing.JPanel statusPanel;
@@ -2896,4 +3075,8 @@ public class SinhalaDictionaryToolsView extends FrameView {
     private Configuration conf = ConfigurationManager.getConfiguration("config");
     private Configuration vconf = ConfigurationManager.getConfiguration("voconfig");
     private String tmp = "tmp".concat(System.getProperty("file.separator"));
+
+    //for word find
+    private JTable lastFocusedTable = null;
+    private int lastRow = 0;
 }

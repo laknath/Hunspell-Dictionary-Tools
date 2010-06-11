@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.table.AbstractTableModel;
 
 /**
@@ -228,6 +230,29 @@ public class TableModel extends AbstractTableModel{
     }
 
     /**
+     * Fine the row of a given key
+     *
+     * @param word The word to search
+     * @param offset The offset to start the search from (0 indexed)
+     * @return the row offset of the word found or -1 if not found
+     */
+    public int findKey(String word, int offset){
+
+        if (offset > -1){
+            if (offset < keys.length){
+                for (int i= offset; i < keys.length; i++){
+                    if (keys[i].equals(word)){
+                        return i;
+                    }
+                }
+            }
+        }
+        
+
+        return -1;
+    }
+
+    /**
      * Checks if the given key fits the filter
      *
      * @param key the key to be checked
@@ -237,15 +262,21 @@ public class TableModel extends AbstractTableModel{
 
         if (filter.equals("All")){
             return true;
-        }else if (filter.startsWith(">") || filter.startsWith("<")){
+        }else if (filter.startsWith(">") || filter.startsWith("<") || filter.startsWith("=")){
 
-            int filterKey = Integer.parseInt(filter.substring(1));
+            try{
+                int filterKey = Integer.parseInt(filter.substring(1));
 
-            if ((filter.startsWith(">") && hashmap.get(key).intValue() > filterKey)
-                    || (filter.startsWith("<") && hashmap.get(key).intValue() < filterKey)){
-                return true;
+                if ((filter.startsWith(">") && hashmap.get(key).intValue() > filterKey)
+                        || (filter.startsWith("<") && hashmap.get(key).intValue() < filterKey)
+                        || (filter.startsWith("=") && hashmap.get(key).intValue() == filterKey)){
+                    return true;
+                }
+            }catch(NumberFormatException nex){
+                nex.printStackTrace();
+                Logger.getLogger(TableModel.class.getName()).log(Level.SEVERE, null, nex);
             }
-        }else if (hashmap.get(key).intValue()  == Integer.parseInt(filter)){
+        }else if (key.startsWith(filter)){
             return true;
         }
 
