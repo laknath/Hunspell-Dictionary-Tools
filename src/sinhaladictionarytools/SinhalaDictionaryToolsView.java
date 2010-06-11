@@ -4,7 +4,6 @@
 
 package sinhaladictionarytools;
 
-import java.awt.Component;
 import java.awt.Font;
 import java.awt.GraphicsEnvironment;
 import java.io.FileNotFoundException;
@@ -21,6 +20,7 @@ import org.jdesktop.application.FrameView;
 import org.jdesktop.application.TaskMonitor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
 import java.io.File;
 import javax.swing.Timer;
 import javax.swing.Icon;
@@ -29,6 +29,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -36,6 +37,7 @@ import java.util.Iterator;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.event.TableModelListener;
 import org.jconfig.Configuration;
@@ -505,6 +507,92 @@ public class SinhalaDictionaryToolsView extends FrameView {
             Logger.getLogger(SinhalaDictionaryToolsView.class.getName()).log(Level.SEVERE, null, ex);
         }
 
+    }
+
+    /**
+     *
+     * @param dicText a single dictionary word
+     * @return the wordlist created
+     * @throws IOException
+     */
+    private String unmunchSingleWord(String dicText, String affText, String outputFile) throws IOException{
+
+        setStatusMessage("Creating temp files");
+        File dicFile = new File(tmp.concat(outputFile + ".dic"));
+        File affFile = new File(tmp.concat(outputFile + ".aff"));
+        FileWriter fw1 = new FileWriter(dicFile);
+        FileWriter fw2 = new FileWriter(affFile);
+
+        fw1.write("1" + System.getProperty("line.separator") + dicText);
+        fw2.write(affText);
+
+        fw1.close();
+        fw2.close();
+
+        setStatusMessage("Processing...");
+        String wordlist = unmunch(dicFile.getPath(), affFile.getPath(), tmp.concat(outputFile));
+
+        setStatusMessage("Wordlist generated");
+
+        return wordlist;
+    }
+
+    /**
+     *
+     * @param dicText a single dictionary word
+     * @return the wordlist created
+     * @throws IOException
+     */
+    private String generateAllAddWords(String dicText, File affFile, String outputFile) throws IOException{
+
+        setStatusMessage("Creating temp files");
+        File dicFile = new File(tmp.concat(outputFile + ".dic"));
+        File tmpAffFile = new File(tmp.concat(outputFile + ".aff"));
+
+        FileWriter fw1 = new FileWriter(dicFile);
+
+        fw1.write("1" + System.getProperty("line.separator") + dicText);
+        FileOutput.copyFile(affFile, tmpAffFile);
+
+        fw1.close();        
+
+        setStatusMessage("Processing...");
+        String wordlist = unmunch(dicFile.getPath(), tmpAffFile.getPath(), tmp.concat(outputFile));
+
+        setStatusMessage("Wordlist generated");
+
+        return wordlist;
+    }
+
+    /**
+     *
+     * @param path the path of the file to read
+     * @return
+     */
+    private String readFile(String path){
+        BufferedReader reader = null;
+        String output = "";
+
+        try {
+            reader = new BufferedReader(new FileReader(path));
+            String line = null;
+            while ((line = reader.readLine()) != null) {
+                output += line;
+            }
+
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(SinhalaDictionaryToolsView.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(SinhalaDictionaryToolsView.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                reader.close();
+            } catch (IOException ex) {
+                Logger.getLogger(SinhalaDictionaryToolsView.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        
+        return output;
     }
 
     /** This method is called from within the constructor to
@@ -1015,9 +1103,17 @@ public class SinhalaDictionaryToolsView extends FrameView {
                 {null, null}
             },
             new String [] {
-                "Title 1", "Title 2"
+                "Word", "Frequency"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         jTable3.setName("jTable3"); // NOI18N
         jScrollPane6.setViewportView(jTable3);
 
@@ -1032,7 +1128,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
                 {null, null}
             },
             new String [] {
-                "Title 1", "Title 2"
+                "Word", "Frequency"
             }
         ));
         jTable4.setName("jTable4"); // NOI18N
@@ -1512,6 +1608,11 @@ public class SinhalaDictionaryToolsView extends FrameView {
         jDialog1.setModalityType(java.awt.Dialog.ModalityType.APPLICATION_MODAL);
         jDialog1.setName("jDialog1"); // NOI18N
         jDialog1.setResizable(false);
+        jDialog1.addComponentListener(new java.awt.event.ComponentAdapter() {
+            public void componentShown(java.awt.event.ComponentEvent evt) {
+                jDialog1ComponentShown(evt);
+            }
+        });
 
         jButton12.setText(resourceMap.getString("jButton12.text")); // NOI18N
         jButton12.setName("jButton12"); // NOI18N
@@ -2067,22 +2168,8 @@ public class SinhalaDictionaryToolsView extends FrameView {
                 return;
             }
 
-            setStatusMessage("Creating temp files");
-            File dicFile = new File(tmp.concat("tmp1.dic"));
-            File affFile = new File(tmp.concat("tmp1.aff"));
-            FileWriter fw1 = new FileWriter(dicFile);
-            FileWriter fw2 = new FileWriter(affFile);
+            String wordlist = unmunchSingleWord(dicText, this.jTextArea1.getText(), "tmp1");
 
-            fw1.write("1" + System.getProperty("line.separator") + dicText);
-            fw2.write(this.jTextArea1.getText());
-
-            fw1.close();
-            fw2.close();
-
-            setStatusMessage("Processing...");
-            String wordlist = unmunch(dicFile.getPath(), affFile.getPath(), tmp.concat("tmp1"));
-
-            setStatusMessage("Wordlist generated");
             this.jTextArea2.setText(wordlist);
 
         } catch (IOException ex) {
@@ -2420,18 +2507,58 @@ public class SinhalaDictionaryToolsView extends FrameView {
         }                
     }//GEN-LAST:event_jComboBox2ActionPerformed
 
+    /**
+     *
+     * @param baseword the base dictionary word
+     * @param affixes the set of affix keys to be appended
+     * @return the word appended with affixes
+     */
+    private String addAffixes(String baseword, String[] affixes){
+
+        for (int i=0; i < affixes.length; i++){
+
+            if (i==0){
+                baseword += "/";
+            }else{
+                baseword += ",";
+            }
+
+            baseword += affixes[i];
+            
+        }
+        
+        return baseword;
+    }
+
     //Add a word to the table
     private void jButton13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton13ActionPerformed
         
-        String word = jTextField2.getText();
+        String dicText = jTextField2.getText();
 
-        if (!word.isEmpty()){
-            if (jCheckBox2.isSelected()){
-                TableModel model = (TableModel) jTable4.getModel();
-                model.addRow(word);
-            }else{
-                TableModel model = (TableModel) jTable3.getModel();
-                model.addRow(word);
+        if (!dicText.isEmpty()){
+
+            try {
+                dicText = addAffixes(dicText, vconf.getArray(jComboBox3.getSelectedItem().toString(),
+                                            new String[]{}, "categories"));
+
+                File affFile = new File(vconf.getProperty("affpath", "config/global.aff", "general"));
+                String wordlist = generateAllAddWords(dicText, affFile, "tmp5");
+
+                String[] arrayWordList = wordlist.split(System.getProperty("line.separator"));
+
+                TableModel model = null;
+                if (jCheckBox2.isSelected()) {
+                    model = (TableModel) jTable4.getModel();
+                } else {
+                    model = (TableModel) jTable3.getModel();                    
+                }
+
+                for (String word: arrayWordList){
+                    model.addRow(word);
+                }
+                
+            } catch (IOException ex) {
+                Logger.getLogger(SinhalaDictionaryToolsView.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
 
@@ -2441,6 +2568,16 @@ public class SinhalaDictionaryToolsView extends FrameView {
     private void jButton12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton12ActionPerformed
         jDialog1.setVisible(false);
     }//GEN-LAST:event_jButton12ActionPerformed
+
+    private void jDialog1ComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_jDialog1ComponentShown
+
+        jComboBox3.removeAllItems();
+        
+        for (String cat: vconf.getPropertyNames("categories")){
+            jComboBox3.addItem(cat);
+        }
+
+    }//GEN-LAST:event_jDialog1ComponentShown
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JFileChooser fileChooser;
@@ -2573,5 +2710,6 @@ public class SinhalaDictionaryToolsView extends FrameView {
 
     private JDialog aboutBox;
     private Configuration conf = ConfigurationManager.getConfiguration("config");
+    private Configuration vconf = ConfigurationManager.getConfiguration("voconfig");
     private String tmp = "tmp".concat(System.getProperty("file.separator"));
 }

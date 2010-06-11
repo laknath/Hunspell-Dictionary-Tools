@@ -4,8 +4,6 @@
 
 package sinhaladictionarytools;
 
-import java.io.File;
-import org.jconfig.Configuration;
 import org.jconfig.ConfigurationManager;
 import org.jconfig.handler.XMLFileHandler;
 import org.jdesktop.application.Application;
@@ -52,10 +50,14 @@ public class SinhalaDictionaryToolsApp extends SingleFrameApplication {
         if (cm == null){
             cm = ConfigurationManager.getInstance();
             XMLFileHandler handler = new XMLFileHandler("config/config.xml");
+            XMLFileHandler vocHandler = new XMLFileHandler("config/vocabulary_catagory.xml");
 
             try {
                 System.out.println("Trying to load file");
-                cm.load(handler,"config");                                
+                //main config
+                cm.load(handler,"config");
+                //vocabulary config
+                cm.load(vocHandler,"voconfig");
                 System.out.println("Settings successfully loaded");
             }
             catch (Exception e) {

@@ -1,27 +1,10 @@
 <?xml version="1.0" ?>
 <properties>
-  <category name="hunspell">
-    <property name="installed" value="0"/>
-    <property name="path" value="lib/hunspell-1.2.10"/>
-  </category>
-  <category name="crawl">
-    <property name="baseDomain" value="http://www.dinamina.lk"/>
-    <property name="maxDepth" value="5"/>
-    <property name="maxPages" value="500"/>
-    <property name="maxWords" value="100000"/>
-    <property name="name" value="Sinhala Crawler"/>
-  </category>
-  <category name="parsing">
-    <property name="bannedWordsPath" value="config/banned.txt"/>
-    <property name="charRangeMax" value="෴"/>
-    <property name="charRangeMin" value="ං"/>
-    <property name="charset" value="UTF-8"/>
-    <property name="maxBadWordPercentage" value="0.5"/>
-    <property name="stripChars" value=".,/`|1234567890!@#$%*^=()_+-[]"/>
-  </category>
   <category name="general">
-    <property name="font" value="Iskoola Pota"/>
-    <property name="maxAffixRules" value="-1"/>
-    <property name="sortBeforeSave" value="true"/>
+    <property name="affpath" value="config/global.aff"/>
+  </category>
+  <category name="categories">
+    <property name="noun" value="2,13,21,27,49,62"/>
+    <property name="verb" value="3,49,138,20,24,49,115,286,1225,1680,3899"/>
   </category>
 </properties>

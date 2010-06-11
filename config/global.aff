@@ -1,0 +1,34 @@
+SET UTF-8
+
+FLAG num
+
+SFX 2 Y 1
+SFX 2 0 ය .
+SFX 3 Y 1
+SFX 3 0 ේ .
+SFX 13 Y 1
+SFX 13 0 යක් .
+SFX 21 Y 1
+SFX 21 0 යෙන් .
+SFX 27 Y 1
+SFX 27 0 යන් .
+SFX 49 Y 1
+SFX 49 0 ෙ .
+SFX 62 Y 1
+SFX 62 0 යන්ට .
+SFX 138 Y 1
+SFX 138 0 ැයි .
+SFX 20 Y 1
+SFX 20 0 ා .
+SFX 24 Y 1
+SFX 24 0 ු .
+SFX 115 Y 1
+SFX 115 0 ේය [.
+SFX 286 Y 1
+SFX 286 0 ෙමු .
+SFX 1225 Y 1
+SFX 1225 ණ ම් ණ
+SFX 1680 Y 1
+SFX 1680 ණ නු ණ
+SFX 3899 Y 1
+SFX 3899 ණ නා ණ
