@@ -31,15 +31,13 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JTable;
-import javax.swing.JViewport;
 import javax.swing.event.TableModelListener;
 import org.jconfig.Configuration;
 import org.jconfig.ConfigurationManager;
@@ -196,7 +194,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
 
         try {
             File wordfile = new File(file);
-            HashMap<String, Integer> hashMap = new HashMap<String, Integer>(70000);
+            LinkedHashMap<String, Integer> hashMap = new LinkedHashMap<String, Integer>(70000);
 
             final StreamGobbler outputGobbler = new StreamGobbler(new FileInputStream(wordfile), "OUTPUT", hashMap);
             outputGobbler.start();
@@ -401,6 +399,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
      */
     protected void addTableListener(JTable table, final JComboBox box){
 
+        isTableLoading = true;
         try{
             final TableModel model = (TableModel) table.getModel();
 
@@ -430,6 +429,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
             setStatusMessage("A word list hasn't been loaded to the table", true);
             JOptionPane.showMessageDialog(null, "A word list hasn't been loaded to the table");
         }
+        isTableLoading = false;
 
     }
 
@@ -742,7 +742,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
         jPanel17 = new javax.swing.JPanel();
         jTextField18 = new javax.swing.JTextField();
         jLabel29 = new javax.swing.JLabel();
-        filterWordsDialog = new javax.swing.JDialog();
+        filterWordsDialog = new javax.swing.JDialog(this.getFrame());
         jButton19 = new javax.swing.JButton();
         jButton23 = new javax.swing.JButton();
         jPanel19 = new javax.swing.JPanel();
@@ -965,7 +965,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
                     .addComponent(jButton8))
-                .addContainerGap(17, Short.MAX_VALUE))
+                .addContainerGap(19, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab(resourceMap.getString("jPanel1.TabConstraints.tabTitle"), jPanel1); // NOI18N
@@ -1162,6 +1162,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
                 return canEdit [columnIndex];
             }
         });
+        jTable4.setCellSelectionEnabled(true);
         jTable4.setName("jTable4"); // NOI18N
         jTable4.setUpdateSelectionOnSort(false);
         jTable4.addFocusListener(new java.awt.event.FocusAdapter() {
@@ -2201,7 +2202,6 @@ public class SinhalaDictionaryToolsView extends FrameView {
         findWordsDialog.setTitle(resourceMap.getString("findWordsDialog.title")); // NOI18N
         findWordsDialog.setAlwaysOnTop(true);
         findWordsDialog.setMinimumSize(new java.awt.Dimension(430, 200));
-        findWordsDialog.setModal(false);
         findWordsDialog.setName("findWordsDialog"); // NOI18N
         findWordsDialog.setResizable(false);
 
@@ -2349,7 +2349,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
             filterWordsDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(filterWordsDialogLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel19, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel19, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 8, Short.MAX_VALUE)
                 .addGroup(filterWordsDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton19)
@@ -2479,9 +2479,9 @@ public class SinhalaDictionaryToolsView extends FrameView {
         
         String s = jTextField14.getText();
         if (!s.isEmpty()){
-                setStatusMessage("Loading the wordlist");
-                loadToHashTable(s, jTable3);
-                addTableListener(jTable3, jComboBox2);
+            setStatusMessage("Loading the wordlist");
+            loadToHashTable(s, jTable3);
+            addTableListener(jTable3, jComboBox2);
         }else{
             setStatusMessage("No file to load", true);
             JOptionPane.showMessageDialog(null, "No file to load");
@@ -2732,9 +2732,9 @@ public class SinhalaDictionaryToolsView extends FrameView {
 
     //change 1st combo box item selection
     private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
-        TableModel model = (TableModel)jTable4.getModel();
+        TableModel model = (TableModel)jTable4.getModel();        
 
-        if (jComboBox1.getSelectedItem() != null){
+        if (!isTableLoading && jComboBox1.getSelectedItem() != null){
             model.setFilter(jComboBox1.getSelectedItem().toString());            
         }
                 
@@ -2745,7 +2745,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
 
         TableModel model = (TableModel)jTable3.getModel();
 
-        if (jComboBox2.getSelectedItem() != null){
+        if (!isTableLoading && jComboBox2.getSelectedItem() != null){
             model.setFilter(jComboBox2.getSelectedItem().toString());            
         }                
     }//GEN-LAST:event_jComboBox2ActionPerformed
@@ -2921,10 +2921,11 @@ public class SinhalaDictionaryToolsView extends FrameView {
     //Filter OK
     private void jButton23ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton23ActionPerformed
 
+        isTableLoading = true;
         TableModel model = (TableModel)lastFocusedTable.getModel();
-        model.setFilter(jTextField19.getText());
-        model.fireTableDataChanged();
-        System.out.println(jTextField19.getText());
+        String word = jTextField19.getText().trim();
+        model.setFilter(word);        
+        isTableLoading = false;
     }//GEN-LAST:event_jButton23ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -3079,4 +3080,8 @@ public class SinhalaDictionaryToolsView extends FrameView {
     //for word find
     private JTable lastFocusedTable = null;
     private int lastRow = 0;
+
+    //a combo box lock
+    private boolean isTableLoading = false;
+
 }

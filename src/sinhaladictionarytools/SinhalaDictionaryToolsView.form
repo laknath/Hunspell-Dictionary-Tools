@@ -76,7 +76,7 @@
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="jPanel4" min="-2" max="-2" attributes="0"/>
                           <EmptySpace min="-2" max="-2" attributes="0"/>
-                          <Component id="jPanel5" min="-2" max="-2" attributes="0"/>
+                          <Component id="jPanel5" min="-2" pref="101" max="-2" attributes="0"/>
                           <EmptySpace min="-2" max="-2" attributes="0"/>
                           <Component id="jScrollPane5" min="-2" pref="163" max="-2" attributes="0"/>
                           <EmptySpace min="-2" max="-2" attributes="0"/>
@@ -84,7 +84,7 @@
                               <Component id="jButton1" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="jButton8" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace pref="17" max="32767" attributes="0"/>
+                          <EmptySpace pref="19" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -704,6 +704,7 @@
                                 <Column editable="false" title="Frequency" type="java.lang.Object"/>
                               </Table>
                             </Property>
+                            <Property name="cellSelectionEnabled" type="boolean" value="true"/>
                             <Property name="name" type="java.lang.String" value="jTable4" noResource="true"/>
                             <Property name="updateSelectionOnSort" type="boolean" value="false"/>
                           </Properties>
@@ -2137,7 +2138,6 @@
         <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
           <Dimension value="[430, 200]"/>
         </Property>
-        <Property name="modal" type="boolean" value="false"/>
         <Property name="name" type="java.lang.String" value="findWordsDialog" noResource="true"/>
         <Property name="resizable" type="boolean" value="false"/>
       </Properties>
@@ -2260,6 +2260,9 @@
         <Property name="name" type="java.lang.String" value="filterWordsDialog" noResource="true"/>
         <Property name="resizable" type="boolean" value="false"/>
       </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new javax.swing.JDialog(this.getFrame())"/>
+      </AuxValues>
 
       <Layout>
         <DimensionLayout dim="0">
@@ -2282,7 +2285,7 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="jPanel19" min="-2" pref="80" max="-2" attributes="0"/>
+                  <Component id="jPanel19" min="-2" max="-2" attributes="0"/>
                   <EmptySpace pref="8" max="32767" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="jButton19" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -2316,7 +2319,7 @@
           <Properties>
             <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
               <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-                <TitledBorder title="Find Words">
+                <TitledBorder title="Filter Words">
                   <Property name="titleX" resourceKey="jPanel19.border.title"/>
                 </TitledBorder>
               </Border>

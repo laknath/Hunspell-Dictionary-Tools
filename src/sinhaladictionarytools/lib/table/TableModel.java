@@ -1,8 +1,8 @@
 package sinhaladictionarytools.lib.table;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -15,7 +15,7 @@ import javax.swing.table.AbstractTableModel;
 public class TableModel extends AbstractTableModel{
 
     private String [] keys;
-    private HashMap<String, Integer> hashmap;
+    private LinkedHashMap<String, Integer> hashmap;
     private String filter = "All";
     
     /***
@@ -23,7 +23,7 @@ public class TableModel extends AbstractTableModel{
      * @param hashmap the hashmap which the table model should be based on
      */
     
-    public TableModel(final HashMap<String, Integer> hashmap) {
+    public TableModel(final LinkedHashMap<String, Integer> hashmap) {
         super();
         this.hashmap = hashmap;
         this.keys = hashmap.keySet().toArray(new String[0]);
@@ -194,7 +194,7 @@ public class TableModel extends AbstractTableModel{
      *
      * @return the hashmap of the model
      */
-    public HashMap<String, Integer> getHashMap(){
+    public LinkedHashMap<String, Integer> getHashMap(){
         return this.hashmap;
     }
 
@@ -219,7 +219,7 @@ public class TableModel extends AbstractTableModel{
 
         while (it.hasNext()){
             String key = it.next();
-            if (filteroutElement(key)){
+            if (filteroutElement(key)){                
                 keyset.add(key);
             }
         }
@@ -227,6 +227,11 @@ public class TableModel extends AbstractTableModel{
         this.keys = keyset.toArray(new String[0]);
 
         fireTableDataChanged();
+    }
+
+    @Override
+    public boolean isCellEditable(int rowIndex, int columnIndex){
+        return false;
     }
 
     /**
@@ -260,7 +265,12 @@ public class TableModel extends AbstractTableModel{
      */
     private boolean filteroutElement(String key){
 
-        if (filter.equals("All")){
+        //System.out.println(filter);
+        //System.out.println(key);
+
+        if (key.startsWith(filter)){
+            return true;
+        }else if (filter.equals("All")){
             return true;
         }else if (filter.startsWith(">") || filter.startsWith("<") || filter.startsWith("=")){
 
@@ -276,8 +286,6 @@ public class TableModel extends AbstractTableModel{
                 nex.printStackTrace();
                 Logger.getLogger(TableModel.class.getName()).log(Level.SEVERE, null, nex);
             }
-        }else if (key.startsWith(filter)){
-            return true;
         }
 
         return false;

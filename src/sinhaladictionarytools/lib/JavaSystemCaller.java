@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -34,7 +34,7 @@ public final class JavaSystemCaller
         private InputStream is;
         private String type;
         private StringBuffer output = new StringBuffer();
-        private HashMap<String, Integer> hashMap;
+        private LinkedHashMap<String, Integer> hashMap;
 
         public StreamGobbler(final InputStream anIs, final String aType)
         {
@@ -42,7 +42,7 @@ public final class JavaSystemCaller
             this.type = aType;
         }
 
-        public StreamGobbler(final InputStream anIs, final String aType, final HashMap<String, Integer> hashMap)
+        public StreamGobbler(final InputStream anIs, final String aType, final LinkedHashMap<String, Integer> hashMap)
         {
             this(anIs, aType);
             this.hashMap = hashMap;
@@ -100,7 +100,7 @@ public final class JavaSystemCaller
          * Should be called after execution
          * @return final output
          */
-        public synchronized final HashMap<String, Integer> getHashmap()
+        public synchronized final LinkedHashMap<String, Integer> getHashmap()
         {
                 return this.hashMap;
         }
