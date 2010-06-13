@@ -20,6 +20,7 @@ import org.jdesktop.application.FrameView;
 import org.jdesktop.application.TaskMonitor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.io.BufferedReader;
 import java.io.File;
 import javax.swing.Timer;
@@ -407,7 +408,10 @@ public class SinhalaDictionaryToolsView extends FrameView {
 
                 public void tableChanged(TableModelEvent e) {
 
-                    Iterator<Integer> it = model.getUniqueValues().iterator();
+                    int prevIndex = box.getSelectedIndex();
+                    int prevCount = box.getItemCount();
+
+                    Iterator<Integer> it = model.getUniqueValues().iterator();                    
                     box.removeAllItems();
                     box.addItem("All");
 
@@ -418,7 +422,10 @@ public class SinhalaDictionaryToolsView extends FrameView {
                         box.addItem("=" + i);
                         box.addItem(">" + i);
                     }
-                    box.revalidate();
+
+                    if (box.getItemCount() == prevCount){
+                        box.setSelectedIndex(prevIndex);
+                    }
 
                 }
             });
@@ -958,14 +965,14 @@ public class SinhalaDictionaryToolsView extends FrameView {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
                     .addComponent(jButton8))
-                .addContainerGap(19, Short.MAX_VALUE))
+                .addContainerGap(17, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab(resourceMap.getString("jPanel1.TabConstraints.tabTitle"), jPanel1); // NOI18N
@@ -1130,6 +1137,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
                 return canEdit [columnIndex];
             }
         });
+        jTable3.setCellSelectionEnabled(true);
         jTable3.setName("jTable3"); // NOI18N
         jTable3.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
@@ -2204,6 +2212,11 @@ public class SinhalaDictionaryToolsView extends FrameView {
         findWordsDialog.setMinimumSize(new java.awt.Dimension(430, 200));
         findWordsDialog.setName("findWordsDialog"); // NOI18N
         findWordsDialog.setResizable(false);
+        findWordsDialog.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                findWordsDialogKeyPressed(evt);
+            }
+        });
 
         jButton16.setText(resourceMap.getString("jButton16.text")); // NOI18N
         jButton16.setName("jButton16"); // NOI18N
@@ -2284,6 +2297,11 @@ public class SinhalaDictionaryToolsView extends FrameView {
         filterWordsDialog.setMinimumSize(new java.awt.Dimension(430, 200));
         filterWordsDialog.setName("filterWordsDialog"); // NOI18N
         filterWordsDialog.setResizable(false);
+        filterWordsDialog.addComponentListener(new java.awt.event.ComponentAdapter() {
+            public void componentHidden(java.awt.event.ComponentEvent evt) {
+                filterWordsDialogComponentHidden(evt);
+            }
+        });
 
         jButton19.setText(resourceMap.getString("jButton19.text")); // NOI18N
         jButton19.setName("jButton19"); // NOI18N
@@ -2913,8 +2931,6 @@ public class SinhalaDictionaryToolsView extends FrameView {
     //Filter Cancel
     private void jButton19ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton19ActionPerformed
 
-        TableModel model = (TableModel)lastFocusedTable.getModel();
-        model.setFilter("All");
         filterWordsDialog.setVisible(false);
     }//GEN-LAST:event_jButton19ActionPerformed
 
@@ -2927,6 +2943,21 @@ public class SinhalaDictionaryToolsView extends FrameView {
         model.setFilter(word);        
         isTableLoading = false;
     }//GEN-LAST:event_jButton23ActionPerformed
+
+    private void findWordsDialogKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_findWordsDialogKeyPressed
+
+        System.out.println(evt.getKeyCode());
+        if (evt.getKeyCode() == KeyEvent.VK_ESCAPE){
+            jButton16ActionPerformed(null);
+        }
+
+    }//GEN-LAST:event_findWordsDialogKeyPressed
+
+    //filter dialog hidden
+    private void filterWordsDialogComponentHidden(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_filterWordsDialogComponentHidden
+        TableModel model = (TableModel)lastFocusedTable.getModel();
+        model.setFilter("All");
+    }//GEN-LAST:event_filterWordsDialogComponentHidden
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JDialog addWordsDialog;

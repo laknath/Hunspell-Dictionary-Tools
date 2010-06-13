@@ -3,6 +3,7 @@ package sinhaladictionarytools.lib.table;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -215,7 +216,7 @@ public class TableModel extends AbstractTableModel{
     public synchronized void setFilter(String filter) {
         this.filter = filter;
         Iterator<String> it = hashmap.keySet().iterator();
-        HashSet<String> keyset = new HashSet<String>();
+        LinkedHashSet<String> keyset = new LinkedHashSet<String>();
 
         while (it.hasNext()){
             String key = it.next();
