@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.table.AbstractTableModel;
+import sinhaladictionarytools.SinhalaDictionaryToolsView;
 
 /**
  *
@@ -134,8 +135,7 @@ public class TableModel extends AbstractTableModel{
      * @param rows set of row indexes to be removed
      * 
      */
-    public void removeRows(int[] rows){
-        
+    public void removeRows(int[] rows){        
         for (int i = rows.length; i > 0; i--){            
             hashmap.remove(keys[rows[i-1]]);
         }

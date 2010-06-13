@@ -9,6 +9,7 @@ import java.nio.channels.FileChannel;
 import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import sinhaladictionarytools.lib.table.TableModel;
 
 /**
  *
@@ -31,20 +32,28 @@ public class FileOutput extends Thread{
         }
     }
 
+    public FileOutput(File f, TableModel model, boolean sort) {
+
+        this(f, "", sort);
+
+        String[] tmp = model.getHashMap().keySet().toArray(new String[0]);
+
+        //sort the output wordlist
+        if (sort){
+            Arrays.sort(tmp);
+        }
+        
+        StringBuffer buf = new StringBuffer(tmp.length);
+        String sep = System.getProperty("line.separator");
+        for (int i=0; i < tmp.length; i++){
+            buf.append(tmp[i].concat(sep));
+        }
+
+        this.out = buf.toString();
+    }
+
     public void run(){
-        if (fw != null){
-            //sort the output wordlist
-
-            if (sort){
-                String[] tmp = out.split(System.getProperty("line.separator"));
-                Arrays.sort(tmp);
-
-                out = "";
-                for (int i=0; i < tmp.length; i++){
-                    out += tmp[i] + System.getProperty("line.separator");
-                }
-            }
-
+        if (fw != null){            
             try {
                 fw.write(out);
                 fw.flush();

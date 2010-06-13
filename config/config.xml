@@ -4,6 +4,13 @@
     <property name="installed" value="0"/>
     <property name="path" value="lib/hunspell-1.2.10"/>
   </category>
+  <category name="crawl">
+    <property name="baseDomain" value="http://www.dinamina.lk"/>
+    <property name="maxDepth" value="5"/>
+    <property name="maxPages" value="1000"/>
+    <property name="maxWords" value="100000"/>
+    <property name="name" value="Sinhala Crawler"/>
+  </category>
   <category name="parsing">
     <property name="bannedWordsPath" value="config/banned.txt"/>
     <property name="charRangeMax" value="෴"/>
@@ -11,13 +18,6 @@
     <property name="charset" value="UTF-8"/>
     <property name="maxBadWordPercentage" value="0.5"/>
     <property name="stripChars" value=".,/`|1234567890!@#$%*^=()_+-[]"/>
-  </category>
-  <category name="crawl">
-    <property name="baseDomain" value="http://www.dinamina.lk"/>
-    <property name="maxDepth" value="5"/>
-    <property name="maxPages" value="500"/>
-    <property name="maxWords" value="100000"/>
-    <property name="name" value="Sinhala Crawler"/>
   </category>
   <category name="general">
     <property name="font" value="Dinamina Unicode for Web applications"/>

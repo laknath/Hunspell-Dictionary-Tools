@@ -411,7 +411,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
                     int prevIndex = box.getSelectedIndex();
                     int prevCount = box.getItemCount();
 
-                    Iterator<Integer> it = model.getUniqueValues().iterator();                    
+                    Iterator<Integer> it = model.getUniqueValues().iterator();
                     box.removeAllItems();
                     box.addItem("All");
 
@@ -426,7 +426,6 @@ public class SinhalaDictionaryToolsView extends FrameView {
                     if (box.getItemCount() == prevCount){
                         box.setSelectedIndex(prevIndex);
                     }
-
                 }
             });
 
@@ -685,6 +684,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
         jMenu1 = new javax.swing.JMenu();
         jMenuItem5 = new javax.swing.JMenuItem();
         jMenuItem6 = new javax.swing.JMenuItem();
+        jMenuItem7 = new javax.swing.JMenuItem();
         jSeparator2 = new javax.swing.JSeparator();
         jMenuItem4 = new javax.swing.JMenuItem();
         javax.swing.JMenu helpMenu = new javax.swing.JMenu();
@@ -965,14 +965,14 @@ public class SinhalaDictionaryToolsView extends FrameView {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
                     .addComponent(jButton8))
-                .addContainerGap(17, Short.MAX_VALUE))
+                .addContainerGap(19, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab(resourceMap.getString("jPanel1.TabConstraints.tabTitle"), jPanel1); // NOI18N
@@ -1614,6 +1614,17 @@ public class SinhalaDictionaryToolsView extends FrameView {
             }
         });
         jMenu1.add(jMenuItem6);
+
+        jMenuItem7.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N, java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItem7.setText(resourceMap.getString("jMenuItem7.text")); // NOI18N
+        jMenuItem7.setEnabled(false);
+        jMenuItem7.setName("jMenuItem7"); // NOI18N
+        jMenuItem7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem7ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem7);
 
         jSeparator2.setName("jSeparator2"); // NOI18N
         jMenu1.add(jSeparator2);
@@ -2593,15 +2604,15 @@ public class SinhalaDictionaryToolsView extends FrameView {
 
     //remove selected rows from the table 1
     private void jButton18ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton18ActionPerformed
-        
+       
         try{
             TableModel model = (TableModel)jTable4.getModel();
-            model.removeRows(jTable4.getSelectedRows());
-
+            model.removeRows(jTable4.getSelectedRows());        
         }catch(ClassCastException cce){
             setStatusMessage("A word list hasn't been loaded to the table", true);
             JOptionPane.showMessageDialog(null, "A word list hasn't been loaded to the table");
-        }        
+        }
+
     }//GEN-LAST:event_jButton18ActionPerformed
 
     //add words to the table1
@@ -2622,13 +2633,13 @@ public class SinhalaDictionaryToolsView extends FrameView {
         }
     }//GEN-LAST:event_jButton20ActionPerformed
 
-    //save the table to a dic or txt file
+    //save words from table 1
     private void jButton24ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton24ActionPerformed
 
         try{
             
             TableModel model = (TableModel)jTable4.getModel();
-            new FileOutput(new File(tmp.concat("tmp3")), model.toString(),
+            new FileOutput(new File(tmp.concat("tmp3")), model,
                     conf.getBooleanProperty("sortBeforeSave", true, "general")).start();
             saveToTmpFile("tmp3");            
         }catch(ClassCastException cce){
@@ -2640,11 +2651,11 @@ public class SinhalaDictionaryToolsView extends FrameView {
 
     //remove words from table 2
     private void jButton26ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton26ActionPerformed
-       
+
         try{
             TableModel model = (TableModel)jTable3.getModel();
             model.removeRows(jTable3.getSelectedRows());
-
+        
         }catch(ClassCastException cce){
             setStatusMessage("A word list hasn't been loaded to the table", true);
             JOptionPane.showMessageDialog(null, "A word list hasn't been loaded to the table");
@@ -2676,7 +2687,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
         try{
 
             TableModel model = (TableModel)jTable3.getModel();
-            new FileOutput(new File(tmp.concat("tmp4")), model.toString(),
+            new FileOutput(new File(tmp.concat("tmp4")), model,
                     conf.getBooleanProperty("sortBeforeSave", true, "general")).start();
             saveToTmpFile("tmp4");
 
@@ -2908,6 +2919,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
     private void jTable4FocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTable4FocusGained
         jMenuItem5.setEnabled(true);
         jMenuItem6.setEnabled(true);
+        jMenuItem7.setEnabled(true);
         lastFocusedTable = jTable4;
     }//GEN-LAST:event_jTable4FocusGained
 
@@ -2915,6 +2927,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
     private void jTable3FocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTable3FocusGained
         jMenuItem5.setEnabled(true);
         jMenuItem6.setEnabled(true);
+        jMenuItem7.setEnabled(true);
         lastFocusedTable = jTable3;
     }//GEN-LAST:event_jTable3FocusGained
 
@@ -2957,7 +2970,23 @@ public class SinhalaDictionaryToolsView extends FrameView {
     private void filterWordsDialogComponentHidden(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_filterWordsDialogComponentHidden
         TableModel model = (TableModel)lastFocusedTable.getModel();
         model.setFilter("All");
+
     }//GEN-LAST:event_filterWordsDialogComponentHidden
+
+    private void jMenuItem7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem7ActionPerformed
+        TableModel model = (TableModel)lastFocusedTable.getModel();
+        String msg = "";
+        int rowcount = lastFocusedTable.getSelectedRowCount();
+
+        if (rowcount != 0){
+            msg = rowcount + " rows selected.";
+        }else{
+            rowcount = model.getRowCount();
+            msg = "Total row count is " + rowcount;
+        }
+
+        JOptionPane.showMessageDialog(this.getFrame(), msg);
+    }//GEN-LAST:event_jMenuItem7ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JDialog addWordsDialog;
@@ -3037,6 +3066,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
     private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JMenuItem jMenuItem5;
     private javax.swing.JMenuItem jMenuItem6;
+    private javax.swing.JMenuItem jMenuItem7;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel11;

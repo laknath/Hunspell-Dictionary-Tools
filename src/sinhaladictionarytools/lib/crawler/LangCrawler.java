@@ -26,7 +26,7 @@ import websphinx.Action;
  */
 public class LangCrawler extends Crawler{    
 
-    int MAX_WORDS_PER_UPDATE = 200;
+    int MAX_WORDS_PER_UPDATE = 1000;
 
     /**
     *
@@ -118,6 +118,10 @@ public class LangCrawler extends Crawler{
         try {
             Text [] words = page.getWords();
 
+            if (words == null){
+                return;
+            }
+
             for (int i=0; i < words.length; i++){
                 String word = words[i].toText();
 
@@ -140,7 +144,7 @@ public class LangCrawler extends Crawler{
                     buf.append(word + System.getProperty("line.separator"));
                     parsedWords++;
                     tmpWordsParsedInPage++;
-                    System.out.println(word);
+                    //System.out.println(word);
 
                     if ((parsedWords % MAX_WORDS_PER_UPDATE) == 0){
 
