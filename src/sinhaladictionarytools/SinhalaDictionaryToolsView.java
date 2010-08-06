@@ -605,6 +605,120 @@ public class SinhalaDictionaryToolsView extends FrameView {
         return output;
     }
 
+    /**
+     * Add a new word
+     * 
+     * @param tableId The ID of the table selected
+     *
+     */
+     private void addNewWord(int tableId){
+
+        //a nasty hack
+        this.jCheckBox2.setVisible(false);
+
+        try{
+            if (tableId == 1){
+                TableModel model = (TableModel)jTable4.getModel();
+                this.jCheckBox2.setSelected(true);
+            }else{
+                TableModel model = (TableModel)jTable3.getModel();
+                this.jCheckBox2.setSelected(false);
+            }
+            
+            this.addWordsDialog.setVisible(true);
+            
+        }catch(ClassCastException cce){
+            this.addWordsDialog.setVisible(false);
+            setStatusMessage("A word list hasn't been loaded to the table", true);
+            JOptionPane.showMessageDialog(null, "A word list hasn't been loaded to the table");
+        }
+
+     }
+
+    /**
+     *
+     * Remove selected words
+     *
+     * @param tableId The ID of the table selected
+     *
+     **/
+    private void removeWords(int tableId){
+
+        TableModel model;
+        try{
+            if (tableId == 1){
+                model = (TableModel)jTable4.getModel();
+                model.removeRows(jTable4.getSelectedRows());
+            }else{
+                model = (TableModel)jTable3.getModel();
+                model.removeRows(jTable3.getSelectedRows());
+            }
+            
+        }catch(ClassCastException cce){
+            setStatusMessage("A word list hasn't been loaded to the table", true);
+            JOptionPane.showMessageDialog(null, "A word list hasn't been loaded to the table");
+        }
+
+    }
+
+    /**
+     * Load a word to the table
+     *
+     * @param tableId The ID of the table selected     
+     */
+    private void loadFile(int tableId){
+
+        String s = jTextField14.getText();
+        JTable table = null;
+        JComboBox comboBox = null;
+
+        if (!s.isEmpty()){
+
+            if (tableId == 1){
+                table = jTable4;
+                comboBox = jComboBox1;                
+            }else{
+                table = jTable3;
+                comboBox = jComboBox2;
+            }
+            
+            setStatusMessage("Loading the wordlist");
+            loadToHashTable(s, table);
+            addTableListener(table, comboBox);
+        }else{
+            setStatusMessage("No file to load", true);
+            JOptionPane.showMessageDialog(null, "No file to load");
+        }
+    }
+
+    /**
+     * Save table to a external file
+     *
+     * @param tableId The ID of the table selected
+     */
+    private void saveTable(int tableId){
+
+        TableModel model;
+        String tmpFile;
+
+        try{
+            if (tableId == 1){
+                model = (TableModel)jTable4.getModel();
+                tmpFile = "tmp3";
+            }else{
+                model = (TableModel)jTable3.getModel();
+                tmpFile = "tmp4";
+            }
+
+            new FileOutput(new File(tmp.concat(tmpFile)), model,
+                    conf.getBooleanProperty("sortBeforeSave", true, "general")).start();
+            saveToTmpFile(tmpFile);
+        }catch(ClassCastException cce){
+            setStatusMessage("A word list hasn't been loaded to the table", true);
+            JOptionPane.showMessageDialog(null, "A word list hasn't been loaded to the table");
+        }
+    }
+
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -755,6 +869,13 @@ public class SinhalaDictionaryToolsView extends FrameView {
         jPanel19 = new javax.swing.JPanel();
         jTextField19 = new javax.swing.JTextField();
         jLabel30 = new javax.swing.JLabel();
+        tablePopupMenu = new javax.swing.JPopupMenu();
+        jMenuItem8 = new javax.swing.JMenuItem();
+        jMenuItem9 = new javax.swing.JMenuItem();
+        jSeparator3 = new javax.swing.JSeparator();
+        jMenuItem10 = new javax.swing.JMenuItem();
+        jMenuItem11 = new javax.swing.JMenuItem();
+        jMenuItem12 = new javax.swing.JMenuItem();
 
         mainPanel.setMinimumSize(new java.awt.Dimension(500, 500));
         mainPanel.setName("mainPanel"); // NOI18N
@@ -965,14 +1086,14 @@ public class SinhalaDictionaryToolsView extends FrameView {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
                     .addComponent(jButton8))
-                .addContainerGap(19, Short.MAX_VALUE))
+                .addContainerGap(17, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab(resourceMap.getString("jPanel1.TabConstraints.tabTitle"), jPanel1); // NOI18N
@@ -1139,6 +1260,14 @@ public class SinhalaDictionaryToolsView extends FrameView {
         });
         jTable3.setCellSelectionEnabled(true);
         jTable3.setName("jTable3"); // NOI18N
+        jTable3.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                jTable4MouseClicked(evt);
+            }
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                jTable4MouseClicked(evt);
+            }
+        });
         jTable3.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 jTable3FocusGained(evt);
@@ -1173,6 +1302,14 @@ public class SinhalaDictionaryToolsView extends FrameView {
         jTable4.setCellSelectionEnabled(true);
         jTable4.setName("jTable4"); // NOI18N
         jTable4.setUpdateSelectionOnSort(false);
+        jTable4.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                jTable4MouseClicked(evt);
+            }
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                jTable4MouseClicked(evt);
+            }
+        });
         jTable4.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 jTable4FocusGained(evt);
@@ -2386,6 +2523,36 @@ public class SinhalaDictionaryToolsView extends FrameView {
                 .addContainerGap())
         );
 
+        tablePopupMenu.setName("tablePopupMenu"); // NOI18N
+
+        jMenuItem8.setText(resourceMap.getString("jMenuItem8.text")); // NOI18N
+        jMenuItem8.setName("jMenuItem8"); // NOI18N
+        jMenuItem8.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem8ActionPerformed(evt);
+            }
+        });
+        tablePopupMenu.add(jMenuItem8);
+
+        jMenuItem9.setText(resourceMap.getString("jMenuItem9.text")); // NOI18N
+        jMenuItem9.setName("jMenuItem9"); // NOI18N
+        tablePopupMenu.add(jMenuItem9);
+
+        jSeparator3.setName("jSeparator3"); // NOI18N
+        tablePopupMenu.add(jSeparator3);
+
+        jMenuItem10.setText(resourceMap.getString("jMenuItem10.text")); // NOI18N
+        jMenuItem10.setName("jMenuItem10"); // NOI18N
+        tablePopupMenu.add(jMenuItem10);
+
+        jMenuItem11.setText(resourceMap.getString("jMenuItem11.text")); // NOI18N
+        jMenuItem11.setName("jMenuItem11"); // NOI18N
+        tablePopupMenu.add(jMenuItem11);
+
+        jMenuItem12.setText(resourceMap.getString("jMenuItem12.text")); // NOI18N
+        jMenuItem12.setName("jMenuItem12"); // NOI18N
+        tablePopupMenu.add(jMenuItem12);
+
         setComponent(mainPanel);
         setMenuBar(menuBar);
         setStatusBar(statusPanel);
@@ -2492,29 +2659,13 @@ public class SinhalaDictionaryToolsView extends FrameView {
     //load a file to table1
     private void jButton47ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton47ActionPerformed
 
-        String s = jTextField14.getText();
-        if (!s.isEmpty()){
-                setStatusMessage("Loading the wordlist");
-                loadToHashTable(s, jTable4);
-                addTableListener(jTable4, jComboBox1);
-        }else{
-            setStatusMessage("No file to load", true);
-            JOptionPane.showMessageDialog(null, "No file to load");
-        }
+        this.loadFile(1);
     }//GEN-LAST:event_jButton47ActionPerformed
 
     //load a file to table2
     private void jButton50ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton50ActionPerformed
         
-        String s = jTextField14.getText();
-        if (!s.isEmpty()){
-            setStatusMessage("Loading the wordlist");
-            loadToHashTable(s, jTable3);
-            addTableListener(jTable3, jComboBox2);
-        }else{
-            setStatusMessage("No file to load", true);
-            JOptionPane.showMessageDialog(null, "No file to load");
-        }
+        this.loadFile(2);
     }//GEN-LAST:event_jButton50ActionPerformed
 
     //Analyze button - tab1
@@ -2605,96 +2756,39 @@ public class SinhalaDictionaryToolsView extends FrameView {
     //remove selected rows from the table 1
     private void jButton18ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton18ActionPerformed
        
-        try{
-            TableModel model = (TableModel)jTable4.getModel();
-            model.removeRows(jTable4.getSelectedRows());        
-        }catch(ClassCastException cce){
-            setStatusMessage("A word list hasn't been loaded to the table", true);
-            JOptionPane.showMessageDialog(null, "A word list hasn't been loaded to the table");
-        }
+        this.removeWords(1);
 
     }//GEN-LAST:event_jButton18ActionPerformed
 
     //add words to the table1
     private void jButton20ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton20ActionPerformed
 
-        //a nasty hack
-        this.jCheckBox2.setVisible(false);
-        this.jCheckBox2.setSelected(true);
-
-        try{        
-            TableModel model = (TableModel)jTable4.getModel();
-            this.addWordsDialog.setVisible(true);
-            
-        }catch(ClassCastException cce){
-            this.addWordsDialog.setVisible(false);
-            setStatusMessage("A word list hasn't been loaded to the table", true);
-            JOptionPane.showMessageDialog(null, "A word list hasn't been loaded to the table");
-        }
+        this.addNewWord(1);
     }//GEN-LAST:event_jButton20ActionPerformed
 
     //save words from table 1
     private void jButton24ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton24ActionPerformed
 
-        try{
-            
-            TableModel model = (TableModel)jTable4.getModel();
-            new FileOutput(new File(tmp.concat("tmp3")), model,
-                    conf.getBooleanProperty("sortBeforeSave", true, "general")).start();
-            saveToTmpFile("tmp3");            
-        }catch(ClassCastException cce){
-            setStatusMessage("A word list hasn't been loaded to the table", true);
-            JOptionPane.showMessageDialog(null, "A word list hasn't been loaded to the table");
-        }
+        this.saveTable(1);
 
     }//GEN-LAST:event_jButton24ActionPerformed
 
     //remove words from table 2
     private void jButton26ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton26ActionPerformed
 
-        try{
-            TableModel model = (TableModel)jTable3.getModel();
-            model.removeRows(jTable3.getSelectedRows());
-        
-        }catch(ClassCastException cce){
-            setStatusMessage("A word list hasn't been loaded to the table", true);
-            JOptionPane.showMessageDialog(null, "A word list hasn't been loaded to the table");
-        }
-        
+        this.removeWords(2);
     }//GEN-LAST:event_jButton26ActionPerformed
 
     //add words to table 2
     private void jButton27ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton27ActionPerformed
 
-        //a nasty hack
-        this.jCheckBox2.setVisible(false);
-        this.jCheckBox2.setSelected(false);
-
-        try{
-            TableModel model = (TableModel)jTable3.getModel();
-            this.addWordsDialog.setVisible(true);
-
-        }catch(ClassCastException cce){
-            this.addWordsDialog.setVisible(false);
-            setStatusMessage("A word list hasn't been loaded to the table", true);
-            JOptionPane.showMessageDialog(null, "A word list hasn't been loaded to the table");
-        }
+        this.addNewWord(2);
     }//GEN-LAST:event_jButton27ActionPerformed
 
     //save words from table 2
     private void jButton28ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton28ActionPerformed
 
-        try{
-
-            TableModel model = (TableModel)jTable3.getModel();
-            new FileOutput(new File(tmp.concat("tmp4")), model,
-                    conf.getBooleanProperty("sortBeforeSave", true, "general")).start();
-            saveToTmpFile("tmp4");
-
-        }catch(ClassCastException cce){
-            setStatusMessage("A word list hasn't been loaded to the table", true);
-            JOptionPane.showMessageDialog(null, "A word list hasn't been loaded to the table");
-        }
+        this.saveTable(2);
     }//GEN-LAST:event_jButton28ActionPerformed
 
     //move table1 list to table 2
@@ -2988,6 +3082,21 @@ public class SinhalaDictionaryToolsView extends FrameView {
         JOptionPane.showMessageDialog(this.getFrame(), msg);
     }//GEN-LAST:event_jMenuItem7ActionPerformed
 
+    //show popupmenu
+    private void jTable4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable4MouseClicked
+
+        if (evt.isPopupTrigger()){
+            tablePopupMenu.show(evt.getComponent(), evt.getX(), evt.getY());
+        }
+        
+    }//GEN-LAST:event_jTable4MouseClicked
+
+    //add a word popupmenu
+    private void jMenuItem8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem8ActionPerformed
+
+        System.err.println(evt.getSource());
+    }//GEN-LAST:event_jMenuItem8ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JDialog addWordsDialog;
     private javax.swing.JFileChooser fileChooser;
@@ -3061,12 +3170,17 @@ public class SinhalaDictionaryToolsView extends FrameView {
     private javax.swing.JLabel jLabel9;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem jMenuItem10;
+    private javax.swing.JMenuItem jMenuItem11;
+    private javax.swing.JMenuItem jMenuItem12;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JMenuItem jMenuItem5;
     private javax.swing.JMenuItem jMenuItem6;
     private javax.swing.JMenuItem jMenuItem7;
+    private javax.swing.JMenuItem jMenuItem8;
+    private javax.swing.JMenuItem jMenuItem9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel11;
@@ -3093,6 +3207,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
     private javax.swing.JScrollPane jScrollPane7;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
+    private javax.swing.JSeparator jSeparator3;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTabbedPane jTabbedPane2;
     private javax.swing.JTable jTable3;
@@ -3125,6 +3240,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
     private javax.swing.JLabel statusAnimationLabel;
     private javax.swing.JLabel statusMessageLabel;
     private javax.swing.JPanel statusPanel;
+    private javax.swing.JPopupMenu tablePopupMenu;
     // End of variables declaration//GEN-END:variables
 
     private final Timer messageTimer;
