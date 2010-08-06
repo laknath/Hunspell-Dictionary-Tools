@@ -1262,10 +1262,10 @@ public class SinhalaDictionaryToolsView extends FrameView {
         jTable3.setName("jTable3"); // NOI18N
         jTable3.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
-                jTable4MouseClicked(evt);
+                jTable3MouseClicked(evt);
             }
             public void mouseReleased(java.awt.event.MouseEvent evt) {
-                jTable4MouseClicked(evt);
+                jTable3MouseClicked(evt);
             }
         });
         jTable3.addFocusListener(new java.awt.event.FocusAdapter() {
@@ -2536,6 +2536,11 @@ public class SinhalaDictionaryToolsView extends FrameView {
 
         jMenuItem9.setText(resourceMap.getString("jMenuItem9.text")); // NOI18N
         jMenuItem9.setName("jMenuItem9"); // NOI18N
+        jMenuItem9.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem9ActionPerformed(evt);
+            }
+        });
         tablePopupMenu.add(jMenuItem9);
 
         jSeparator3.setName("jSeparator3"); // NOI18N
@@ -2543,14 +2548,29 @@ public class SinhalaDictionaryToolsView extends FrameView {
 
         jMenuItem10.setText(resourceMap.getString("jMenuItem10.text")); // NOI18N
         jMenuItem10.setName("jMenuItem10"); // NOI18N
+        jMenuItem10.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem5ActionPerformed(evt);
+            }
+        });
         tablePopupMenu.add(jMenuItem10);
 
         jMenuItem11.setText(resourceMap.getString("jMenuItem11.text")); // NOI18N
         jMenuItem11.setName("jMenuItem11"); // NOI18N
+        jMenuItem11.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem6ActionPerformed(evt);
+            }
+        });
         tablePopupMenu.add(jMenuItem11);
 
         jMenuItem12.setText(resourceMap.getString("jMenuItem12.text")); // NOI18N
         jMenuItem12.setName("jMenuItem12"); // NOI18N
+        jMenuItem12.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem7ActionPerformed(evt);
+            }
+        });
         tablePopupMenu.add(jMenuItem12);
 
         setComponent(mainPanel);
@@ -3087,6 +3107,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
 
         if (evt.isPopupTrigger()){
             tablePopupMenu.show(evt.getComponent(), evt.getX(), evt.getY());
+            currentTableId = 1;
         }
         
     }//GEN-LAST:event_jTable4MouseClicked
@@ -3094,8 +3115,20 @@ public class SinhalaDictionaryToolsView extends FrameView {
     //add a word popupmenu
     private void jMenuItem8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem8ActionPerformed
 
-        System.err.println(evt.getSource());
+        this.addNewWord(this.currentTableId);
     }//GEN-LAST:event_jMenuItem8ActionPerformed
+
+    private void jTable3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable3MouseClicked
+
+        if (evt.isPopupTrigger()){
+            tablePopupMenu.show(evt.getComponent(), evt.getX(), evt.getY());
+            currentTableId = 2;
+        }
+    }//GEN-LAST:event_jTable3MouseClicked
+
+    private void jMenuItem9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem9ActionPerformed
+        this.removeWords(this.currentTableId);
+    }//GEN-LAST:event_jMenuItem9ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JDialog addWordsDialog;
@@ -3257,6 +3290,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
     //for word find
     private JTable lastFocusedTable = null;
     private int lastRow = 0;
+    private int currentTableId = 1;
 
     //a combo box lock
     private boolean isTableLoading = false;

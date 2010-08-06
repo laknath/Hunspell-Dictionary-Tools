@@ -680,8 +680,8 @@
                             <Property name="name" type="java.lang.String" value="jTable3" noResource="true"/>
                           </Properties>
                           <Events>
-                            <EventHandler event="mousePressed" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="jTable4MouseClicked"/>
-                            <EventHandler event="mouseReleased" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="jTable4MouseClicked"/>
+                            <EventHandler event="mousePressed" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="jTable3MouseClicked"/>
+                            <EventHandler event="mouseReleased" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="jTable3MouseClicked"/>
                             <EventHandler event="focusGained" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="jTable3FocusGained"/>
                             <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="jTable3KeyPressed"/>
                           </Events>
@@ -2416,6 +2416,9 @@
             <Property name="text" type="java.lang.String" resourceKey="jMenuItem9.text"/>
             <Property name="name" type="java.lang.String" value="jMenuItem9" noResource="true"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuItem9ActionPerformed"/>
+          </Events>
         </MenuItem>
         <Component class="javax.swing.JSeparator" name="jSeparator3">
           <Properties>
@@ -2427,18 +2430,27 @@
             <Property name="text" type="java.lang.String" resourceKey="jMenuItem10.text"/>
             <Property name="name" type="java.lang.String" value="jMenuItem10" noResource="true"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuItem5ActionPerformed"/>
+          </Events>
         </MenuItem>
         <MenuItem class="javax.swing.JMenuItem" name="jMenuItem11">
           <Properties>
             <Property name="text" type="java.lang.String" resourceKey="jMenuItem11.text"/>
             <Property name="name" type="java.lang.String" value="jMenuItem11" noResource="true"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuItem6ActionPerformed"/>
+          </Events>
         </MenuItem>
         <MenuItem class="javax.swing.JMenuItem" name="jMenuItem12">
           <Properties>
             <Property name="text" type="java.lang.String" resourceKey="jMenuItem12.text"/>
             <Property name="name" type="java.lang.String" value="jMenuItem12" noResource="true"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuItem7ActionPerformed"/>
+          </Events>
         </MenuItem>
       </SubComponents>
     </Container>
