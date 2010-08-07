@@ -6,6 +6,10 @@ package sinhaladictionarytools;
 
 import java.awt.Font;
 import java.awt.GraphicsEnvironment;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.StringSelection;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -20,6 +24,7 @@ import org.jdesktop.application.FrameView;
 import org.jdesktop.application.TaskMonitor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.io.BufferedReader;
 import java.io.File;
@@ -39,6 +44,8 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.KeyStroke;
 import javax.swing.event.TableModelListener;
 import org.jconfig.Configuration;
 import org.jconfig.ConfigurationManager;
@@ -224,15 +231,15 @@ public class SinhalaDictionaryToolsView extends FrameView {
         File file = new File(filepath);
         filepath = file.isAbsolute() ? filepath : file.getAbsolutePath();
 
-        this.jTextField14.setText(filepath);
-        this.jTabbedPane1.setSelectedIndex(2);
+        jTextField14.setText(filepath);
+        jTabbedPane1.setSelectedIndex(2);
     }
 
     /**
      * clear status message
      */
     protected void clearStatusMessage(){
-        this.statusMessageLabel.setText("");        
+        statusMessageLabel.setText("");        
     }
 
     /**
@@ -615,13 +622,14 @@ public class SinhalaDictionaryToolsView extends FrameView {
 
         //a nasty hack
         this.jCheckBox2.setVisible(false);
+        TableModel model = null;
 
         try{
             if (tableId == 1){
-                TableModel model = (TableModel)jTable4.getModel();
+                model = (TableModel)jTable4.getModel();
                 this.jCheckBox2.setSelected(true);
             }else{
-                TableModel model = (TableModel)jTable3.getModel();
+                model = (TableModel)jTable3.getModel();
                 this.jCheckBox2.setSelected(false);
             }
             
@@ -633,6 +641,29 @@ public class SinhalaDictionaryToolsView extends FrameView {
             JOptionPane.showMessageDialog(null, "A word list hasn't been loaded to the table");
         }
 
+     }
+
+    /**
+     * Popup menu helper
+     *
+     * @param tableId The Table ID of the Table
+     * @param field The Textfield to which the selected text will be copied
+     */
+     private void popupHelper(int tableId, JTextField field){
+
+        TableModel model = null;
+        JTable table = null;
+
+        if (tableId == 1){
+            table = jTable4;
+            model = (TableModel)jTable4.getModel();            
+        }else{
+            table = jTable3;
+            model = (TableModel)jTable3.getModel();
+        }
+
+        String selectedWord = (String) model.getValueAt(table.getSelectedRow(), table.getSelectedColumn());
+        field.setText(selectedWord);
      }
 
     /**
@@ -870,6 +901,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
         jTextField19 = new javax.swing.JTextField();
         jLabel30 = new javax.swing.JLabel();
         tablePopupMenu = new javax.swing.JPopupMenu();
+        jMenuItem13 = new javax.swing.JMenuItem();
         jMenuItem8 = new javax.swing.JMenuItem();
         jMenuItem9 = new javax.swing.JMenuItem();
         jSeparator3 = new javax.swing.JSeparator();
@@ -1086,14 +1118,14 @@ public class SinhalaDictionaryToolsView extends FrameView {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
                     .addComponent(jButton8))
-                .addContainerGap(17, Short.MAX_VALUE))
+                .addContainerGap(19, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab(resourceMap.getString("jPanel1.TabConstraints.tabTitle"), jPanel1); // NOI18N
@@ -1841,10 +1873,13 @@ public class SinhalaDictionaryToolsView extends FrameView {
         addWordsDialog.setTitle(resourceMap.getString("addWordsDialog.title")); // NOI18N
         addWordsDialog.setAlwaysOnTop(true);
         addWordsDialog.setMinimumSize(new java.awt.Dimension(623, 260));
-        addWordsDialog.setModalityType(java.awt.Dialog.ModalityType.APPLICATION_MODAL);
+        addWordsDialog.setModal(false);
         addWordsDialog.setName("addWordsDialog"); // NOI18N
         addWordsDialog.setResizable(false);
         addWordsDialog.addComponentListener(new java.awt.event.ComponentAdapter() {
+            public void componentHidden(java.awt.event.ComponentEvent evt) {
+                addWordsDialogComponentHidden(evt);
+            }
             public void componentShown(java.awt.event.ComponentEvent evt) {
                 addWordsDialogComponentShown(evt);
             }
@@ -2360,6 +2395,11 @@ public class SinhalaDictionaryToolsView extends FrameView {
         findWordsDialog.setMinimumSize(new java.awt.Dimension(430, 200));
         findWordsDialog.setName("findWordsDialog"); // NOI18N
         findWordsDialog.setResizable(false);
+        findWordsDialog.addComponentListener(new java.awt.event.ComponentAdapter() {
+            public void componentHidden(java.awt.event.ComponentEvent evt) {
+                findWordsDialogComponentHidden(evt);
+            }
+        });
         findWordsDialog.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 findWordsDialogKeyPressed(evt);
@@ -2525,6 +2565,16 @@ public class SinhalaDictionaryToolsView extends FrameView {
 
         tablePopupMenu.setName("tablePopupMenu"); // NOI18N
 
+        jMenuItem13.setText(resourceMap.getString("jMenuItem13.text")); // NOI18N
+        jMenuItem13.setToolTipText(resourceMap.getString("jMenuItem13.toolTipText")); // NOI18N
+        jMenuItem13.setName("jMenuItem13"); // NOI18N
+        jMenuItem13.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem13ActionPerformed(evt);
+            }
+        });
+        tablePopupMenu.add(jMenuItem13);
+
         jMenuItem8.setText(resourceMap.getString("jMenuItem8.text")); // NOI18N
         jMenuItem8.setName("jMenuItem8"); // NOI18N
         jMenuItem8.addActionListener(new java.awt.event.ActionListener() {
@@ -2550,7 +2600,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
         jMenuItem10.setName("jMenuItem10"); // NOI18N
         jMenuItem10.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem5ActionPerformed(evt);
+                jMenuItem10ActionPerformed(evt);
             }
         });
         tablePopupMenu.add(jMenuItem10);
@@ -2559,7 +2609,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
         jMenuItem11.setName("jMenuItem11"); // NOI18N
         jMenuItem11.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem6ActionPerformed(evt);
+                jMenuItem11ActionPerformed(evt);
             }
         });
         tablePopupMenu.add(jMenuItem11);
@@ -2679,13 +2729,13 @@ public class SinhalaDictionaryToolsView extends FrameView {
     //load a file to table1
     private void jButton47ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton47ActionPerformed
 
-        this.loadFile(1);
+        loadFile(1);
     }//GEN-LAST:event_jButton47ActionPerformed
 
     //load a file to table2
     private void jButton50ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton50ActionPerformed
         
-        this.loadFile(2);
+        loadFile(2);
     }//GEN-LAST:event_jButton50ActionPerformed
 
     //Analyze button - tab1
@@ -2776,39 +2826,39 @@ public class SinhalaDictionaryToolsView extends FrameView {
     //remove selected rows from the table 1
     private void jButton18ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton18ActionPerformed
        
-        this.removeWords(1);
+        removeWords(1);
 
     }//GEN-LAST:event_jButton18ActionPerformed
 
     //add words to the table1
     private void jButton20ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton20ActionPerformed
 
-        this.addNewWord(1);
+        addNewWord(1);
     }//GEN-LAST:event_jButton20ActionPerformed
 
     //save words from table 1
     private void jButton24ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton24ActionPerformed
 
-        this.saveTable(1);
+        saveTable(1);
 
     }//GEN-LAST:event_jButton24ActionPerformed
 
     //remove words from table 2
     private void jButton26ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton26ActionPerformed
 
-        this.removeWords(2);
+        removeWords(2);
     }//GEN-LAST:event_jButton26ActionPerformed
 
     //add words to table 2
     private void jButton27ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton27ActionPerformed
 
-        this.addNewWord(2);
+        addNewWord(2);
     }//GEN-LAST:event_jButton27ActionPerformed
 
     //save words from table 2
     private void jButton28ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton28ActionPerformed
 
-        this.saveTable(2);
+        saveTable(2);
     }//GEN-LAST:event_jButton28ActionPerformed
 
     //move table1 list to table 2
@@ -2842,35 +2892,35 @@ public class SinhalaDictionaryToolsView extends FrameView {
     //select 1st tab
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
 
-        this.jTabbedPane1.setSelectedIndex(0);
+        jTabbedPane1.setSelectedIndex(0);
 
     }//GEN-LAST:event_jMenuItem2ActionPerformed
 
     //select 2nd tab
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
 
-        this.jTabbedPane1.setSelectedIndex(1);
+        jTabbedPane1.setSelectedIndex(1);
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     //select 3rd tab
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
-        this.jTabbedPane1.setSelectedIndex(2);
+        jTabbedPane1.setSelectedIndex(2);
 
     }//GEN-LAST:event_jMenuItem3ActionPerformed
 
     //save configurations
     private void jButton15ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton15ActionPerformed
         setConfigs();
-        this.settingsDialog.setVisible(false);
+        settingsDialog.setVisible(false);
     }//GEN-LAST:event_jButton15ActionPerformed
 
     private void jButton14ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton14ActionPerformed
-        this.settingsDialog.setVisible(false);
+        settingsDialog.setVisible(false);
     }//GEN-LAST:event_jButton14ActionPerformed
 
     private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
         getConfigs();
-        this.settingsDialog.setVisible(true);
+        settingsDialog.setVisible(true);
     }//GEN-LAST:event_jMenuItem4ActionPerformed
 
     //change 1st combo box item selection
@@ -3085,6 +3135,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
         TableModel model = (TableModel)lastFocusedTable.getModel();
         model.setFilter("All");
 
+        jTextField19.setText("");
     }//GEN-LAST:event_filterWordsDialogComponentHidden
 
     private void jMenuItem7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem7ActionPerformed
@@ -3115,7 +3166,8 @@ public class SinhalaDictionaryToolsView extends FrameView {
     //add a word popupmenu
     private void jMenuItem8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem8ActionPerformed
 
-        this.addNewWord(this.currentTableId);
+        popupHelper(currentTableId, jTextField2);
+        addNewWord(currentTableId);
     }//GEN-LAST:event_jMenuItem8ActionPerformed
 
     private void jTable3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable3MouseClicked
@@ -3127,8 +3179,42 @@ public class SinhalaDictionaryToolsView extends FrameView {
     }//GEN-LAST:event_jTable3MouseClicked
 
     private void jMenuItem9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem9ActionPerformed
-        this.removeWords(this.currentTableId);
+        removeWords(currentTableId);
     }//GEN-LAST:event_jMenuItem9ActionPerformed
+
+    private void jMenuItem13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem13ActionPerformed
+
+        if (lastFocusedTable != null){
+            String word = (String) lastFocusedTable.getValueAt(lastFocusedTable.getSelectedRow(), lastFocusedTable.getSelectedColumn());
+            
+            StringSelection stringSelection = new StringSelection( word );
+            Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+            clipboard.setContents( stringSelection, (TableModel)lastFocusedTable.getModel() );
+
+        }
+    }//GEN-LAST:event_jMenuItem13ActionPerformed
+
+    private void jMenuItem10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem10ActionPerformed
+
+        popupHelper(currentTableId, jTextField18);
+        jMenuItem5ActionPerformed(evt);
+    }//GEN-LAST:event_jMenuItem10ActionPerformed
+
+    private void jMenuItem11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem11ActionPerformed
+
+        popupHelper(currentTableId, jTextField19);
+        jMenuItem6ActionPerformed(evt);
+    }//GEN-LAST:event_jMenuItem11ActionPerformed
+
+    private void addWordsDialogComponentHidden(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_addWordsDialogComponentHidden
+
+        jTextField2.setText("");
+    }//GEN-LAST:event_addWordsDialogComponentHidden
+
+    private void findWordsDialogComponentHidden(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_findWordsDialogComponentHidden
+
+        jTextField18.setText("");
+    }//GEN-LAST:event_findWordsDialogComponentHidden
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JDialog addWordsDialog;
@@ -3206,6 +3292,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
     private javax.swing.JMenuItem jMenuItem10;
     private javax.swing.JMenuItem jMenuItem11;
     private javax.swing.JMenuItem jMenuItem12;
+    private javax.swing.JMenuItem jMenuItem13;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;

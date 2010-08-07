@@ -1,5 +1,8 @@
 package sinhaladictionarytools.lib.table;
 
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.ClipboardOwner;
+import java.awt.datatransfer.Transferable;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -8,13 +11,12 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.table.AbstractTableModel;
-import sinhaladictionarytools.SinhalaDictionaryToolsView;
 
 /**
  *
  * @author buddhika
  */
-public class TableModel extends AbstractTableModel{
+public class TableModel extends AbstractTableModel implements ClipboardOwner{
 
     private String [] keys;
     private LinkedHashMap<String, Integer> hashmap;
@@ -290,6 +292,10 @@ public class TableModel extends AbstractTableModel{
         }
 
         return false;
+    }
+
+    public void lostOwnership(Clipboard clipboard, Transferable contents) {
+        //do nothing
     }
 
 }
