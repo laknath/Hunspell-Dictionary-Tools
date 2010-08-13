@@ -37,9 +37,11 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.Vector;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
@@ -57,6 +59,7 @@ import sinhaladictionarytools.lib.crawler.CrawlObserver;
 import sinhaladictionarytools.lib.crawler.LangAction;
 import sinhaladictionarytools.lib.crawler.LangCrawler;
 import sinhaladictionarytools.lib.crawler.LangCrawlerListener;
+import sinhaladictionarytools.lib.table.HunspellTableModel;
 import sinhaladictionarytools.lib.table.TableModel;
 import websphinx.CrawlEvent;
 import websphinx.DownloadParameters;
@@ -489,7 +492,16 @@ public class SinhalaDictionaryToolsView extends FrameView {
         jTextField11.setText(conf.getProperty("charRangeMin", "a", "parsing"));
         jTextField12.setText(conf.getProperty("charRangeMax", "Z", "parsing"));
 
+        jComboBox5.removeAllItems();
+        String[] categories = vconf.getPropertyNames("categories");
+        for (String category: categories){
+            jComboBox5.addItem(category);
+        }
+
         this.getFrame().setResizable(false);
+
+        //load vocabularies
+        loadVocabularies();
     }
 
     /**
@@ -521,6 +533,46 @@ public class SinhalaDictionaryToolsView extends FrameView {
             SinhalaDictionaryToolsApp.getConfiguration().save(handler, conf);
         } catch (ConfigurationManagerException ex) {
             setStatusMessage("Couldn't save settings.", true);
+            Logger.getLogger(SinhalaDictionaryToolsView.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }
+
+    /**
+     * Load the global aff file to internal structures
+     */
+    private void loadVocabularies(){
+        String vocPath = vconf.getProperty("affpath", "general");
+
+        File globalAff = new File(vocPath);
+
+        try{
+            BufferedReader bf = new BufferedReader(new FileReader(globalAff));
+
+            String line = null;
+            while ((line = bf.readLine()) != null){
+                String[] chunks = line.split(" ");
+
+                //add classes to one table
+                if (chunks.length == 4){
+                    vocClasses.put(chunks[1].toCharArray()[0], chunks);
+                }else if (chunks.length == 5){
+
+                    char index = chunks[1].toCharArray()[0];
+                    Vector v = null;
+
+                    if (vocRules.containsKey(index)){
+                        v = vocRules.get(index);
+                        v.add(chunks);
+                    }else{
+                        v = new Vector();
+                        v.add(chunks);
+                        vocRules.put(index, v);
+                    }                   
+                }
+            }
+        }catch (Exception ex){
+            setStatusMessage("Error in loading vocabulary file", true);
             Logger.getLogger(SinhalaDictionaryToolsView.class.getName()).log(Level.SEVERE, null, ex);
         }
 
@@ -723,7 +775,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
     }
 
     /**
-     * Save table to a external file
+     * Save table to an external file
      *
      * @param tableId The ID of the table selected
      */
@@ -747,6 +799,21 @@ public class SinhalaDictionaryToolsView extends FrameView {
         }catch(ClassCastException cce){
             setStatusMessage("A word list hasn't been loaded to the table", true);
             JOptionPane.showMessageDialog(null, "A word list hasn't been loaded to the table");
+        }
+    }
+
+    /**
+     * Save settings to an external file
+     *
+     * @param filePath The file path to write
+     * @param conf the configuration settings
+     */
+    private void saveSettings(String filePath, Configuration conf){
+        XMLFileHandler handler = new XMLFileHandler(filePath);
+        try {
+            SinhalaDictionaryToolsApp.getConfiguration().save(handler, conf);
+        } catch (ConfigurationManagerException ex) {
+            Logger.getLogger(SinhalaDictionaryToolsView.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -1131,14 +1198,14 @@ public class SinhalaDictionaryToolsView extends FrameView {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
                     .addComponent(jButton8))
-                .addContainerGap(19, Short.MAX_VALUE))
+                .addContainerGap(17, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab(resourceMap.getString("jPanel1.TabConstraints.tabTitle"), jPanel1); // NOI18N
@@ -1886,7 +1953,6 @@ public class SinhalaDictionaryToolsView extends FrameView {
         addWordsDialog.setTitle(resourceMap.getString("addWordsDialog.title")); // NOI18N
         addWordsDialog.setAlwaysOnTop(true);
         addWordsDialog.setMinimumSize(new java.awt.Dimension(623, 260));
-        addWordsDialog.setModal(false);
         addWordsDialog.setName("addWordsDialog"); // NOI18N
         addWordsDialog.setResizable(false);
         addWordsDialog.addComponentListener(new java.awt.event.ComponentAdapter() {
@@ -2398,8 +2464,12 @@ public class SinhalaDictionaryToolsView extends FrameView {
         jTable1.setName("jTable1"); // NOI18N
         jScrollPane3.setViewportView(jTable1);
 
-        jComboBox5.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         jComboBox5.setName("jComboBox5"); // NOI18N
+        jComboBox5.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                jComboBox5ItemStateChanged(evt);
+            }
+        });
 
         jLabel27.setFont(resourceMap.getFont("jLabel27.font")); // NOI18N
         jLabel27.setText(resourceMap.getString("jLabel27.text")); // NOI18N
@@ -2410,12 +2480,22 @@ public class SinhalaDictionaryToolsView extends FrameView {
 
         jButton6.setText(resourceMap.getString("jButton6.text")); // NOI18N
         jButton6.setName("jButton6"); // NOI18N
+        jButton6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton6ActionPerformed(evt);
+            }
+        });
 
         jButton25.setText(resourceMap.getString("jButton25.text")); // NOI18N
         jButton25.setName("jButton25"); // NOI18N
 
         jButton31.setText(resourceMap.getString("jButton31.text")); // NOI18N
         jButton31.setName("jButton31"); // NOI18N
+        jButton31.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton31ActionPerformed(evt);
+            }
+        });
 
         jButton32.setText(resourceMap.getString("jButton32.text")); // NOI18N
         jButton32.setName("jButton32"); // NOI18N
@@ -3338,6 +3418,34 @@ public class SinhalaDictionaryToolsView extends FrameView {
         jTextField18.setText("");
     }//GEN-LAST:event_findWordsDialogComponentHidden
 
+    //delete a category
+    private void jButton31ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton31ActionPerformed
+        
+        if (JOptionPane.showConfirmDialog(settingsDialog, "Are you sure want to delete this category ? This action is irreversible.", "Confirm action", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION){
+              
+            vconf.removeProperty((String)jComboBox5.getSelectedItem(), "categories");
+            saveSettings("config/vocabulary_catagory.xml", vconf);            
+            getConfigs();
+        }
+        
+    }//GEN-LAST:event_jButton31ActionPerformed
+
+    //add a new category
+    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+        
+        vconf.setProperty(jTextField20.getText(), "", "categories");
+        saveSettings("config/vocabulary_catagory.xml", vconf);
+        getConfigs();
+    }//GEN-LAST:event_jButton6ActionPerformed
+
+    //when categories combobox changes
+    private void jComboBox5ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBox5ItemStateChanged
+
+        //char index = vconf.getCharProperty((String)jComboBox5.getSelectedItem(), '2', "categories");
+        //jTable1.setModel(new HunspellTableModel(vocRules, index));
+
+    }//GEN-LAST:event_jComboBox5ItemStateChanged
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JDialog addWordsDialog;
     private javax.swing.JFileChooser fileChooser;
@@ -3517,4 +3625,6 @@ public class SinhalaDictionaryToolsView extends FrameView {
     //a combo box lock
     private boolean isTableLoading = false;
 
+    private HashMap<Character, String[]> vocClasses = new HashMap<Character, String[]>();
+    private HashMap<Character, Vector<String[]>> vocRules = new HashMap<Character, Vector<String[]>>();
 }

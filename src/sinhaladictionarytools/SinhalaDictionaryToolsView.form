@@ -76,7 +76,7 @@
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="jPanel4" min="-2" max="-2" attributes="0"/>
                           <EmptySpace min="-2" max="-2" attributes="0"/>
-                          <Component id="jPanel5" min="-2" pref="101" max="-2" attributes="0"/>
+                          <Component id="jPanel5" min="-2" max="-2" attributes="0"/>
                           <EmptySpace min="-2" max="-2" attributes="0"/>
                           <Component id="jScrollPane5" min="-2" pref="163" max="-2" attributes="0"/>
                           <EmptySpace min="-2" max="-2" attributes="0"/>
@@ -84,7 +84,7 @@
                               <Component id="jButton1" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="jButton8" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace pref="19" max="32767" attributes="0"/>
+                          <EmptySpace pref="17" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -1340,7 +1340,6 @@
         <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
           <Dimension value="[623, 260]"/>
         </Property>
-        <Property name="modal" type="boolean" value="false"/>
         <Property name="name" type="java.lang.String" value="addWordsDialog" noResource="true"/>
         <Property name="resizable" type="boolean" value="false"/>
       </Properties>
@@ -2249,15 +2248,13 @@
                 <Component class="javax.swing.JComboBox" name="jComboBox5">
                   <Properties>
                     <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-                      <StringArray count="4">
-                        <StringItem index="0" value="Item 1"/>
-                        <StringItem index="1" value="Item 2"/>
-                        <StringItem index="2" value="Item 3"/>
-                        <StringItem index="3" value="Item 4"/>
-                      </StringArray>
+                      <StringArray count="0"/>
                     </Property>
                     <Property name="name" type="java.lang.String" value="jComboBox5" noResource="true"/>
                   </Properties>
+                  <Events>
+                    <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="jComboBox5ItemStateChanged"/>
+                  </Events>
                 </Component>
                 <Component class="javax.swing.JLabel" name="jLabel27">
                   <Properties>
@@ -2277,6 +2274,9 @@
                     <Property name="text" type="java.lang.String" resourceKey="jButton6.text"/>
                     <Property name="name" type="java.lang.String" value="jButton6" noResource="true"/>
                   </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton6ActionPerformed"/>
+                  </Events>
                 </Component>
                 <Component class="javax.swing.JButton" name="jButton25">
                   <Properties>
@@ -2289,6 +2289,9 @@
                     <Property name="text" type="java.lang.String" resourceKey="jButton31.text"/>
                     <Property name="name" type="java.lang.String" value="jButton31" noResource="true"/>
                   </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton31ActionPerformed"/>
+                  </Events>
                 </Component>
                 <Component class="javax.swing.JButton" name="jButton32">
                   <Properties>

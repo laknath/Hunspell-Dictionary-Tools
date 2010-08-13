@@ -1,10 +1,11 @@
 <?xml version="1.0" ?>
 <properties>
+  <category name="categories">
+    <property name="noun" value="2"/>
+    <property name="test" value=""/>
+    <property name="verb" value="3"/>
+  </category>
   <category name="general">
     <property name="affpath" value="config/global.aff"/>
-  </category>
-  <category name="categories">
-    <property name="noun" value="2,13,21,27,49,62"/>
-    <property name="verb" value="3,49,138,20,24,49,115,286,1225,1680,3899"/>
   </category>
 </properties>
