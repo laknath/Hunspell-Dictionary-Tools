@@ -24,12 +24,14 @@ public class HunspellTableModel extends AbstractTableModel {
 
         if (affRules != null){
             this.model = affRules.get(index);
+
+            if (this.model == null){
+                this.model = new Vector<String[]>();
+                affRules.put(index, this.model);
+            }
+
         }
 
-        if (this.model == null){
-            this.model = new Vector<String[]>();
-        }
-        
         this.index = index;
     }
 
@@ -96,11 +98,16 @@ public class HunspellTableModel extends AbstractTableModel {
         if (getRowCount() > 0 && row >= 0){
             String[] tmp = model.remove(row);
 
-            if (tmp.length > 4){
+            if (getRowCount() == 0){
+                vocClasses.remove(tmp[1]);
+            }else{
+                
                 String[] tmpClass = vocClasses.get(tmp[1]);
                 tmpClass[3] = Integer.toString(getRowCount());
                 vocClasses.put(tmp[1], tmpClass);
+
             }
+            
 
             fireTableRowsDeleted(row, row);
         }
@@ -114,10 +121,12 @@ public class HunspellTableModel extends AbstractTableModel {
 
             String[] tmpClass = vocClasses.get(row[1]);
 
+            //not a new category
             if (tmpClass != null){
                 tmpClass[3] = Integer.toString(getRowCount());
                 vocClasses.put(row[1], tmpClass);
-            }else{
+
+            }else{ // a new category and the first row
                 vocClasses.put(row[1], new String[]{row[0], row[1], "Y", Integer.toString(getRowCount()) });
             }
 

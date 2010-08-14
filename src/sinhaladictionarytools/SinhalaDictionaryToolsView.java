@@ -27,6 +27,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.KeyEvent;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import javax.swing.Timer;
 import javax.swing.Icon;
@@ -3557,7 +3558,58 @@ public class SinhalaDictionaryToolsView extends FrameView {
 
     //save the category rules
     private void jButton32ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton32ActionPerformed
+        String globalAffPath = vconf.getProperty("affpath", "config/global.aff", "general");
+        String lineSep = System.getProperty("line.separator");
 
+        BufferedWriter out = null;
+
+        try{
+            // Create file
+            FileWriter fstream = new FileWriter(globalAffPath);
+            out = new BufferedWriter(fstream);
+
+            out.write("SET " + conf.getProperty("charset", "UTF-8", "parsing") + lineSep);
+            out.write("FLAG " + conf.getProperty("flagType", "num", "general") + lineSep);
+
+            Iterator<String> it = vocClasses.keySet().iterator();
+
+            while (it.hasNext()){
+                String key = it.next();
+                String[] ruleClass = vocClasses.get(key);
+
+                if (ruleClass.length == 4){
+                    out.write(ruleClass[0] + " " + ruleClass[1] + " " + ruleClass[2] + " " + ruleClass[3] + lineSep);
+
+                    Vector<String[]> rules = vocRules.get(key);
+
+                    if (rules != null){
+                        Iterator<String[]> it1 =  rules.iterator();
+
+                        while (it1.hasNext()){
+                            String[] rule = it1.next();
+
+                            if (rule.length >= 5){
+                                out.write(rule[0] + " " + rule[1] + " " + rule[2] + " " + rule[3] + " " + rule[4] +  lineSep);
+                            }
+                        }
+                    }
+                    
+                }
+            }
+            
+            JOptionPane.showMessageDialog(settingsDialog, "Settings were saved");
+
+        }catch (Exception e){
+            e.printStackTrace();
+            System.err.println("Error: " + e.getMessage());
+        }finally{
+            try {
+                out.flush();
+                out.close();
+            } catch (IOException ex) {
+                Logger.getLogger(SinhalaDictionaryToolsView.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }//GEN-LAST:event_jButton32ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
