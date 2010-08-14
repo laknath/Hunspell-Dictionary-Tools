@@ -2240,8 +2240,13 @@
                             <Column editable="true" title="Pattern" type="java.lang.String"/>
                           </Table>
                         </Property>
+                        <Property name="cellSelectionEnabled" type="boolean" value="true"/>
                         <Property name="name" type="java.lang.String" value="jTable1" noResource="true"/>
+                        <Property name="rowHeight" type="int" value="25"/>
                       </Properties>
+                      <AuxValues>
+                        <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value="jTable1.setModel(new HunspellTableModel(null,&apos;a&apos;));&#xa;jTable1.getColumnModel().getColumn(0).setCellEditor(new DefaultCellEditor(new JComboBox(new String[]{&quot;PFX&quot;, &quot;SFX&quot;} ) ));&#xa;"/>
+                      </AuxValues>
                     </Component>
                   </SubComponents>
                 </Container>

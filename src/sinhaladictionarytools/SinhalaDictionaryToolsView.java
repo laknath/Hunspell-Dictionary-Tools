@@ -9,7 +9,6 @@ import java.awt.GraphicsEnvironment;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
-import java.awt.datatransfer.StringSelection;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -24,7 +23,7 @@ import org.jdesktop.application.FrameView;
 import org.jdesktop.application.TaskMonitor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.InputEvent;
+import java.awt.event.ItemEvent;
 import java.awt.event.KeyEvent;
 import java.io.BufferedReader;
 import java.io.File;
@@ -42,13 +41,15 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Vector;
+import javax.swing.DefaultCellEditor;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.KeyStroke;
 import javax.swing.event.TableModelListener;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 import org.jconfig.Configuration;
 import org.jconfig.ConfigurationManager;
 import org.jconfig.handler.XMLFileHandler;
@@ -59,6 +60,7 @@ import sinhaladictionarytools.lib.crawler.CrawlObserver;
 import sinhaladictionarytools.lib.crawler.LangAction;
 import sinhaladictionarytools.lib.crawler.LangCrawler;
 import sinhaladictionarytools.lib.crawler.LangCrawlerListener;
+import sinhaladictionarytools.lib.table.HunspellTableCellEditor;
 import sinhaladictionarytools.lib.table.HunspellTableModel;
 import sinhaladictionarytools.lib.table.TableModel;
 import websphinx.CrawlEvent;
@@ -393,7 +395,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
         jTextField18.setFont(f);
         jTextField19.setFont(f);
 
-
+        jTable1.setFont(f);
         jTable3.setFont(f);
         jTable4.setFont(f);
 
@@ -554,9 +556,11 @@ public class SinhalaDictionaryToolsView extends FrameView {
                 String[] chunks = line.split(" ");
 
                 //add classes to one table
-                if (chunks.length == 4){
+                if (chunks.length == 4 && (chunks[0].equals("PFX") || chunks[0].endsWith("SFX"))){
                     vocClasses.put(chunks[1].toCharArray()[0], chunks);
-                }else if (chunks.length == 5){
+
+                //add individual affix rules 
+                }else if (chunks.length > 4 && (chunks[0].equals("PFX") || chunks[0].endsWith("SFX"))){
 
                     char index = chunks[1].toCharArray()[0];
                     Vector v = null;
@@ -958,6 +962,8 @@ public class SinhalaDictionaryToolsView extends FrameView {
         jPanel20 = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
+        jTable1.setModel(new HunspellTableModel(null,'a'));
+        jTable1.getColumnModel().getColumn(0).setCellEditor(new DefaultCellEditor(new JComboBox(new String[]{"PFX", "SFX"} ) ));
         jComboBox5 = new javax.swing.JComboBox();
         jLabel27 = new javax.swing.JLabel();
         jTextField20 = new javax.swing.JTextField();
@@ -2461,7 +2467,9 @@ public class SinhalaDictionaryToolsView extends FrameView {
                 return types [columnIndex];
             }
         });
+        jTable1.setCellSelectionEnabled(true);
         jTable1.setName("jTable1"); // NOI18N
+        jTable1.setRowHeight(25);
         jScrollPane3.setViewportView(jTable1);
 
         jComboBox5.setName("jComboBox5"); // NOI18N
@@ -3014,7 +3022,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
         new FileOutput(f, jTextArea3.getText(),
                 conf.getBooleanProperty("sortBeforeSave", true, "general")).start();
         moveToAnalyze(f.getPath());
-
+        jButton47.doClick();
     }//GEN-LAST:event_jButton10ActionPerformed
 
     //save to output file - dic/aff or txt
@@ -3441,9 +3449,33 @@ public class SinhalaDictionaryToolsView extends FrameView {
     //when categories combobox changes
     private void jComboBox5ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBox5ItemStateChanged
 
-        //char index = vconf.getCharProperty((String)jComboBox5.getSelectedItem(), '2', "categories");
-        //jTable1.setModel(new HunspellTableModel(vocRules, index));
+        if (evt.getStateChange() == ItemEvent.SELECTED){
+            String index = vconf.getProperty((String)jComboBox5.getSelectedItem(), "1", "categories");
 
+            if (index.length() > 0){
+                jTable1.setModel(new HunspellTableModel(vocRules, index.toCharArray()[0]));                		
+		TableColumnModel columnModel = jTable1.getColumnModel();
+                
+                for (int i = 0; i < columnModel.getColumnCount(); i++) {
+                    TableColumn column = columnModel.getColumn(i);
+
+                    if (i == 0){
+                        column.setCellEditor(new HunspellTableCellEditor(conf.getProperty("font", "Arial", "general"),
+                                new JComboBox(new String[]{"PFX", "SFX"} )));
+                    }else{
+
+                        JTextField textCell = new JTextField();
+                        textCell.setFont(new Font(conf.getProperty("font", "Arial", "general"), Font.PLAIN, 12));                        
+                        column.setCellEditor(new HunspellTableCellEditor(conf.getProperty("font", "Arial", "general"),
+                                textCell));
+
+                    }
+
+		}
+
+            }
+        }
+ 
     }//GEN-LAST:event_jComboBox5ItemStateChanged
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

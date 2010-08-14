@@ -2,8 +2,7 @@
 <properties>
   <category name="categories">
     <property name="noun" value="2"/>
-    <property name="test" value=""/>
-    <property name="verb" value="3"/>
+    <property name="test" value="3"/>
   </category>
   <category name="general">
     <property name="affpath" value="config/global.aff"/>
