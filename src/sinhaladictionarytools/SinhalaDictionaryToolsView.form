@@ -2245,7 +2245,7 @@
                         <Property name="rowHeight" type="int" value="25"/>
                       </Properties>
                       <AuxValues>
-                        <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value="jTable1.setModel(new HunspellTableModel(null,&apos;a&apos;));&#xa;jTable1.getColumnModel().getColumn(0).setCellEditor(new DefaultCellEditor(new JComboBox(new String[]{&quot;PFX&quot;, &quot;SFX&quot;} ) ));&#xa;"/>
+                        <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value="jTable1.setModel(new HunspellTableModel(null,&quot;1&quot;));&#xa;jTable1.getColumnModel().getColumn(0).setCellEditor(new DefaultCellEditor(new JComboBox(new String[]{&quot;PFX&quot;, &quot;SFX&quot;} ) ));&#xa;"/>
                       </AuxValues>
                     </Component>
                   </SubComponents>
@@ -2258,7 +2258,7 @@
                     <Property name="name" type="java.lang.String" value="jComboBox5" noResource="true"/>
                   </Properties>
                   <Events>
-                    <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="jComboBox5ItemStateChanged"/>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jComboBox5ActionPerformed"/>
                   </Events>
                 </Component>
                 <Component class="javax.swing.JLabel" name="jLabel27">
@@ -2288,6 +2288,9 @@
                     <Property name="text" type="java.lang.String" resourceKey="jButton25.text"/>
                     <Property name="name" type="java.lang.String" value="jButton25" noResource="true"/>
                   </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton25ActionPerformed"/>
+                  </Events>
                 </Component>
                 <Component class="javax.swing.JButton" name="jButton31">
                   <Properties>
@@ -2303,18 +2306,27 @@
                     <Property name="text" type="java.lang.String" resourceKey="jButton32.text"/>
                     <Property name="name" type="java.lang.String" value="jButton32" noResource="true"/>
                   </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton32ActionPerformed"/>
+                  </Events>
                 </Component>
                 <Component class="javax.swing.JButton" name="jButton33">
                   <Properties>
                     <Property name="text" type="java.lang.String" resourceKey="jButton33.text"/>
                     <Property name="name" type="java.lang.String" value="jButton33" noResource="true"/>
                   </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton33ActionPerformed"/>
+                  </Events>
                 </Component>
                 <Component class="javax.swing.JButton" name="jButton34">
                   <Properties>
                     <Property name="text" type="java.lang.String" resourceKey="jButton34.text"/>
                     <Property name="name" type="java.lang.String" value="jButton34" noResource="true"/>
                   </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton34ActionPerformed"/>
+                  </Events>
                 </Component>
                 <Component class="javax.swing.JSeparator" name="jSeparator4">
                   <Properties>

@@ -16,14 +16,18 @@ import javax.swing.table.AbstractTableModel;
 public class HunspellTableModel extends AbstractTableModel {
 
     Vector<String[]> model;
-    char index;
+    String index;
     private String[] columnNames = {"Option", "Strip", "Append", "Condition"};
 
 
-    public HunspellTableModel(HashMap<Character, Vector<String[]>> affRules, char index) {
+    public HunspellTableModel(HashMap<String, Vector<String[]>> affRules, String index) {
 
         if (affRules != null){
             this.model = affRules.get(index);
+        }
+
+        if (this.model == null){
+            this.model = new Vector<String[]>();
         }
         
         this.index = index;
@@ -87,5 +91,39 @@ public class HunspellTableModel extends AbstractTableModel {
 
     }
 
+    public void removeRow(int row, HashMap<String, String[]> vocClasses){
 
+        if (getRowCount() > 0 && row >= 0){
+            String[] tmp = model.remove(row);
+
+            if (tmp.length > 4){
+                String[] tmpClass = vocClasses.get(tmp[1]);
+                tmpClass[3] = Integer.toString(getRowCount());
+                vocClasses.put(tmp[1], tmpClass);
+            }
+
+            fireTableRowsDeleted(row, row);
+        }
+        
+    }
+
+    public void addRow(String[] row, HashMap<String, String[]> vocClasses){
+
+        if (row.length > 4){
+            model.add(row);
+
+            String[] tmpClass = vocClasses.get(row[1]);
+
+            if (tmpClass != null){
+                tmpClass[3] = Integer.toString(getRowCount());
+                vocClasses.put(row[1], tmpClass);
+            }else{
+                vocClasses.put(row[1], new String[]{row[0], row[1], "Y", Integer.toString(getRowCount()) });
+            }
+
+
+            fireTableRowsDeleted(getRowCount(), getRowCount());
+        }
+        
+    }
 }

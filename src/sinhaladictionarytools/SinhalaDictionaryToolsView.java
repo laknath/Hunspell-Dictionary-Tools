@@ -12,6 +12,7 @@ import java.awt.datatransfer.StringSelection;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.event.TableModelEvent;
@@ -41,6 +42,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Vector;
+import javax.swing.ComboBoxModel;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -544,8 +546,11 @@ public class SinhalaDictionaryToolsView extends FrameView {
      * Load the global aff file to internal structures
      */
     private void loadVocabularies(){
-        String vocPath = vconf.getProperty("affpath", "general");
 
+        this.vocClasses = new HashMap<String, String[]>();
+        this.vocRules = new HashMap<String, Vector<String[]>>();
+
+        String vocPath = vconf.getProperty("affpath", "general");
         File globalAff = new File(vocPath);
 
         try{
@@ -557,12 +562,12 @@ public class SinhalaDictionaryToolsView extends FrameView {
 
                 //add classes to one table
                 if (chunks.length == 4 && (chunks[0].equals("PFX") || chunks[0].endsWith("SFX"))){
-                    vocClasses.put(chunks[1].toCharArray()[0], chunks);
+                    vocClasses.put(chunks[1], chunks);
 
                 //add individual affix rules 
                 }else if (chunks.length > 4 && (chunks[0].equals("PFX") || chunks[0].endsWith("SFX"))){
 
-                    char index = chunks[1].toCharArray()[0];
+                    String index = chunks[1];
                     Vector v = null;
 
                     if (vocRules.containsKey(index)){
@@ -962,7 +967,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
         jPanel20 = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
-        jTable1.setModel(new HunspellTableModel(null,'a'));
+        jTable1.setModel(new HunspellTableModel(null,"1"));
         jTable1.getColumnModel().getColumn(0).setCellEditor(new DefaultCellEditor(new JComboBox(new String[]{"PFX", "SFX"} ) ));
         jComboBox5 = new javax.swing.JComboBox();
         jLabel27 = new javax.swing.JLabel();
@@ -2473,9 +2478,9 @@ public class SinhalaDictionaryToolsView extends FrameView {
         jScrollPane3.setViewportView(jTable1);
 
         jComboBox5.setName("jComboBox5"); // NOI18N
-        jComboBox5.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                jComboBox5ItemStateChanged(evt);
+        jComboBox5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBox5ActionPerformed(evt);
             }
         });
 
@@ -2496,6 +2501,11 @@ public class SinhalaDictionaryToolsView extends FrameView {
 
         jButton25.setText(resourceMap.getString("jButton25.text")); // NOI18N
         jButton25.setName("jButton25"); // NOI18N
+        jButton25.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton25ActionPerformed(evt);
+            }
+        });
 
         jButton31.setText(resourceMap.getString("jButton31.text")); // NOI18N
         jButton31.setName("jButton31"); // NOI18N
@@ -2507,12 +2517,27 @@ public class SinhalaDictionaryToolsView extends FrameView {
 
         jButton32.setText(resourceMap.getString("jButton32.text")); // NOI18N
         jButton32.setName("jButton32"); // NOI18N
+        jButton32.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton32ActionPerformed(evt);
+            }
+        });
 
         jButton33.setText(resourceMap.getString("jButton33.text")); // NOI18N
         jButton33.setName("jButton33"); // NOI18N
+        jButton33.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton33ActionPerformed(evt);
+            }
+        });
 
         jButton34.setText(resourceMap.getString("jButton34.text")); // NOI18N
         jButton34.setName("jButton34"); // NOI18N
+        jButton34.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton34ActionPerformed(evt);
+            }
+        });
 
         jSeparator4.setOrientation(javax.swing.SwingConstants.VERTICAL);
         jSeparator4.setName("jSeparator4"); // NOI18N
@@ -3440,43 +3465,100 @@ public class SinhalaDictionaryToolsView extends FrameView {
 
     //add a new category
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-        
-        vconf.setProperty(jTextField20.getText(), "", "categories");
+
+        Set<String> properties =  vconf.getProperties("categories").stringPropertyNames();
+        int max = 0;
+        for (String property: properties){
+            int temp = vconf.getIntProperty(property, max, "categories");
+            if (max < temp){
+                max = temp;
+            }
+        }
+
+        vconf.setIntProperty(jTextField20.getText(), max+1, "categories");
         saveSettings("config/vocabulary_catagory.xml", vconf);
+
+        jTextField20.setText("");
+        JOptionPane.showMessageDialog(settingsDialog, "New category added");
+
         getConfigs();
     }//GEN-LAST:event_jButton6ActionPerformed
 
+    //modify a category
+    private void jButton25ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton25ActionPerformed
+
+        String value = vconf.getProperty((String)jComboBox5.getSelectedItem(), "1", "categories");
+
+        String categoryName = JOptionPane.showInputDialog(settingsDialog, "Enter the modified category name",
+                (String)jComboBox5.getSelectedItem());
+
+        if (categoryName != null){
+            
+            //remove current value
+            vconf.removeProperty((String)jComboBox5.getSelectedItem(), "categories");
+            //set the new property name
+            vconf.setProperty(categoryName, value, "categories");
+
+            jComboBox5.removeItem(jComboBox5.getSelectedItem());
+            jComboBox5.addItem(categoryName);
+
+            //save settings
+            saveSettings("config/vocabulary_catagory.xml", vconf);
+
+            JOptionPane.showMessageDialog(settingsDialog, "The category was modified");
+        }
+
+    }//GEN-LAST:event_jButton25ActionPerformed
+
     //when categories combobox changes
-    private void jComboBox5ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBox5ItemStateChanged
+    private void jComboBox5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox5ActionPerformed
+        String index = vconf.getProperty((String)jComboBox5.getSelectedItem(), "1", "categories");
 
-        if (evt.getStateChange() == ItemEvent.SELECTED){
-            String index = vconf.getProperty((String)jComboBox5.getSelectedItem(), "1", "categories");
+        if (index.length() > 0){
+            jTable1.setModel(new HunspellTableModel(vocRules, index));
+            TableColumnModel columnModel = jTable1.getColumnModel();
 
-            if (index.length() > 0){
-                jTable1.setModel(new HunspellTableModel(vocRules, index.toCharArray()[0]));                		
-		TableColumnModel columnModel = jTable1.getColumnModel();
-                
-                for (int i = 0; i < columnModel.getColumnCount(); i++) {
-                    TableColumn column = columnModel.getColumn(i);
+            for (int i = 0; i < columnModel.getColumnCount(); i++) {
+                TableColumn column = columnModel.getColumn(i);
 
-                    if (i == 0){
-                        column.setCellEditor(new HunspellTableCellEditor(conf.getProperty("font", "Arial", "general"),
-                                new JComboBox(new String[]{"PFX", "SFX"} )));
-                    }else{
+                if (i == 0){
+                    column.setCellEditor(new HunspellTableCellEditor(conf.getProperty("font", "Arial", "general"),
+                            new JComboBox(new String[]{"PFX", "SFX"} )));
+                }else{
 
-                        JTextField textCell = new JTextField();
-                        textCell.setFont(new Font(conf.getProperty("font", "Arial", "general"), Font.PLAIN, 12));                        
-                        column.setCellEditor(new HunspellTableCellEditor(conf.getProperty("font", "Arial", "general"),
-                                textCell));
+                    JTextField textCell = new JTextField();
+                    textCell.setFont(new Font(conf.getProperty("font", "Arial", "general"), Font.PLAIN, 12));
+                    column.setCellEditor(new HunspellTableCellEditor(conf.getProperty("font", "Arial", "general"),
+                            textCell));
 
-                    }
-
-		}
+                }
 
             }
+
         }
- 
-    }//GEN-LAST:event_jComboBox5ItemStateChanged
+    }//GEN-LAST:event_jComboBox5ActionPerformed
+
+    //delete the selected row
+    private void jButton34ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton34ActionPerformed
+        
+        HunspellTableModel tmpModel = (HunspellTableModel)jTable1.getModel();
+        tmpModel.removeRow(jTable1.getSelectedRow(), this.vocClasses);
+
+    }//GEN-LAST:event_jButton34ActionPerformed
+
+    //add row to hunspell rules table
+    private void jButton33ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton33ActionPerformed
+
+        HunspellTableModel tmpModel = (HunspellTableModel)jTable1.getModel();
+        String index = vconf.getProperty((String)jComboBox5.getSelectedItem(), "1", "categories");
+
+        tmpModel.addRow(new String[]{"SFX", index, "0", "", "."}, this.vocClasses);
+    }//GEN-LAST:event_jButton33ActionPerformed
+
+    //save the category rules
+    private void jButton32ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton32ActionPerformed
+
+    }//GEN-LAST:event_jButton32ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JDialog addWordsDialog;
@@ -3657,6 +3739,6 @@ public class SinhalaDictionaryToolsView extends FrameView {
     //a combo box lock
     private boolean isTableLoading = false;
 
-    private HashMap<Character, String[]> vocClasses = new HashMap<Character, String[]>();
-    private HashMap<Character, Vector<String[]>> vocRules = new HashMap<Character, Vector<String[]>>();
+    private HashMap<String, String[]> vocClasses = new HashMap<String, String[]>();
+    private HashMap<String, Vector<String[]>> vocRules = new HashMap<String, Vector<String[]>>();
 }
