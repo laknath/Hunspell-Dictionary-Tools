@@ -132,7 +132,7 @@ public class HunspellTableModel extends AbstractTableModel {
 
 
             fireTableRowsDeleted(getRowCount(), getRowCount());
-        }
-        
+        }        
     }
+    
 }
