@@ -1,0 +1,22 @@
+SET UTF-8
+
+FLAG num
+
+SFX 2 Y 12
+SFX 2 0 ය .
+SFX 2 0 ේ .
+SFX 2 0 යක් .
+SFX 2 0 යෙන් .
+SFX 2 0 යන් .
+SFX 2 0 ෙ .
+SFX 2 0 යන්ට .
+SFX 2 0 ැයි .
+SFX 2 0 ා .
+SFX 2 0 ු .
+SFX 2 0 ේය .
+SFX 2 0 ෙමු .
+SFX 3 Y 4
+SFX 3 ණ ම් ණ
+SFX 3 ණ නු ණ
+SFX 3 ණ නා ණ
+SFX 3 ණ නා ණ

@@ -11,6 +11,7 @@ import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.util.Set;
 import java.util.logging.Level;
@@ -24,7 +25,6 @@ import org.jdesktop.application.FrameView;
 import org.jdesktop.application.TaskMonitor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
 import java.awt.event.KeyEvent;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -43,16 +43,16 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Vector;
-import javax.swing.ComboBoxModel;
 import javax.swing.DefaultCellEditor;
 import javax.swing.DefaultListModel;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
-import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.UIManager;
 import javax.swing.event.TableModelListener;
+import javax.swing.plaf.FontUIResource;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import org.jconfig.Configuration;
@@ -71,6 +71,8 @@ import sinhaladictionarytools.lib.table.TableModel;
 import websphinx.CrawlEvent;
 import websphinx.DownloadParameters;
 import websphinx.Link;
+import com.stibocatalog.hunspell.*;
+import java.util.List;
 
 /**
  * The application's main frame.
@@ -409,6 +411,11 @@ public class SinhalaDictionaryToolsView extends FrameView {
         jTextArea3.setFont(f);
 
         jList1.setFont(f);
+        jList2.setFont(f);
+
+        UIManager.put("OptionPane.messageFont", new FontUIResource(f));
+        UIManager.put("OptionPane.font", new FontUIResource(f));
+        UIManager.put("TextField.font", new FontUIResource(f));
     }
 
     /**
@@ -487,6 +494,8 @@ public class SinhalaDictionaryToolsView extends FrameView {
         jComboBox4.setSelectedItem(conf.getProperty("font", "Arial", "general"));
         jTextField4.setText(conf.getProperty("maxAffixRules", "-1", "general"));
         jCheckBox1.setSelected(conf.getBooleanProperty("sortBeforeSave", true, "general"));
+        jTextField21.setText(conf.getProperty("baseDic", "", "general"));
+
 
         jTextField5.setText(conf.getProperty("maxDepth", "-1", "crawl"));
         jTextField6.setText(conf.getProperty("maxPages", "-1", "crawl"));
@@ -524,7 +533,9 @@ public class SinhalaDictionaryToolsView extends FrameView {
             conf.setProperty("font", jComboBox4.getSelectedItem().toString(), "general");        
             conf.setProperty("maxAffixRules", jTextField4.getText(), "general");
             conf.setBooleanProperty("sortBeforeSave", jCheckBox1.isSelected(), "general");
+            conf.setProperty("baseDic", jTextField21.getText(), "general");
             setFont(conf.getProperty("font", "Arial", "general"));
+            
 
             conf.setProperty("maxDepth", jTextField5.getText(), "crawl");
             conf.setProperty("maxPages", jTextField6.getText(), "crawl");
@@ -994,6 +1005,9 @@ public class SinhalaDictionaryToolsView extends FrameView {
         jCheckBox1 = new javax.swing.JCheckBox();
         jLabel26 = new javax.swing.JLabel();
         jComboBox4 = new javax.swing.JComboBox();
+        jTextField21 = new javax.swing.JTextField();
+        jButton41 = new javax.swing.JButton();
+        jLabel31 = new javax.swing.JLabel();
         jPanel9 = new javax.swing.JPanel();
         jPanel6 = new javax.swing.JPanel();
         jLabel5 = new javax.swing.JLabel();
@@ -1056,6 +1070,12 @@ public class SinhalaDictionaryToolsView extends FrameView {
         jMenuItem10 = new javax.swing.JMenuItem();
         jMenuItem11 = new javax.swing.JMenuItem();
         jMenuItem12 = new javax.swing.JMenuItem();
+        suggestionDialog = new javax.swing.JDialog(this.getFrame());
+        jButton42 = new javax.swing.JButton();
+        jButton43 = new javax.swing.JButton();
+        jPanel21 = new javax.swing.JPanel();
+        jScrollPane8 = new javax.swing.JScrollPane();
+        jList2 = new javax.swing.JList();
 
         mainPanel.setMinimumSize(new java.awt.Dimension(500, 500));
         mainPanel.setName("mainPanel"); // NOI18N
@@ -1266,14 +1286,14 @@ public class SinhalaDictionaryToolsView extends FrameView {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
                     .addComponent(jButton8))
-                .addContainerGap(19, Short.MAX_VALUE))
+                .addContainerGap(17, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab(resourceMap.getString("jPanel1.TabConstraints.tabTitle"), jPanel1); // NOI18N
@@ -2234,7 +2254,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
             addWordsDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(addWordsDialogLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 312, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(addWordsDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jCheckBox2)
@@ -2294,6 +2314,21 @@ public class SinhalaDictionaryToolsView extends FrameView {
         jComboBox4.setToolTipText(resourceMap.getString("jComboBox4.toolTipText")); // NOI18N
         jComboBox4.setName("jComboBox4"); // NOI18N
 
+        jTextField21.setToolTipText(resourceMap.getString("jTextField21.toolTipText")); // NOI18N
+        jTextField21.setName("jTextField21"); // NOI18N
+
+        jButton41.setText(resourceMap.getString("jButton41.text")); // NOI18N
+        jButton41.setToolTipText(resourceMap.getString("jButton41.toolTipText")); // NOI18N
+        jButton41.setName("jButton41"); // NOI18N
+        jButton41.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton41fileSave(evt);
+            }
+        });
+
+        jLabel31.setText(resourceMap.getString("jLabel31.text")); // NOI18N
+        jLabel31.setName("jLabel31"); // NOI18N
+
         javax.swing.GroupLayout jPanel16Layout = new javax.swing.GroupLayout(jPanel16);
         jPanel16.setLayout(jPanel16Layout);
         jPanel16Layout.setHorizontalGroup(
@@ -2309,7 +2344,13 @@ public class SinhalaDictionaryToolsView extends FrameView {
                         .addGap(76, 76, 76)
                         .addGroup(jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jComboBox4, javax.swing.GroupLayout.PREFERRED_SIZE, 216, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jTextField4, javax.swing.GroupLayout.DEFAULT_SIZE, 552, Short.MAX_VALUE))))
+                            .addComponent(jTextField4, javax.swing.GroupLayout.DEFAULT_SIZE, 552, Short.MAX_VALUE)))
+                    .addGroup(jPanel16Layout.createSequentialGroup()
+                        .addComponent(jLabel31, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(76, 76, 76)
+                        .addComponent(jTextField21, javax.swing.GroupLayout.DEFAULT_SIZE, 446, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton41, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         jPanel16Layout.setVerticalGroup(
@@ -2325,7 +2366,12 @@ public class SinhalaDictionaryToolsView extends FrameView {
                 .addGroup(jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel26)
                     .addComponent(jComboBox4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(279, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jTextField21, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel31)
+                    .addComponent(jButton41))
+                .addContainerGap(242, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel12Layout = new javax.swing.GroupLayout(jPanel12);
@@ -3038,6 +3084,93 @@ public class SinhalaDictionaryToolsView extends FrameView {
         });
         tablePopupMenu.add(jMenuItem12);
 
+        suggestionDialog.setTitle(resourceMap.getString("suggestionsDialog.title")); // NOI18N
+        suggestionDialog.setAlwaysOnTop(true);
+        suggestionDialog.setMinimumSize(new java.awt.Dimension(430, 450));
+        suggestionDialog.setName("suggestionsDialog"); // NOI18N
+        suggestionDialog.setResizable(false);
+        suggestionDialog.addComponentListener(new java.awt.event.ComponentAdapter() {
+            public void componentHidden(java.awt.event.ComponentEvent evt) {
+                suggestionDialogComponentHidden(evt);
+            }
+        });
+
+        jButton42.setText(resourceMap.getString("jButton42.text")); // NOI18N
+        jButton42.setName("jButton42"); // NOI18N
+        jButton42.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton42ActionPerformed(evt);
+            }
+        });
+
+        jButton43.setText(resourceMap.getString("jButton43.text")); // NOI18N
+        jButton43.setName("jButton43"); // NOI18N
+        jButton43.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton43ActionPerformed(evt);
+            }
+        });
+
+        jPanel21.setBorder(javax.swing.BorderFactory.createTitledBorder(resourceMap.getString("jPanel21.border.title"))); // NOI18N
+        jPanel21.setName("jPanel21"); // NOI18N
+
+        jScrollPane8.setName("jScrollPane8"); // NOI18N
+
+        jList2.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        jList2.setName("jList2"); // NOI18N
+        jList2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jList2MouseClicked(evt);
+            }
+        });
+        jScrollPane8.setViewportView(jList2);
+
+        javax.swing.GroupLayout jPanel21Layout = new javax.swing.GroupLayout(jPanel21);
+        jPanel21.setLayout(jPanel21Layout);
+        jPanel21Layout.setHorizontalGroup(
+            jPanel21Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel21Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane8, javax.swing.GroupLayout.DEFAULT_SIZE, 298, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jPanel21Layout.setVerticalGroup(
+            jPanel21Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel21Layout.createSequentialGroup()
+                .addComponent(jScrollPane8, javax.swing.GroupLayout.DEFAULT_SIZE, 306, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        javax.swing.GroupLayout suggestionDialogLayout = new javax.swing.GroupLayout(suggestionDialog.getContentPane());
+        suggestionDialog.getContentPane().setLayout(suggestionDialogLayout);
+        suggestionDialogLayout.setHorizontalGroup(
+            suggestionDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(suggestionDialogLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(suggestionDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, suggestionDialogLayout.createSequentialGroup()
+                        .addComponent(jButton43, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton42, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap())
+                    .addGroup(suggestionDialogLayout.createSequentialGroup()
+                        .addComponent(jPanel21, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(12, 12, 12))))
+        );
+        suggestionDialogLayout.setVerticalGroup(
+            suggestionDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, suggestionDialogLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel21, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(suggestionDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton42)
+                    .addComponent(jButton43))
+                .addContainerGap())
+        );
+
+        suggestionDialogLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButton42, jButton43});
+
         setComponent(mainPanel);
         setMenuBar(menuBar);
         setStatusBar(statusPanel);
@@ -3446,6 +3579,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
             jComboBox3.addItem(cat);
         }
 
+        jList1.setModel(new DefaultListModel());
     }//GEN-LAST:event_addWordsDialogComponentShown
 
     //key press on table1
@@ -3929,14 +4063,85 @@ public class SinhalaDictionaryToolsView extends FrameView {
 
     //Suggest words that can be created from the wordlist
     private void jButton40ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton40ActionPerformed
-        
+
+        String dicPath = conf.getProperty("baseDic","","general");
+        dicPath = dicPath.substring(0, dicPath.length() - 4);
+        System.out.println(dicPath);
+
+        if (!dicPath.isEmpty() ){
+            try {
+                Hunspell.Dictionary d = Hunspell.getInstance().getDictionary(dicPath);
+                List<String> stems = d.stem(jTextField2.getText());
+                stems.addAll(d.suggest(jTextField2.getText()));
+
+                DefaultListModel model = new DefaultListModel();                
+
+                Iterator<String> it = stems.iterator();
+
+                while (it.hasNext()){
+                    String temp = it.next();
+                    if (!model.contains(temp)){
+                        model.addElement(temp);
+                    }                    
+                }
+
+                model.removeElement(jTextField2.getText());
+
+                jList2.setModel(model);
+                suggestionDialog.setVisible(true);
+
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(SinhalaDictionaryToolsView.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (UnsupportedEncodingException ex) {
+                Logger.getLogger(SinhalaDictionaryToolsView.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+        }else{
+            JOptionPane.showMessageDialog(addWordsDialog, "No word given. Type a word first and then try.");
+        }
+
     }//GEN-LAST:event_jButton40ActionPerformed
 
     //modify a selected table element
     private void jMenuItem14jMenuItem7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem14jMenuItem7ActionPerformed
-
         modifyWords(currentTableId);
     }//GEN-LAST:event_jMenuItem14jMenuItem7ActionPerformed
+
+    //browse base dic/aff
+    private void jButton41fileSave(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton41fileSave
+        int returnVal = fileChooser.showOpenDialog(settingsDialog);
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            File file = fileChooser.getSelectedFile();
+            jTextField21.setText(file.getAbsolutePath());
+
+        } else {
+            setStatusMessage("Couldn't create temp dic/aff files.", true);
+        }
+    }//GEN-LAST:event_jButton41fileSave
+
+    //hide suggestion box
+    private void jButton42ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton42ActionPerformed
+        suggestionDialog.setVisible(false);
+    }//GEN-LAST:event_jButton42ActionPerformed
+
+    //select a suggestion and enter it to add words dialog
+    private void jButton43ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton43ActionPerformed
+        jTextField2.setText((String)jList2.getSelectedValue());
+        suggestionDialog.setVisible(false);
+    }//GEN-LAST:event_jButton43ActionPerformed
+
+    private void suggestionDialogComponentHidden(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_suggestionDialogComponentHidden
+        DefaultListModel model = (DefaultListModel)jList2.getModel();
+        model.clear();
+        addWordsDialog.toFront();
+    }//GEN-LAST:event_suggestionDialogComponentHidden
+
+    //mouse double clicked on suggest menu
+    private void jList2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jList2MouseClicked
+        if (evt.getClickCount() == 2){
+            jButton43ActionPerformed(null);
+        }
+    }//GEN-LAST:event_jList2MouseClicked
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JDialog addWordsDialog;
@@ -3980,6 +4185,9 @@ public class SinhalaDictionaryToolsView extends FrameView {
     private javax.swing.JButton jButton39;
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton40;
+    private javax.swing.JButton jButton41;
+    private javax.swing.JButton jButton42;
+    private javax.swing.JButton jButton43;
     private javax.swing.JButton jButton47;
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton50;
@@ -4018,6 +4226,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
     private javax.swing.JLabel jLabel29;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel30;
+    private javax.swing.JLabel jLabel31;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
@@ -4025,6 +4234,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JList jList1;
+    private javax.swing.JList jList2;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem10;
@@ -4053,6 +4263,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
     private javax.swing.JPanel jPanel19;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel20;
+    private javax.swing.JPanel jPanel21;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
@@ -4067,6 +4278,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
     private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JScrollPane jScrollPane7;
+    private javax.swing.JScrollPane jScrollPane8;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JSeparator jSeparator3;
@@ -4093,6 +4305,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
     private javax.swing.JTextField jTextField19;
     private javax.swing.JTextField jTextField2;
     private javax.swing.JTextField jTextField20;
+    private javax.swing.JTextField jTextField21;
     private javax.swing.JTextField jTextField3;
     private javax.swing.JTextField jTextField4;
     private javax.swing.JTextField jTextField5;
@@ -4106,6 +4319,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
     private javax.swing.JLabel statusAnimationLabel;
     private javax.swing.JLabel statusMessageLabel;
     private javax.swing.JPanel statusPanel;
+    private javax.swing.JDialog suggestionDialog;
     private javax.swing.JPopupMenu tablePopupMenu;
     // End of variables declaration//GEN-END:variables
 
