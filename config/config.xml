@@ -20,8 +20,8 @@
     <property name="name" value="Sinhala Crawler"/>
   </category>
   <category name="parsing">
-    <property name="charExceptions" value="෴"/>
-    <property name="charRangeMax" value="෴"/>
+    <property name="charExceptions" value="ෲෳ෴"/>
+    <property name="charRangeMax" value="ෟ"/>
     <property name="charRangeMin" value="ං"/>
     <property name="charset" value="UTF-8"/>
     <property name="maxBadWordPercentage" value="0.5"/>

@@ -420,6 +420,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
         jTextField17.setFont(f);
         jTextField18.setFont(f);
         jTextField19.setFont(f);
+        jTextField22.setFont(f);
 
         jTable1.setFont(f);
         jTable3.setFont(f);
