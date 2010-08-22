@@ -20,6 +20,7 @@
     <property name="name" value="Sinhala Crawler"/>
   </category>
   <category name="parsing">
+    <property name="charExceptions" value="෴"/>
     <property name="charRangeMax" value="෴"/>
     <property name="charRangeMin" value="ං"/>
     <property name="charset" value="UTF-8"/>

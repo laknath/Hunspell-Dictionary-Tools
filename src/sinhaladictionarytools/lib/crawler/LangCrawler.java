@@ -6,7 +6,10 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Observer;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jconfig.Configuration;
@@ -63,7 +66,9 @@ public class LangCrawler extends Crawler{
             this.setMaxDepth(conf.getIntProperty("maxDepth", 5, "crawl"));
             this.setMaxPages(conf.getIntProperty("maxPages", 500, "crawl"));
             this.setMaxWords(conf.getIntProperty("maxWords", 10000, "crawl"));
-            this.setCharRange(conf.getCharProperty("charRangeMin", '\u0D80', "parsing"), conf.getCharProperty("charRangeMax", '\u0DFF', "parsing"));
+            this.setCharRange(conf.getCharProperty("charRangeMin", '\u0D80', "parsing"), 
+                    conf.getCharProperty("charRangeMax", '\u0DFF', "parsing"),
+                    conf.getProperty("charExceptions", "", "parsing"));
             this.setCharset(conf.getProperty("charset", "UTF-8", "parsing"));
             this.setMaxBadWords(conf.getDoubleProperty("maxBadWordPercentage", 0.5, "parsing"));
             this.setOmitWords(conf.getProperty("bannedWordsPath", "config/banned.txt", "parsing"));
@@ -174,8 +179,8 @@ public class LangCrawler extends Crawler{
         if ((maxCharRange | minCharRange) != 0){            
 
             for (int i=0; i < t.length(); i++){
-                if ((maxCharRange > 0 && t.charAt(i) > maxCharRange) ||
-                        (minCharRange > 0 && t.charAt(i) < minCharRange)){
+                if (!exceptionalChars.contains(new Character(t.charAt(i))) && (maxCharRange > 0 && t.charAt(i) > maxCharRange) ||
+                        (minCharRange > 0 && t.charAt(i) < minCharRange) ){
                         return false;
                 }
             }
@@ -248,9 +253,18 @@ public class LangCrawler extends Crawler{
      * @param minCharRange minimum unicode character
      * @param maxCharRange maximum unicode character
      */
-    public void setCharRange(char minCharRange, char maxCharRange) {
+    public void setCharRange(char minCharRange, char maxCharRange, String chars) {
         this.minCharRange = minCharRange;
         this.maxCharRange = maxCharRange;
+
+        char[] temp = chars.toCharArray();
+        this.exceptionalChars.clear();
+
+        for (char c: temp){
+            this.exceptionalChars.add(c);
+        }
+
+        
     }
 
     /**
@@ -408,4 +422,6 @@ public class LangCrawler extends Crawler{
     private Trie ommitWords = new Trie();
 
     private CrawlObservable observerble = new CrawlObservable();
+
+    private HashSet<Character> exceptionalChars = new HashSet<Character>();
 }
