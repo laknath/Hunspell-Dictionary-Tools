@@ -75,6 +75,7 @@ import websphinx.Link;
 import com.stibocatalog.hunspell.*;
 import java.awt.Color;
 import java.util.List;
+import sinhaladictionarytools.lib.table.TableCellRenderer;
 
 /**
  * The application's main frame.
@@ -86,6 +87,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
 
         initComponents();
         getConfigs();
+        setTableCellRenderers();
 
         // status bar initialization - message timeout, idle icon and busy animation, etc
         ResourceMap resourceMap = getResourceMap();
@@ -133,6 +135,21 @@ public class SinhalaDictionaryToolsView extends FrameView {
                 }
             }
         });
+    }
+
+    private void setTableCellRenderers(){
+        
+        for (int i=0; i< jTable3.getColumnCount(); i++){
+            jTable3.getColumnModel().getColumn(i).setCellRenderer(
+                    new TableCellRenderer(wordlists, new Color(Integer.parseInt(conf.getProperty("bannedColour", "ff0000", "wordlists"), 16)),
+                                                     new Color(Integer.parseInt(conf.getProperty("ignoredColour", "ff", "wordlists"), 16))));
+        }
+
+        for (int i=0; i< jTable4.getColumnCount(); i++){
+            jTable4.getColumnModel().getColumn(i).setCellRenderer(
+                    new TableCellRenderer(wordlists, new Color(Integer.parseInt(conf.getProperty("bannedColour", "ff0000", "wordlists"), 16)),
+                                                     new Color(Integer.parseInt(conf.getProperty("ignoredColour", "ff", "wordlists"), 16))));
+        }        
     }
 
    /**
@@ -557,6 +574,8 @@ public class SinhalaDictionaryToolsView extends FrameView {
             conf.setProperty("maxBadWordPercentage", jTextField13.getText(), "parsing");
             conf.setProperty("charRangeMin", jTextField11.getText(), "parsing");
             conf.setProperty("charRangeMax", jTextField12.getText(), "parsing");
+
+            setTableCellRenderers();
 
             SinhalaDictionaryToolsApp.getConfiguration().save(handler, conf);
 
@@ -3435,11 +3454,11 @@ public class SinhalaDictionaryToolsView extends FrameView {
 
         //if blocked list selected, disable colour selection
         if (jComboBox6.getSelectedIndex() == 0){
-            jLabel34.setEnabled(false);
-        }else{
-            jLabel34.setEnabled(true);
             jLabel34.setBackground(new Color(Integer.parseInt(
-                    conf.getProperty("ignoredColour", "999999", "wordlists"),16)));
+                    conf.getProperty("bannedColour", "ff0000", "wordlists"),16)));
+        }else if (jComboBox6.getSelectedIndex() == 1){
+            jLabel34.setBackground(new Color(Integer.parseInt(
+                    conf.getProperty("ignoredColour", "0000ff", "wordlists"),16)));
         }
 
     }
@@ -3621,12 +3640,14 @@ public class SinhalaDictionaryToolsView extends FrameView {
     private void jButton47ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton47ActionPerformed
 
         loadFile(1);
+        setTableCellRenderers();
     }//GEN-LAST:event_jButton47ActionPerformed
 
     //load a file to table2
     private void jButton50ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton50ActionPerformed
         
         loadFile(2);
+        setTableCellRenderers();
     }//GEN-LAST:event_jButton50ActionPerformed
 
     //Analyze button - tab1
@@ -4531,11 +4552,15 @@ public class SinhalaDictionaryToolsView extends FrameView {
         
         Color colour = null;
         
-        if (jComboBox6.getSelectedIndex() == 1 && (colour = jColorChooser1.showDialog(settingsDialog, "Select the colour for the wordlist", 
+        if ((colour = jColorChooser1.showDialog(settingsDialog, "Select the colour for the wordlist", 
                 jLabel34.getBackground())) != null){
-            
+
+            if (jComboBox6.getSelectedIndex() == 0 ){
+                conf.setProperty("bannedColour", Integer.toHexString( (colour.getRGB() & 0x00FFFFFF)), "wordlists");
+            }else if (jComboBox6.getSelectedIndex() == 1 ){
+                conf.setProperty("ignoredColour", Integer.toHexString( (colour.getRGB() & 0x00FFFFFF)), "wordlists");
+            }
             jLabel34.setBackground(colour);
-            conf.setProperty("ignoredColour", Integer.toHexString( (colour.getRGB() & 0x00FFFFFF)), "wordlists");
             
             try {
                 XMLFileHandler handler = new XMLFileHandler("config/config.xml");
@@ -4824,7 +4849,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
 
     //wordlists
     private HashMap<String, Integer> wordlists = new HashMap<String, Integer>();
-    final private static int BLOCKED_WORD = 1;
-    final private static int IGNORED_WORD = 2;
+    final public static int BLOCKED_WORD = 1;
+    final public static int IGNORED_WORD = 2;
 
 }

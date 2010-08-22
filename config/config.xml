@@ -1,21 +1,15 @@
 <?xml version="1.0" ?>
 <properties>
-  <category name="wordlists">
-    <property name="bannedWordsPath" value="config/banned.txt"/>
-    <property name="ignoredColour" value="e32cf3"/>
-    <property name="ignoredWordsPath" value="config/ignored.txt"/>
-    <property name="saveIgnoredWords" value="true"/>
-  </category>
   <category name="hunspell">
     <property name="installed" value="0"/>
     <property name="path" value="lib/hunspell-1.2.10"/>
   </category>
-  <category name="parsing">
-    <property name="charRangeMax" value="෴"/>
-    <property name="charRangeMin" value="ං"/>
-    <property name="charset" value="UTF-8"/>
-    <property name="maxBadWordPercentage" value="0.5"/>
-    <property name="stripChars" value=".,/`|1234567890!@#$%*^=()_+-[]"/>
+  <category name="wordlists">
+    <property name="bannedColour" value="ff0000"/>
+    <property name="bannedWordsPath" value="config/banned.txt"/>
+    <property name="ignoredColour" value="ff"/>
+    <property name="ignoredWordsPath" value="config/ignored.txt"/>
+    <property name="saveIgnoredWords" value="true"/>
   </category>
   <category name="crawl">
     <property name="baseDomain" value="http://www.dinamina.lk"/>
@@ -23,6 +17,13 @@
     <property name="maxPages" value="1000"/>
     <property name="maxWords" value="100000"/>
     <property name="name" value="Sinhala Crawler"/>
+  </category>
+  <category name="parsing">
+    <property name="charRangeMax" value="෴"/>
+    <property name="charRangeMin" value="ං"/>
+    <property name="charset" value="UTF-8"/>
+    <property name="maxBadWordPercentage" value="0.5"/>
+    <property name="stripChars" value=".,/`|1234567890!@#$%*^=()_+-[]"/>
   </category>
   <category name="general">
     <property name="baseDic" value="/home/buddhika/Desktop/si_LK/si-LK.dic"/>
