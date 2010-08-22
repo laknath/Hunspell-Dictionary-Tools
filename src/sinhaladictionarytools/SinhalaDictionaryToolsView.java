@@ -559,6 +559,10 @@ public class SinhalaDictionaryToolsView extends FrameView {
             conf.setProperty("charRangeMax", jTextField12.getText(), "parsing");
 
             SinhalaDictionaryToolsApp.getConfiguration().save(handler, conf);
+
+            saveWordList(vconf.getProperty("bannedWordsPath", "config/banned.txt", "wordlists"),
+                    vconf.getProperty("ignoredWordsPath", "config/ignored.txt", "wordlists"), (BLOCKED_WORD | IGNORED_WORD) );
+            
         } catch (ConfigurationManagerException ex) {
             setStatusMessage("Couldn't save settings.", true);
             Logger.getLogger(SinhalaDictionaryToolsView.class.getName()).log(Level.SEVERE, null, ex);
@@ -3487,6 +3491,52 @@ public class SinhalaDictionaryToolsView extends FrameView {
         }
     }
 
+    /**
+     * Save wordlists 
+     */
+    private void saveWordList(String blockedPath, String ignoredPath, int saveType){
+
+        BufferedWriter out1 = null;
+        BufferedWriter out2 = null;
+        
+        try {
+
+            if ((saveType & BLOCKED_WORD) > 0 ){
+                out1 = new BufferedWriter(new FileWriter(blockedPath));
+            }
+            if ((saveType & IGNORED_WORD) > 0){
+                out2 = new BufferedWriter(new FileWriter(ignoredPath));
+            }
+                                    
+            Iterator<String> it = wordlists.keySet().iterator();
+            while (it.hasNext()) {
+                String word = it.next();
+                if ((saveType & BLOCKED_WORD) > 0 && (wordlists.get(word) & BLOCKED_WORD) > 0) {
+                    out1.write(word + System.getProperty("line.separator"));
+                }
+                if ((saveType & IGNORED_WORD) > 0 && (wordlists.get(word) & IGNORED_WORD) > 0) {
+                    out2.write(word + System.getProperty("line.separator"));
+                }
+            }
+            
+        } catch (IOException ex) {
+            Logger.getLogger(SinhalaDictionaryToolsView.class.getName()).log(Level.SEVERE, null, ex);
+            setStatusMessage("Couldn't save the wordlist");
+        } finally {
+            try {
+                if ((saveType & BLOCKED_WORD) > 0){
+                    out1.close();
+                }
+                if ((saveType & IGNORED_WORD) > 0){
+                    out2.close();
+                }
+            } catch (IOException ex) {
+                Logger.getLogger(SinhalaDictionaryToolsView.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+    }
+
     /*************************************************************************
      *  Actions *
      *************************************************************************/
@@ -4443,11 +4493,14 @@ public class SinhalaDictionaryToolsView extends FrameView {
         JTable currentTable = (currentTableId == 1) ? jTable4 : jTable3;
         TableModel model = (TableModel) currentTable.getModel();
 
-        String word = (currentTableId == 1) ? model.getValueAt(currentTable.getSelectedRow(), 0);
+        String word = (String)model.getValueAt(currentTable.getSelectedRow(), 0);
 
         if (word != null){
             addWordToList(word, BLOCKED_WORD);
         }
+
+        saveWordList(vconf.getProperty("bannedWordsPath", "config/banned.txt", "wordlists"),
+                    vconf.getProperty("ignoredWordsPath", "config/ignored.txt", "wordlists"), BLOCKED_WORD);
     }//GEN-LAST:event_jMenuItem15jMenuItem7ActionPerformed
 
     //add a selected word to ignored list
@@ -4456,11 +4509,14 @@ public class SinhalaDictionaryToolsView extends FrameView {
         JTable currentTable = (currentTableId == 1) ? jTable4 : jTable3;
         TableModel model = (TableModel) currentTable.getModel();
 
-        String word = (currentTableId == 1) ? model.getValueAt(currentTable.getSelectedRow(), 0);
+        String word = (String)model.getValueAt(currentTable.getSelectedRow(), 0);
 
         if (word != null){
             addWordToList(word, IGNORED_WORD);
         }
+
+        saveWordList(vconf.getProperty("bannedWordsPath", "config/banned.txt", "wordlists"),
+                    vconf.getProperty("ignoredWordsPath", "config/ignored.txt", "wordlists"), IGNORED_WORD);
     }//GEN-LAST:event_jMenuItem16jMenuItem7ActionPerformed
 
     //change the blocked words menu items
@@ -4472,7 +4528,23 @@ public class SinhalaDictionaryToolsView extends FrameView {
 
     //color pick for word lists
     private void jLabel34MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel34MouseClicked
-        jColorChooser1.showDialog(settingsDialog, "Select the colour for the wordlist", Color.yellow);
+        
+        Color colour = null;
+        
+        if (jComboBox6.getSelectedIndex() == 1 && (colour = jColorChooser1.showDialog(settingsDialog, "Select the colour for the wordlist", 
+                jLabel34.getBackground())) != null){
+            
+            jLabel34.setBackground(colour);
+            conf.setProperty("ignoredColour", Integer.toHexString( (colour.getRGB() & 0x00FFFFFF)), "wordlists");
+            
+            try {
+                XMLFileHandler handler = new XMLFileHandler("config/config.xml");
+                SinhalaDictionaryToolsApp.getConfiguration().save(handler, conf);
+            } catch (ConfigurationManagerException ex) {
+                Logger.getLogger(SinhalaDictionaryToolsView.class.getName()).log(Level.SEVERE, null, ex);
+                setStatusMessage("Couldn't save settings", true);
+            }
+        }
     }//GEN-LAST:event_jLabel34MouseClicked
 
     //add a new word to wordlists
