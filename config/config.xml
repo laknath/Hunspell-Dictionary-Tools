@@ -9,6 +9,7 @@
     <property name="bannedWordsPath" value="config/banned.txt"/>
     <property name="ignoredColour" value="ff"/>
     <property name="ignoredWordsPath" value="config/ignored.txt"/>
+    <property name="saveBlockedWords" value="false"/>
     <property name="saveIgnoredWords" value="true"/>
   </category>
   <category name="crawl">
