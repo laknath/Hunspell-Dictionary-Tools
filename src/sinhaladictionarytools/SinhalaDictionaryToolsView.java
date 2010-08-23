@@ -74,7 +74,9 @@ import websphinx.DownloadParameters;
 import websphinx.Link;
 import com.stibocatalog.hunspell.*;
 import java.awt.Color;
+import java.awt.Component;
 import java.util.List;
+import sinhaladictionarytools.darrylbu.util.SwingUtils;
 import sinhaladictionarytools.lib.table.TableCellRenderer;
 
 /**
@@ -436,7 +438,10 @@ public class SinhalaDictionaryToolsView extends FrameView {
 
         UIManager.put("OptionPane.messageFont", new FontUIResource(f));
         UIManager.put("OptionPane.font", new FontUIResource(f));
-        UIManager.put("TextField.font", new FontUIResource(f));
+        UIManager.put("TextField.font", new FontUIResource(f));        
+
+
+
     }
 
     /**
@@ -833,8 +838,8 @@ public class SinhalaDictionaryToolsView extends FrameView {
             model = (TableModel)table.getModel();
             selectedRow = table.getSelectedRow();
             oldWord = (String)table.getValueAt(selectedRow, 0);
-
-            if ((newWord = JOptionPane.showInputDialog(this.getFrame(), "Change the word.", oldWord)) != null){                
+            
+            if ((newWord = showOptionPane(this.getFrame(), "Change the word.", oldWord)) != null){
                 model.removeRow(selectedRow);
                 model.addRow(newWord);
             }
@@ -3617,6 +3622,46 @@ public class SinhalaDictionaryToolsView extends FrameView {
 
     }
 
+
+    /**
+     * Create a optionpane of that the input font can be changed
+     *
+     * @param comp The parent component
+     * @param message The title message
+     * @param initialValue The initial value
+     *
+     * @return The return value
+     */
+    public String showOptionPane(Component comp, String message, String initialValue) {
+
+        JOptionPane pane = new JOptionPane(message, JOptionPane.INFORMATION_MESSAGE,
+                                              JOptionPane.OK_CANCEL_OPTION,
+                                              UIManager.getIcon("OptionPane.informationIcon"),
+                                              null, null);
+
+        pane.setWantsInput(true);
+        pane.setSelectionValues(null);
+        pane.setInitialSelectionValue(initialValue);
+
+        for (JTextField field : SwingUtils.getDescendantsOfType(JTextField.class, pane)) {
+            field.setFont(new Font(conf.getProperty("font", "Arial", "general"), Font.PLAIN, 12));
+        }
+
+        JDialog dialog = pane.createDialog(comp, message);
+
+        pane.selectInitialValue();
+        dialog.show();
+        dialog.dispose();
+
+        Object value = pane.getInputValue();
+
+        if (value == JOptionPane.UNINITIALIZED_VALUE) {
+            return null;
+        }
+
+        return (String)value;
+    }
+
     /*************************************************************************
      *  Actions *
      *************************************************************************/
@@ -4242,8 +4287,8 @@ public class SinhalaDictionaryToolsView extends FrameView {
 
         String value = vconf.getProperty((String)jComboBox5.getSelectedItem(), "1", "categories");
 
-        String categoryName = JOptionPane.showInputDialog(settingsDialog, "Enter the modified category name",
-                (String)jComboBox5.getSelectedItem());
+        String categoryName = showOptionPane(settingsDialog, "Enter the modified category name",
+                                        (String)jComboBox5.getSelectedItem());
 
         if (categoryName != null){
             
@@ -4450,7 +4495,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
 
     //add a new word to the list
     private void jButton37ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton37ActionPerformed
-        String word = JOptionPane.showInputDialog(addWordsDialog, "The new word to add to the list.");
+        String word = showOptionPane(addWordsDialog,"The new word to add to the list.", null);
 
         if (word != null){
             DefaultListModel model = (DefaultListModel)jList1.getModel();
@@ -4471,7 +4516,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
         String currentWord = (String)jList1.getSelectedValue();
 
         if (currentWord != null){
-            String newWord = JOptionPane.showInputDialog(addWordsDialog, "Change the word.", currentWord);
+            String newWord = showOptionPane(addWordsDialog,"Change the word.", currentWord);
 
             if (newWord != null){
                 DefaultListModel model = (DefaultListModel)jList1.getModel();
@@ -4637,7 +4682,8 @@ public class SinhalaDictionaryToolsView extends FrameView {
 
     //add a new word to wordlists
     private void jButton45ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton45ActionPerformed
-        String word = JOptionPane.showInputDialog(settingsDialog, "The new word to add to the list.");
+        String word = showOptionPane(settingsDialog,"The new word to add to the list.", null);
+
 
         if (word != null){
             DefaultListModel model = (DefaultListModel)jList3.getModel();
@@ -4659,7 +4705,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
         String currentWord = (String)jList3.getSelectedValue();
 
         if (currentWord != null){
-            String newWord = JOptionPane.showInputDialog(settingsDialog, "Change the word.", currentWord);
+            String newWord = showOptionPane(settingsDialog, "Change the word.", currentWord);
 
             if (newWord != null){
                 DefaultListModel model = (DefaultListModel)jList3.getModel();
