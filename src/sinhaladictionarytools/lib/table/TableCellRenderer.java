@@ -54,7 +54,7 @@ public class TableCellRenderer extends DefaultTableCellRenderer{
             comp.setBackground(Color.lightGray);
         }
 
-        if (hasFocus){
+        if (isSelected || hasFocus){
             comp = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
         }
 

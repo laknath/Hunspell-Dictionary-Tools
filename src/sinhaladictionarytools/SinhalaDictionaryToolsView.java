@@ -2761,7 +2761,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel18, javax.swing.GroupLayout.DEFAULT_SIZE, 428, Short.MAX_VALUE)
+                .addComponent(jPanel18, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -2962,6 +2962,11 @@ public class SinhalaDictionaryToolsView extends FrameView {
 
         jButton44.setText(resourceMap.getString("jButton44.text")); // NOI18N
         jButton44.setName("jButton44"); // NOI18N
+        jButton44.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton44ActionPerformed(evt);
+            }
+        });
 
         jButton45.setText(resourceMap.getString("jButton45.text")); // NOI18N
         jButton45.setName("jButton45"); // NOI18N
@@ -3049,7 +3054,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
             .addGroup(jPanel22Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel23, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(14, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jTabbedPane2.addTab(resourceMap.getString("jPanel22.TabConstraints.tabTitle"), jPanel22); // NOI18N
@@ -3399,7 +3404,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
         jPanel21Layout.setVerticalGroup(
             jPanel21Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel21Layout.createSequentialGroup()
-                .addComponent(jScrollPane8, javax.swing.GroupLayout.DEFAULT_SIZE, 306, Short.MAX_VALUE)
+                .addComponent(jScrollPane8, javax.swing.GroupLayout.DEFAULT_SIZE, 304, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -4543,6 +4548,12 @@ public class SinhalaDictionaryToolsView extends FrameView {
             try {
                 Hunspell.Dictionary d = Hunspell.getInstance().getDictionary(dicPath);
                 List<String> stems = d.stem(jTextField2.getText());
+
+                if (stems == null){
+                    JOptionPane.showMessageDialog(settingsDialog, "Couldn't match any stems for the word.");
+                    return;
+                }
+
                 stems.addAll(d.suggest(jTextField2.getText()));
 
                 DefaultListModel model = new DefaultListModel();                
@@ -4565,7 +4576,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
                 Logger.getLogger(SinhalaDictionaryToolsView.class.getName()).log(Level.SEVERE, null, ex);
             } catch (UnsupportedEncodingException ex) {
                 Logger.getLogger(SinhalaDictionaryToolsView.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            } 
 
         }else{
             JOptionPane.showMessageDialog(addWordsDialog, "No word given. Type a word first and then try.");
@@ -4743,6 +4754,19 @@ public class SinhalaDictionaryToolsView extends FrameView {
     }//GEN-LAST:event_jCheckBox3ItemStateChanged
 
     //delete a word from the wordlist
+    private void jButton44ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton44ActionPerformed
+        String currentWord = (String)jList3.getSelectedValue();
+
+        if (currentWord != null){
+            
+            DefaultListModel model = (DefaultListModel)jList3.getModel();
+            
+            int wordType = (jComboBox6.getSelectedIndex() == 0) ? BLOCKED_WORD : IGNORED_WORD;
+            removeWordFromList((String)currentWord, wordType);
+            fillWordlists();
+        }
+    }//GEN-LAST:event_jButton44ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JDialog addWordsDialog;
