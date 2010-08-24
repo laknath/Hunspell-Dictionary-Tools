@@ -13,15 +13,16 @@ import javax.swing.JTextArea;
  *
  * @author buddhika
  */
-public class CrawlObserver implements Observer {
+public class CrawlObserver implements Observer{
 
-    JTextArea area = null;
+    JTextArea area = null;    
 
     public CrawlObserver(JTextArea area) {
-        this.area = area;
+        this.area = area;        
     }
 
-    public void update(Observable o, Object arg) {        
+    public void update(Observable o, Object arg) {
+        
         area.append((String)arg);
         area.revalidate();
     }

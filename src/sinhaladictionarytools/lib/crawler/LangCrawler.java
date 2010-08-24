@@ -6,10 +6,9 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.Observer;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jconfig.Configuration;
@@ -20,7 +19,6 @@ import websphinx.Link;
 import websphinx.Page;
 import websphinx.Text;
 import sinhaladictionarytools.lib.Trie;
-import websphinx.Action;
 
 
 /**
@@ -29,7 +27,6 @@ import websphinx.Action;
  */
 public class LangCrawler extends Crawler{    
 
-    int MAX_WORDS_PER_UPDATE = 1000;
 
     /**
     *
@@ -72,6 +69,9 @@ public class LangCrawler extends Crawler{
             this.setCharset(conf.getProperty("charset", "UTF-8", "parsing"));
             this.setMaxBadWords(conf.getDoubleProperty("maxBadWordPercentage", 0.5, "parsing"));
             this.setOmitWords(conf.getProperty("bannedWordsPath", "config/banned.txt", "parsing"));
+            this.setUniqueWords(conf.getBooleanProperty("onlyUniqueWords", true, "crawl"));
+            
+
 
             //add logging
             EventLog eventLog = new EventLog(logPath);
@@ -151,11 +151,12 @@ public class LangCrawler extends Crawler{
                     tmpWordsParsedInPage++;
                     //System.out.println(word);
 
-                    if ((parsedWords % MAX_WORDS_PER_UPDATE) == 0){
+                    if ((parsedWords % maxWordsPerUpdate) == 0){
 
                         this.observerble.setCrawlerChanged();
                         this.observerble.notifyObservers(buf.toString());
-                        buf = new StringBuffer();
+                        
+                        buf.delete(0, buf.length());
                     }
                 }
 
@@ -175,6 +176,10 @@ public class LangCrawler extends Crawler{
      * @return if the text is valid
      */
     public boolean isValidWord(String t){
+
+        if (isUniqueWords() && getUniqueHashMap() != null && getUniqueHashMap().containsKey(t)){
+            return false;
+        }
 
         if ((maxCharRange | minCharRange) != 0){            
 
@@ -392,6 +397,36 @@ public class LangCrawler extends Crawler{
         return parsedWords;
     }
 
+    public CrawlObservable getObserverble() {
+        return observerble;
+    }
+
+    public LinkedHashMap<String, Integer> getUniqueHashMap() {
+        return uniqueHashMap;
+    }
+
+    public void setUniqueHashMap(LinkedHashMap<String, Integer> uniqueHashMap) {
+        this.uniqueHashMap = uniqueHashMap;
+    }
+
+    public boolean isUniqueWords() {
+        return uniqueWords;
+    }
+
+    public void setUniqueWords(boolean uniqueWords) {
+        this.uniqueWords = uniqueWords;
+    }
+
+    public int getMaxWordsPerUpdate() {
+        return maxWordsPerUpdate;
+    }
+
+    public void setMaxWordsPerUpdate(int maxWordsPerUpdate) {
+        this.maxWordsPerUpdate = maxWordsPerUpdate;
+    }
+
+    //refersh rate
+    int maxWordsPerUpdate = 1000;
 
     //max pages to parse
     private int maxPages = 500;
@@ -424,4 +459,9 @@ public class LangCrawler extends Crawler{
     private CrawlObservable observerble = new CrawlObservable();
 
     private HashSet<Character> exceptionalChars = new HashSet<Character>();
+
+    private boolean uniqueWords = false;
+
+    private LinkedHashMap<String, Integer> uniqueHashMap = null;
+
 }

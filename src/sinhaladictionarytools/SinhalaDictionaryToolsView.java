@@ -76,6 +76,7 @@ import com.stibocatalog.hunspell.*;
 import java.awt.Color;
 import java.awt.Component;
 import java.util.List;
+import java.util.Observable;
 import sinhaladictionarytools.darrylbu.util.SwingUtils;
 import sinhaladictionarytools.lib.table.TableCellRenderer;
 
@@ -528,6 +529,9 @@ public class SinhalaDictionaryToolsView extends FrameView {
         jTextField7.setText(conf.getProperty("maxWords", "10000", "crawl"));
         jTextField9.setText(conf.getProperty("baseDomain", "", "crawl"));
         jTextField17.setText(conf.getProperty("name", "LangCrawler", "crawl"));
+        jTextField23.setText(conf.getProperty("refreshRate", "1000", "crawl"));
+        jCheckBox4.setSelected(conf.getBooleanProperty("onlyUniqueWords", true, "crawl"));
+        jComboBox7.setSelectedIndex(conf.getIntProperty("uniqueTable", 1, "crawl"));
 
         jTextField10.setText(conf.getProperty("bannedWordsPath", "", "wordlists"));
         jTextField15.setText(conf.getProperty("stripChars", "", "parsing"));
@@ -542,6 +546,8 @@ public class SinhalaDictionaryToolsView extends FrameView {
         for (String category: categories){
             jComboBox5.addItem(category);
         }
+
+        jCheckBox4ItemStateChanged(null);
 
         this.getFrame().setResizable(false);
 
@@ -574,6 +580,9 @@ public class SinhalaDictionaryToolsView extends FrameView {
             conf.setProperty("maxWords", jTextField7.getText(), "crawl");
             conf.setProperty("baseDomain", jTextField9.getText(), "crawl");
             conf.setProperty("name", jTextField17.getText(), "crawl");
+            conf.setProperty("refreshRate", jTextField23.getText(), "crawl");
+            conf.setBooleanProperty("onlyUniqueWords", jCheckBox4.isSelected(), "crawl");
+            conf.setIntProperty("uniqueTable", jComboBox7.getSelectedIndex(), "crawl");
 
             conf.setProperty("bannedWordsPath", jTextField10.getText(), "wordlists");
             conf.setProperty("stripChars", jTextField15.getText(), "parsing");
@@ -1089,6 +1098,11 @@ public class SinhalaDictionaryToolsView extends FrameView {
         jTextField9 = new javax.swing.JTextField();
         jLabel25 = new javax.swing.JLabel();
         jTextField17 = new javax.swing.JTextField();
+        jLabel36 = new javax.swing.JLabel();
+        jCheckBox4 = new javax.swing.JCheckBox();
+        jComboBox7 = new javax.swing.JComboBox();
+        jLabel37 = new javax.swing.JLabel();
+        jTextField23 = new javax.swing.JTextField();
         jPanel8 = new javax.swing.JPanel();
         jPanel18 = new javax.swing.JPanel();
         jTextField10 = new javax.swing.JTextField();
@@ -1373,14 +1387,14 @@ public class SinhalaDictionaryToolsView extends FrameView {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
                     .addComponent(jButton8))
-                .addContainerGap(17, Short.MAX_VALUE))
+                .addContainerGap(19, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab(resourceMap.getString("jPanel1.TabConstraints.tabTitle"), jPanel1); // NOI18N
@@ -1529,22 +1543,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
         jScrollPane6.setName("jScrollPane6"); // NOI18N
 
         jTable3.setFont(resourceMap.getFont("jTable4.font")); // NOI18N
-        jTable3.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-                "Word", "Frequency"
-            }
-        ) {
-            boolean[] canEdit = new boolean [] {
-                false, false
-            };
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
+        jTable3.setModel(new TableModel(new LinkedHashMap<String, Integer>()));
         jTable3.setCellSelectionEnabled(true);
         jTable3.setName("jTable3"); // NOI18N
         jTable3.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -1570,22 +1569,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
         jScrollPane7.setName("jScrollPane7"); // NOI18N
 
         jTable4.setFont(resourceMap.getFont("jTable4.font")); // NOI18N
-        jTable4.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-                "Word", "Frequency"
-            }
-        ) {
-            boolean[] canEdit = new boolean [] {
-                false, false
-            };
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
+        jTable4.setModel(new TableModel(new LinkedHashMap<String, Integer>()));
         jTable4.setCellSelectionEnabled(true);
         jTable4.setName("jTable4"); // NOI18N
         jTable4.setUpdateSelectionOnSort(false);
@@ -2354,7 +2338,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
 
         settingsDialog.setTitle(resourceMap.getString("settingsDialog.title")); // NOI18N
         settingsDialog.setAlwaysOnTop(true);
-        settingsDialog.setMinimumSize(new java.awt.Dimension(840, 650));
+        settingsDialog.setMinimumSize(new java.awt.Dimension(1000, 650));
         settingsDialog.setModalityType(java.awt.Dialog.ModalityType.APPLICATION_MODAL);
         settingsDialog.setName("settingsDialog"); // NOI18N
         settingsDialog.setResizable(false);
@@ -2380,6 +2364,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
         jTabbedPane2.setName("jTabbedPane2"); // NOI18N
 
         jPanel12.setName("jPanel12"); // NOI18N
+        jPanel12.setPreferredSize(new java.awt.Dimension(600, 486));
 
         jPanel16.setBorder(javax.swing.BorderFactory.createTitledBorder(resourceMap.getString("jPanel16.border.title"))); // NOI18N
         jPanel16.setName("jPanel16"); // NOI18N
@@ -2424,18 +2409,18 @@ public class SinhalaDictionaryToolsView extends FrameView {
                 .addContainerGap()
                 .addGroup(jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jCheckBox1)
-                    .addGroup(jPanel16Layout.createSequentialGroup()
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel16Layout.createSequentialGroup()
                         .addGroup(jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel26, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jLabel26, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel31, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(76, 76, 76)
-                        .addGroup(jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jComboBox4, javax.swing.GroupLayout.PREFERRED_SIZE, 216, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jTextField4, javax.swing.GroupLayout.DEFAULT_SIZE, 552, Short.MAX_VALUE)))
-                    .addGroup(jPanel16Layout.createSequentialGroup()
-                        .addComponent(jLabel31, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(76, 76, 76)
-                        .addComponent(jTextField21, javax.swing.GroupLayout.DEFAULT_SIZE, 446, Short.MAX_VALUE)
+                        .addGroup(jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jTextField21, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 518, Short.MAX_VALUE)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel16Layout.createSequentialGroup()
+                                .addComponent(jComboBox4, javax.swing.GroupLayout.PREFERRED_SIZE, 216, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 302, Short.MAX_VALUE))
+                            .addComponent(jTextField4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 518, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton41, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
@@ -2445,7 +2430,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
             .addGroup(jPanel16Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jCheckBox1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel12)
                     .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -2458,7 +2443,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
                     .addComponent(jTextField21, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel31)
                     .addComponent(jButton41))
-                .addContainerGap(252, Short.MAX_VALUE))
+                .addGap(288, 288, 288))
         );
 
         javax.swing.GroupLayout jPanel12Layout = new javax.swing.GroupLayout(jPanel12);
@@ -2481,9 +2466,11 @@ public class SinhalaDictionaryToolsView extends FrameView {
         jTabbedPane2.addTab(resourceMap.getString("jPanel12.TabConstraints.tabTitle"), jPanel12); // NOI18N
 
         jPanel9.setName("jPanel9"); // NOI18N
+        jPanel9.setPreferredSize(new java.awt.Dimension(600, 488));
 
         jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder(resourceMap.getString("jPanel6.border.title"))); // NOI18N
         jPanel6.setName("jPanel6"); // NOI18N
+        jPanel6.setPreferredSize(new java.awt.Dimension(600, 460));
 
         jLabel5.setText(resourceMap.getString("jLabel5.text")); // NOI18N
         jLabel5.setToolTipText(resourceMap.getString("jLabel5.toolTipText")); // NOI18N
@@ -2523,6 +2510,30 @@ public class SinhalaDictionaryToolsView extends FrameView {
         jTextField17.setToolTipText(resourceMap.getString("jTextField17.toolTipText")); // NOI18N
         jTextField17.setName("jTextField17"); // NOI18N
 
+        jLabel36.setText(resourceMap.getString("jLabel36.text")); // NOI18N
+        jLabel36.setToolTipText(resourceMap.getString("jLabel36.toolTipText")); // NOI18N
+        jLabel36.setName("jLabel36"); // NOI18N
+
+        jCheckBox4.setText(resourceMap.getString("jCheckBox4.text")); // NOI18N
+        jCheckBox4.setToolTipText(resourceMap.getString("jCheckBox4.toolTipText")); // NOI18N
+        jCheckBox4.setName("jCheckBox4"); // NOI18N
+        jCheckBox4.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                jCheckBox4ItemStateChanged(evt);
+            }
+        });
+
+        jComboBox7.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Left Table", "Right Table" }));
+        jComboBox7.setToolTipText(resourceMap.getString("jComboBox7.toolTipText")); // NOI18N
+        jComboBox7.setName("jComboBox7"); // NOI18N
+
+        jLabel37.setText(resourceMap.getString("jLabel37.text")); // NOI18N
+        jLabel37.setToolTipText(resourceMap.getString("jLabel37.toolTipText")); // NOI18N
+        jLabel37.setName("jLabel37"); // NOI18N
+
+        jTextField23.setToolTipText(resourceMap.getString("jTextField23.toolTipText")); // NOI18N
+        jTextField23.setName("jTextField23"); // NOI18N
+
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
         jPanel6Layout.setHorizontalGroup(
@@ -2532,80 +2543,104 @@ public class SinhalaDictionaryToolsView extends FrameView {
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel6Layout.createSequentialGroup()
                         .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel18)
-                            .addComponent(jLabel5))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 49, Short.MAX_VALUE)
+                            .addComponent(jCheckBox4)
+                            .addComponent(jLabel36))
+                        .addGap(72, 72, 72)
+                        .addComponent(jComboBox7, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel6Layout.createSequentialGroup()
                         .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jTextField9, javax.swing.GroupLayout.PREFERRED_SIZE, 629, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addContainerGap())
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
-                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel25)
                             .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel6))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 28, Short.MAX_VALUE)
-                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jTextField6)
-                            .addComponent(jTextField7)
-                            .addComponent(jTextField17, javax.swing.GroupLayout.DEFAULT_SIZE, 159, Short.MAX_VALUE))
-                        .addGap(482, 482, 482))))
+                            .addComponent(jLabel6)
+                            .addComponent(jLabel5)
+                            .addComponent(jLabel18)
+                            .addComponent(jLabel25)
+                            .addComponent(jLabel37))
+                        .addGap(124, 124, 124)
+                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jTextField23, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jTextField6, javax.swing.GroupLayout.DEFAULT_SIZE, 159, Short.MAX_VALUE)
+                            .addComponent(jTextField7, javax.swing.GroupLayout.DEFAULT_SIZE, 159, Short.MAX_VALUE)
+                            .addComponent(jTextField17, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jTextField9, javax.swing.GroupLayout.DEFAULT_SIZE, 588, Short.MAX_VALUE))))
+                .addContainerGap())
         );
+
+        jPanel6Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jComboBox7, jTextField17, jTextField5, jTextField6, jTextField7});
+
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel6Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel18)
+                    .addComponent(jTextField9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(8, 8, 8)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel5))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel6Layout.createSequentialGroup()
+                        .addComponent(jLabel6)
+                        .addGap(12, 12, 12)
+                        .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabel25, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel6Layout.createSequentialGroup()
+                        .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(12, 12, 12)
+                        .addComponent(jTextField7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(12, 12, 12)
+                        .addComponent(jTextField17, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel6Layout.createSequentialGroup()
+                        .addComponent(jLabel37, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jCheckBox4))
+                    .addComponent(jTextField23, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel18))
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel6Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel6Layout.createSequentialGroup()
-                        .addGap(14, 14, 14)
-                        .addComponent(jLabel5)))
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel6Layout.createSequentialGroup()
-                        .addGap(14, 14, 14)
-                        .addComponent(jLabel6))
-                    .addGroup(jPanel6Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(12, 12, 12)
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(12, 12, 12)
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jTextField17, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel25, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(206, Short.MAX_VALUE))
+                    .addComponent(jLabel36, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jComboBox7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(132, Short.MAX_VALUE))
         );
+
+        jPanel6Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jLabel6, jTextField6});
+
+        jPanel6Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jLabel5, jTextField5});
+
+        jPanel6Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jLabel25, jTextField17, jTextField23});
+
+        jPanel6Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jLabel7, jTextField7});
+
+        jPanel6Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jComboBox7, jLabel36});
+
+        jPanel6Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jLabel18, jTextField9});
 
         javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
         jPanel9.setLayout(jPanel9Layout);
         jPanel9Layout.setHorizontalGroup(
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 796, Short.MAX_VALUE)
-            .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(jPanel9Layout.createSequentialGroup()
-                    .addGap(6, 6, 6)
-                    .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGap(7, 7, 7)))
+            .addGroup(jPanel9Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, 838, Short.MAX_VALUE)
+                .addContainerGap())
         );
         jPanel9Layout.setVerticalGroup(
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 452, Short.MAX_VALUE)
-            .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(jPanel9Layout.createSequentialGroup()
-                    .addContainerGap()
-                    .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addContainerGap()))
+            .addGroup(jPanel9Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, 464, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         jTabbedPane2.addTab(resourceMap.getString("jPanel9.TabConstraints.tabTitle"), jPanel9); // NOI18N
 
+        jPanel8.setMaximumSize(new java.awt.Dimension(800, 500));
         jPanel8.setName("jPanel8"); // NOI18N
+        jPanel8.setPreferredSize(new java.awt.Dimension(600, 486));
 
         jPanel18.setBorder(javax.swing.BorderFactory.createTitledBorder(resourceMap.getString("jPanel18.border.title"))); // NOI18N
         jPanel18.setName("jPanel18"); // NOI18N
@@ -2672,81 +2707,88 @@ public class SinhalaDictionaryToolsView extends FrameView {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel18Layout.createSequentialGroup()
                 .addGroup(jPanel18Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel18Layout.createSequentialGroup()
-                        .addGap(12, 12, 12)
-                        .addComponent(jLabel14))
+                        .addGroup(jPanel18Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel18Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(jLabel35, javax.swing.GroupLayout.DEFAULT_SIZE, 197, Short.MAX_VALUE))
+                            .addGroup(jPanel18Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(jLabel20, javax.swing.GroupLayout.DEFAULT_SIZE, 197, Short.MAX_VALUE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel18Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(jLabel15, javax.swing.GroupLayout.DEFAULT_SIZE, 197, Short.MAX_VALUE))
+                            .addGroup(jPanel18Layout.createSequentialGroup()
+                                .addGap(12, 12, 12)
+                                .addGroup(jPanel18Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel22, javax.swing.GroupLayout.DEFAULT_SIZE, 197, Short.MAX_VALUE)
+                                    .addComponent(jLabel23, javax.swing.GroupLayout.DEFAULT_SIZE, 197, Short.MAX_VALUE))))
+                        .addGap(25, 25, 25))
                     .addGroup(jPanel18Layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(jLabel24, javax.swing.GroupLayout.DEFAULT_SIZE, 174, Short.MAX_VALUE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel18Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jTextField15, javax.swing.GroupLayout.DEFAULT_SIZE, 550, Short.MAX_VALUE)
-                    .addComponent(jTextField10, javax.swing.GroupLayout.PREFERRED_SIZE, 550, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
-            .addGroup(jPanel18Layout.createSequentialGroup()
-                .addGap(12, 12, 12)
-                .addComponent(jLabel22, javax.swing.GroupLayout.DEFAULT_SIZE, 175, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextField16, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(442, Short.MAX_VALUE))
-            .addGroup(jPanel18Layout.createSequentialGroup()
-                .addGap(12, 12, 12)
-                .addComponent(jLabel23, javax.swing.GroupLayout.DEFAULT_SIZE, 175, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextField13, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(442, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel18Layout.createSequentialGroup()
-                .addContainerGap()
+                        .addGroup(jPanel18Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jLabel24, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel14, javax.swing.GroupLayout.DEFAULT_SIZE, 197, Short.MAX_VALUE))
+                        .addGap(25, 25, 25)))
                 .addGroup(jPanel18Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel18Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGroup(jPanel18Layout.createSequentialGroup()
+                            .addGroup(jPanel18Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(jTextField10, javax.swing.GroupLayout.DEFAULT_SIZE, 580, Short.MAX_VALUE)
+                                .addComponent(jTextField16, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jTextField13, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jTextField12, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jTextField22, javax.swing.GroupLayout.DEFAULT_SIZE, 580, Short.MAX_VALUE))
+                            .addGap(12, 12, 12))
+                        .addGroup(jPanel18Layout.createSequentialGroup()
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(jTextField15, javax.swing.GroupLayout.DEFAULT_SIZE, 580, Short.MAX_VALUE)
+                            .addContainerGap()))
                     .addGroup(jPanel18Layout.createSequentialGroup()
-                        .addGroup(jPanel18Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel20)
-                            .addComponent(jLabel15, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 174, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
-                    .addGroup(jPanel18Layout.createSequentialGroup()
-                        .addComponent(jLabel35)
-                        .addGap(39, 39, 39)))
-                .addGroup(jPanel18Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel18Layout.createSequentialGroup()
-                        .addComponent(jTextField22, javax.swing.GroupLayout.DEFAULT_SIZE, 550, Short.MAX_VALUE)
-                        .addContainerGap())
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel18Layout.createSequentialGroup()
-                        .addGroup(jPanel18Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jTextField11, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jTextField12, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(443, 443, 443))))
+                        .addComponent(jTextField11, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap())))
         );
+
+        jPanel18Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jTextField11, jTextField12, jTextField13, jTextField16});
+
+        jPanel18Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jLabel14, jLabel15, jLabel20, jLabel22, jLabel23, jLabel24, jLabel35});
+
         jPanel18Layout.setVerticalGroup(
             jPanel18Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel18Layout.createSequentialGroup()
-                .addGroup(jPanel18Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel18Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel18Layout.createSequentialGroup()
+                        .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel18Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel24, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jTextField15, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addComponent(jTextField10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel18Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField15, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel24, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel18Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE, false)
                     .addComponent(jTextField16, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel22, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(12, 12, 12)
-                .addGroup(jPanel18Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jTextField13, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel23, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(12, 12, 12)
-                .addGroup(jPanel18Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jTextField11, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel15))
-                .addGap(12, 12, 12)
-                .addGroup(jPanel18Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE, false)
-                    .addComponent(jLabel20)
-                    .addComponent(jTextField12, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel22, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel18Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel23, javax.swing.GroupLayout.DEFAULT_SIZE, 34, Short.MAX_VALUE)
+                    .addComponent(jTextField13, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel18Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel35, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField22, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(137, 137, 137))
+                    .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jTextField11, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel18Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel20, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jTextField12, javax.swing.GroupLayout.DEFAULT_SIZE, 31, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel18Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel35, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jTextField22, javax.swing.GroupLayout.DEFAULT_SIZE, 31, Short.MAX_VALUE))
+                .addContainerGap(143, Short.MAX_VALUE))
         );
+
+        jPanel18Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jLabel14, jLabel15, jLabel20, jLabel22, jLabel23, jLabel24, jLabel35});
+
+        jPanel18Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jTextField10, jTextField11, jTextField12, jTextField13, jTextField15, jTextField16, jTextField22});
 
         javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
         jPanel8.setLayout(jPanel8Layout);
@@ -2759,7 +2801,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
         );
         jPanel8Layout.setVerticalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
+            .addGroup(jPanel8Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel18, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
@@ -2768,6 +2810,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
         jTabbedPane2.addTab(resourceMap.getString("jPanel8.TabConstraints.tabTitle"), jPanel8); // NOI18N
 
         jPanel20.setName("jPanel20"); // NOI18N
+        jPanel20.setPreferredSize(new java.awt.Dimension(600, 488));
 
         jScrollPane3.setName("jScrollPane3"); // NOI18N
 
@@ -2872,11 +2915,11 @@ public class SinhalaDictionaryToolsView extends FrameView {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel20Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel20Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 772, Short.MAX_VALUE)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 838, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel20Layout.createSequentialGroup()
                         .addGap(6, 6, 6)
                         .addComponent(jLabel27)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 84, Short.MAX_VALUE)
                         .addComponent(jComboBox5, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jButton25, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -2911,7 +2954,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
                         .addComponent(jTextField20, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jSeparator4, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 350, Short.MAX_VALUE)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 386, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel20Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton32)
@@ -2925,6 +2968,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
         jTabbedPane2.addTab(resourceMap.getString("jPanel20.TabConstraints.tabTitle"), jPanel20); // NOI18N
 
         jPanel22.setName("jPanel22"); // NOI18N
+        jPanel22.setPreferredSize(new java.awt.Dimension(600, 486));
 
         jPanel23.setBorder(javax.swing.BorderFactory.createTitledBorder(resourceMap.getString("jPanel23.border.title"))); // NOI18N
         jPanel23.setName("jPanel23"); // NOI18N
@@ -2999,7 +3043,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
             .addGroup(jPanel23Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel23Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane9, javax.swing.GroupLayout.DEFAULT_SIZE, 736, Short.MAX_VALUE)
+                    .addComponent(jScrollPane9, javax.swing.GroupLayout.DEFAULT_SIZE, 802, Short.MAX_VALUE)
                     .addGroup(jPanel23Layout.createSequentialGroup()
                         .addGroup(jPanel23Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jLabel32, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -3031,7 +3075,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
                     .addComponent(jLabel32, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jLabel34, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane9, javax.swing.GroupLayout.DEFAULT_SIZE, 255, Short.MAX_VALUE)
+                .addComponent(jScrollPane9, javax.swing.GroupLayout.DEFAULT_SIZE, 259, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel23Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jButton45, javax.swing.GroupLayout.Alignment.TRAILING)
@@ -3053,8 +3097,8 @@ public class SinhalaDictionaryToolsView extends FrameView {
             jPanel22Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel22Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel23, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jPanel23, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(46, 46, 46))
         );
 
         jTabbedPane2.addTab(resourceMap.getString("jPanel22.TabConstraints.tabTitle"), jPanel22); // NOI18N
@@ -3065,20 +3109,19 @@ public class SinhalaDictionaryToolsView extends FrameView {
             settingsDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(settingsDialogLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTabbedPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, settingsDialogLayout.createSequentialGroup()
-                .addContainerGap(590, Short.MAX_VALUE)
-                .addComponent(jButton15, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton14, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(settingsDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, settingsDialogLayout.createSequentialGroup()
+                        .addComponent(jButton15, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton14, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jTabbedPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 878, Short.MAX_VALUE))
                 .addContainerGap())
         );
         settingsDialogLayout.setVerticalGroup(
             settingsDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, settingsDialogLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTabbedPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 495, Short.MAX_VALUE)
+                .addComponent(jTabbedPane2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(settingsDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton14)
@@ -3780,8 +3823,9 @@ public class SinhalaDictionaryToolsView extends FrameView {
     //start crawling a given url
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
 
-        LangCrawler crawler = LangCrawler.getCrawler();        
-
+        LangCrawler crawler = LangCrawler.getCrawler();
+        TableModel model =  (conf.getIntProperty("uniqueTable", 1, "crawl") == 0) ?
+            (TableModel)jTable4.getModel() : (TableModel)jTable3.getModel();
 
         if (crawler.getState() != CrawlEvent.STARTED){
             try {
@@ -3791,11 +3835,14 @@ public class SinhalaDictionaryToolsView extends FrameView {
                     return;
                 }
 
+                crawler.setUniqueHashMap(model.getHashMap());
+                crawler.setMaxWordsPerUpdate(conf.getIntProperty("refreshRate", 1000, "crawl"));
                 crawler.setRoot(new Link(jTextField8.getText()));
                 crawler.configure(conf);
                 crawler.addCrawlListener(new LangCrawlerListener(jButton7, jButton11));
                 crawler.setAction(new LangAction(this.statusMessageLabel));
-                crawler.addObserver(new CrawlObserver(this.jTextArea3));
+                Observable observable = (Observable)crawler.getObserverble();
+                observable.addObserver(new CrawlObserver(this.jTextArea3));
 
                 DownloadParameters dp = new DownloadParameters();
                 dp.changeObeyRobotExclusion(true);
@@ -3816,7 +3863,6 @@ public class SinhalaDictionaryToolsView extends FrameView {
         }
     }//GEN-LAST:event_jButton7ActionPerformed
 
-    //save crawl settings
     //pause crawling
     private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
         LangCrawler crawler = LangCrawler.getCrawler();
@@ -4631,14 +4677,22 @@ public class SinhalaDictionaryToolsView extends FrameView {
         JTable currentTable = (currentTableId == 1) ? jTable4 : jTable3;
         TableModel model = (TableModel) currentTable.getModel();
 
-        String word = (String)model.getValueAt(currentTable.getSelectedRow(), 0);
+        if (currentTable.getSelectedRowCount() > 0){
 
-        if (word != null){
-            addWordToList(word, BLOCKED_WORD);
+            int [] selected = currentTable.getSelectedRows();
+
+            for (int i = 0; i < selected.length; i++ ){
+                String word = (String)model.getValueAt(selected[i], 0);
+
+                if (word != null){
+                    addWordToList(word, BLOCKED_WORD);
+                }
+            }            
+
+            saveWordList(vconf.getProperty("bannedWordsPath", "config/banned.txt", "wordlists"),
+                        vconf.getProperty("ignoredWordsPath", "config/ignored.txt", "wordlists"), BLOCKED_WORD);
         }
-
-        saveWordList(vconf.getProperty("bannedWordsPath", "config/banned.txt", "wordlists"),
-                    vconf.getProperty("ignoredWordsPath", "config/ignored.txt", "wordlists"), BLOCKED_WORD);
+        
     }//GEN-LAST:event_jMenuItem15jMenuItem7ActionPerformed
 
     //add a selected word to ignored list
@@ -4647,14 +4701,22 @@ public class SinhalaDictionaryToolsView extends FrameView {
         JTable currentTable = (currentTableId == 1) ? jTable4 : jTable3;
         TableModel model = (TableModel) currentTable.getModel();
 
-        String word = (String)model.getValueAt(currentTable.getSelectedRow(), 0);
+        if (currentTable.getSelectedRowCount() > 0){
 
-        if (word != null){
-            addWordToList(word, IGNORED_WORD);
+            int [] selected = currentTable.getSelectedRows();
+
+            for (int i = 0; i < selected.length; i++ ){
+                String word = (String)model.getValueAt(selected[i], 0);
+
+                if (word != null){
+                    addWordToList(word, IGNORED_WORD);
+                }
+            }
+
+            saveWordList(vconf.getProperty("bannedWordsPath", "config/banned.txt", "wordlists"),
+                        vconf.getProperty("ignoredWordsPath", "config/ignored.txt", "wordlists"), IGNORED_WORD);
         }
 
-        saveWordList(vconf.getProperty("bannedWordsPath", "config/banned.txt", "wordlists"),
-                    vconf.getProperty("ignoredWordsPath", "config/ignored.txt", "wordlists"), IGNORED_WORD);
     }//GEN-LAST:event_jMenuItem16jMenuItem7ActionPerformed
 
     //change the blocked words menu items
@@ -4767,6 +4829,15 @@ public class SinhalaDictionaryToolsView extends FrameView {
         }
     }//GEN-LAST:event_jButton44ActionPerformed
 
+    //settings unique words check box
+    private void jCheckBox4ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jCheckBox4ItemStateChanged
+        if (jCheckBox4.isSelected()){
+            jComboBox7.setEnabled(true);
+        }else{
+            jComboBox7.setEnabled(false);
+        }
+    }//GEN-LAST:event_jCheckBox4ItemStateChanged
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JDialog addWordsDialog;
@@ -4826,6 +4897,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
     private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JCheckBox jCheckBox2;
     private javax.swing.JCheckBox jCheckBox3;
+    private javax.swing.JCheckBox jCheckBox4;
     private javax.swing.JColorChooser jColorChooser1;
     private javax.swing.JComboBox jComboBox1;
     private javax.swing.JComboBox jComboBox2;
@@ -4833,6 +4905,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
     private javax.swing.JComboBox jComboBox4;
     private javax.swing.JComboBox jComboBox5;
     private javax.swing.JComboBox jComboBox6;
+    private javax.swing.JComboBox jComboBox7;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -4862,6 +4935,8 @@ public class SinhalaDictionaryToolsView extends FrameView {
     private javax.swing.JLabel jLabel33;
     private javax.swing.JLabel jLabel34;
     private javax.swing.JLabel jLabel35;
+    private javax.swing.JLabel jLabel36;
+    private javax.swing.JLabel jLabel37;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
@@ -4949,6 +5024,7 @@ public class SinhalaDictionaryToolsView extends FrameView {
     private javax.swing.JTextField jTextField20;
     private javax.swing.JTextField jTextField21;
     private javax.swing.JTextField jTextField22;
+    private javax.swing.JTextField jTextField23;
     private javax.swing.JTextField jTextField3;
     private javax.swing.JTextField jTextField4;
     private javax.swing.JTextField jTextField5;

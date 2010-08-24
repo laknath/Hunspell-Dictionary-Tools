@@ -18,13 +18,16 @@
     <property name="maxPages" value="1000"/>
     <property name="maxWords" value="100000"/>
     <property name="name" value="Sinhala Crawler"/>
+    <property name="onlyUniqueWords" value="true"/>
+    <property name="refreshRate" value="1000"/>
+    <property name="uniqueTable" value="1"/>
   </category>
   <category name="parsing">
-    <property name="charExceptions" value="෴"/>
-    <property name="charRangeMax" value="෴"/>
+    <property name="charExceptions" value="ෲෳ෴"/>
+    <property name="charRangeMax" value="ෟ"/>
     <property name="charRangeMin" value="ං"/>
     <property name="charset" value="UTF-8"/>
-    <property name="maxBadWordPercentage" value="0.5"/>
+    <property name="maxBadWordPercentage" value="0.1"/>
     <property name="stripChars" value=".,/`|1234567890!@#$%*^=()_+-[]"/>
   </category>
   <category name="general">
