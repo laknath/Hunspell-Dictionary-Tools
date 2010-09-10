@@ -2490,14 +2490,8 @@
                   <SubComponents>
                     <Component class="javax.swing.JTable" name="jTable1">
                       <Properties>
-                        <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
-                          <Table columnCount="5" rowCount="0">
-                            <Column editable="true" title="Type" type="java.lang.String"/>
-                            <Column editable="true" title="Class" type="java.lang.String"/>
-                            <Column editable="true" title="Replacement" type="java.lang.String"/>
-                            <Column editable="true" title="Append" type="java.lang.String"/>
-                            <Column editable="true" title="Pattern" type="java.lang.String"/>
-                          </Table>
+                        <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                          <Connection code="new HunspellTableModel(null, null)" type="code"/>
                         </Property>
                         <Property name="cellSelectionEnabled" type="boolean" value="true"/>
                         <Property name="name" type="java.lang.String" value="jTable1" noResource="true"/>
@@ -2698,7 +2692,7 @@
                                   <Component id="jLabel34" alignment="1" min="-2" pref="34" max="-2" attributes="1"/>
                               </Group>
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                              <Component id="jScrollPane9" pref="259" max="32767" attributes="0"/>
+                              <Component id="jScrollPane9" pref="257" max="32767" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
                                   <Component id="jButton45" alignment="1" min="-2" max="-2" attributes="0"/>

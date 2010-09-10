@@ -78,13 +78,13 @@ public class HunspellTableModel extends AbstractTableModel {
     @Override
     public void setValueAt(Object value, int row, int col) {
 
-        if (row < getRowCount() && (col+1) < getColumnCount()){
+        if (row < getRowCount() && col < getColumnCount()){
             String [] temp = model.get(row);
 
             if (col > 0){
                 col++;
             }
-            
+            System.out.println(col);
             temp[col] = (String)value;
             model.set(row, temp);
 
